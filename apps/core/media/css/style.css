@@ -1,0 +1,7 @@
+.progress {position: relative; margin-bottom: 0;}
+.progress .progress-text {position: absolute; text-align: center; width: 100%; font-weight: bold; color: #333;}
+.progress .bar {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}

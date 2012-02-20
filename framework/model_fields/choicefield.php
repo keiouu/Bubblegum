@@ -17,8 +17,8 @@ class ChoiceField extends CharField implements ArrayAccess
 		
 		if ($max_length === 0) {
 			foreach ($choices as $val => $choice) {
-				if (strlen($val) > $max_length)
-					$max_length = strlen($val);
+				if (strlen($val) + 1 > $max_length)
+					$max_length = strlen($val) + 1;
 			}
 		}
 		

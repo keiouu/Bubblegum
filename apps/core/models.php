@@ -13,6 +13,7 @@ class Organisation extends Model
 		$this->add_field("name", new CharField(250));
 		$this->add_field("description", new TextField());
 	}
+	public function __toString() { return $this->name; }
 }
 
 class Team extends Model
@@ -23,6 +24,7 @@ class Team extends Model
 		$this->add_field("description", new TextField());
 		$this->add_field("leader", new FKField("auth.User"));
 	}
+	public function __toString() { return $this->name; }
 }
 
 class Team_Link extends Model
@@ -45,6 +47,7 @@ class Project extends Model
 		$this->add_field("created", new DateTimeField(true));
 		$this->add_field("updated", new DateTimeField(true, true));
 	}
+	public function __toString() { return $this->name; }
 	
 	public function __set_owner($obj) {
 		return get_class($obj) . "|" . $obj->pk;
@@ -70,12 +73,13 @@ class Milestone extends Model
 {
 	public function __construct() {
 		parent::__construct();
+		$this->add_field("project", new FKField("core.Project"));
 		$this->add_field("name", new CharField(250));
 		$this->add_field("description", new TextField());
-		$this->add_field("project", new FKField("core.Project"));
 		$this->add_field("created", new DateTimeField(true));
 		$this->add_field("updated", new DateTimeField(true, true));
 	}
+	public function __toString() { return $this->name; }
 }
 
 class Task extends Model
@@ -84,6 +88,13 @@ class Task extends Model
 		parent::__construct();
 		$this->add_field("name", new CharField(250));
 		$this->add_field("description", new TextField());
+		$this->add_field("type", new ChoiceField(array(
+			"0" => "Bug",
+			"1" => "Feature",
+			"2" => "Enhancement",
+			"3" => "Aesthetic",
+			"4" => "n/a",
+		), "1"));
 		$this->add_field("priority", new ChoiceField(array(
 			"0" => "Critical",
 			"1" => "High",
@@ -99,6 +110,7 @@ class Task extends Model
 		$this->add_field("updated", new DateTimeField(true, true));
 		$this->add_field("completed", new DateTimeField(false));
 	}
+	public function __toString() { return $this->name; }
 }
 
 class Task_Link extends Model

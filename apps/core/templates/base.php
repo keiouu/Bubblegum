@@ -21,6 +21,7 @@ require_once(home_dir . "apps/core/models.php");
       }
     </style>
     <link href="{{home_url}}apps/core/media/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{{home_url}}apps/core/media/css/style.css" rel="stylesheet">
     {% block head %}
     {% endblock %}
     
@@ -47,9 +48,9 @@ require_once(home_dir . "apps/core/models.php");
           <div class="nav-collapse">
             <ul class="nav">
               {% block menu %}
-              <li class="active"><a href="{{home_url}}">Home</a></li>
+              <li <?php print (isset($request->project) ? '' : 'class="active"'); ?>><a href="{{home_url}}">Home</a></li>
               <li class="divider-vertical"></li>
-              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+              <li class="dropdown<?php print (isset($request->project) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 		           <ul class="dropdown-menu">
 		            <li class="nav-header">Select a Project</li>
 		           	 <?php
@@ -58,7 +59,7 @@ require_once(home_dir . "apps/core/models.php");
 		           	 }
 		           	 ?>
 		           	 <li class="divider"></li>
-		          	 <li><a href="{{home_url}}projects/new/">Add New Project</a></li>
+		          	 <li><a href="{{home_url}}projects/new/"><i class="icon-plus"></i> Add New Project</a></li>
 		           </ul>
 		        </li>
               {% endblock %}
@@ -82,7 +83,7 @@ require_once(home_dir . "apps/core/models.php");
 			 {% block sidebar %}
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Activity Feed</li>
+              <li class="nav-header"><i class="icon-fire"></i> Activity Feed</li>
               <li><a href="{{home_url}}">Something happened!</a></li>
             </ul>
           </div><!--/.well -->
@@ -92,66 +93,13 @@ require_once(home_dir . "apps/core/models.php");
 				<ul class="breadcrumb">
 				{% block breadcrumbs %}
 					<?php
-					if (isset($request->app)) {
-						print '<li><a href="'.home_url.'">{% i18n "admin_home" %}</a> <span class="divider">/</span></li>';
-						print '<li><a href="'.$request->app_url.'">'.$request->app.'</a> <span class="divider">/</span></li>';
-						if (isset($request->admin_add)) {
-							print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
-							print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_add_new" %}</a></li>';
-						} elseif (isset($request->admin_edit)) {
-							print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
-							print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_edit" %}</a></li>';
-						} else {
-							print '<li class="active"><a href="'.$request->fullPath.'">'.$request->model.'</a></li>';
-						}
-					} else {
-						print '<li '.(isset($request->app_name) ? '' : 'class="active"').'><a href="'.home_url.'">{% i18n "admin_home" %}</a></li>';
-						if (isset($request->app_name))
-							print ' <span class="divider">/</span><li class="active">'.$request->app_name.'</li>';
-					}
+					print '<li '.(isset($request->project) ? '' : 'class="active"').'><a href="'.home_url.'">{% i18n "admin_home" %}</a></li>';
+					if (isset($request->project))
+						print ' <span class="divider">/</span><li class="active">'.$request->project->name.'</li>';
 					?>
 				{% endblock %}
 			 </ul>
           {% block body %}
-          <div class="hero-unit">
-            <h1>Hello, world!</h1>
-            <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-            <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-          </div>
-          <div class="row-fluid">
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-          </div><!--/row-->
-          <div class="row-fluid">
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-          </div><!--/row-->
           {% endblock body %}
         </div><!--/span-->
       </div><!--/row-->
