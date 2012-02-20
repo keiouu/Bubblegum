@@ -45,25 +45,6 @@ class JSONView extends View
 		if (!isset($request->dataset))
 			die('{"error":"No Dataset!"');
 		return json_encode($request->dataset);
-		$output = '{"objects": [';
-		$i = 0;
-		foreach ($request->dataset as $row) {
-			if ($i !== 0)
-				$output .= ", ";
-			$row_output = "{";
-			foreach ($row as $name => $value) {
-				if (strlen($row_output) > 1)
-					$row_output .= ", ";
-				$value = str_replace('"', '\\"', $value);
-				$value = str_replace("\r", "\\r", $value);
-				$value = str_replace("\n", "\\n", $value);
-				$value = str_replace("\t", "\\t", $value);
-				$row_output .= '"'.$name.'":"'.$value.'"';
-			}
-			$output .= $row_output . "}";
-			$i++;
-		}
-		return $output . "]}";
 	}
 }
 
