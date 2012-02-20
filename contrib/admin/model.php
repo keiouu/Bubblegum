@@ -1,0 +1,114 @@
+<?php
+/*
+ * Tikapot Admin Model
+ */
+
+require_once(home_dir . "framework/fieldset.php");
+require_once(home_dir . "contrib/admin/core.php");
+require_once(home_dir . "contrib/admin/filters.php");
+
+class AdminModel
+{
+	protected $app, $model, $add_form, $edit_form, $headings, $linked_headings, $filters;
+	
+	public function __construct($app, $model, $add_form = null, $edit_form = null, $headings = array(), $linked_headings = array(), $filters = array()) {
+		$this->app = $app;
+		$this->model = $model;
+		
+		// Setup Forms
+		if ($add_form === null) {
+			$add_form = $model->get_form();
+		}
+		$this->add_form = $add_form;
+		$this->edit_form = $edit_form === null ? $add_form : $edit_form;
+		
+		// Setup Headings
+		$this->headings = $headings;
+		if (!is_array($this->headings) || count($this->headings) === 0) {
+			$this->headings = array();
+			$fields = $this->model->get_fields();
+			foreach($fields as $name => $field) {
+				$this->headings[] = $name;
+			}
+		}
+		
+		// Setup Linked Headings
+		$this->linked_headings = $linked_headings;
+		if (!is_array($this->linked_headings) || count($this->linked_headings) === 0) {
+			$this->linked_headings = array($this->model->_pk());
+		}
+		
+		// Setup Filters
+		$this->filters = $filters;
+		if (!is_array($this->filters) || count($this->filters) === 0) {
+			$this->filters = array();
+			$fields = $this->model->get_fields();
+			foreach($fields as $name => $field) {
+				$form_field = $field->get_formfield("");
+				$class = get_class($form_field);
+				if ($class === "CheckedFormField" || $class === "SelectFormField" || $class === "FKFormField")
+					$this->filters[$name] = "";
+			}
+		}
+		
+		// Add me to the admin manager
+		AdminManager::add($app, $this);
+	}
+	
+	public function get_app() {
+		return $this->app;
+	}
+	
+	public function get_model() {
+		return $this->model;
+	}
+	
+	public function get_filters() {
+		$fields = $this->model->get_fields();
+		$filters = array();
+		foreach ($this->filters as $name => $default_value) {
+			if (array_key_exists($name, $fields) && in_array($name, $this->headings)) {
+				$options = array();
+				$dataset = $this->get_dataset();
+				$data = $dataset->get_data();
+				foreach ($data as $obj) {
+					$value = $dataset->get_value($obj, $name);
+					if (!in_array("" . $value, $options))
+						$options[$value->get_form_value()] = "" . $value;
+				}
+				$filters[] = new AdminFilter($name, $options, $default_value);
+			}
+		}
+		return $filters;
+	}
+	
+	public function get_add_form($request) {
+		return $this->add_form;
+	}
+	
+	public function get_edit_form($request) {
+		return $this->edit_form;
+	}
+	
+	public function get_modelname() {
+		return $this->model->model_display_name();
+	}
+	
+	public function get_headings() {
+		return $this->headings;
+	}
+	
+	public function get_linked_headings() {
+		return $this->linked_headings;
+	}
+	
+	public function get_dataset($filter_values = array(), $order = array()) {
+		return new DataSet($this->model, $this->model->objects()->filter($filter_values)->order_by($order), $this->get_headings(), $this->get_linked_headings());
+	}
+	
+	public static function register($app = null, $model = null, $add_form = null, $edit_form = null, $headings = array(), $linked_headings = array(), $filters = array()) {
+		$obj = new static($app, $model, $add_form, $edit_form, $headings, $linked_headings, $filters);
+		return $obj;
+	}
+}
+?>
