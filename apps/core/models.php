@@ -111,6 +111,35 @@ class Task extends Model
 		$this->add_field("completed", new DateTimeField(false));
 	}
 	public function __toString() { return $this->name; }
+	
+	public function assigned($obj) {
+		$string = get_class($obj) . "|" . $obj->pk;
+		$link = Task_Link::get_or_ignore(array("task" => $this->pk, "assignee" => $string));
+		if ($link)
+			return true;
+		
+		// Check Teams
+		if (get_class($obj) == "User") {
+			$team_links = Team_Link::find(array("user" => $obj->pk));
+			foreach ($team_links as $team_link) {
+				if ($this->assigned($team_link->team))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public function assignees() {
+		$string = "";
+		$links = Task_Link::find(array("task" => $this->pk));
+		foreach ($links as $link) {
+			if (strlen($string) > 0)
+				$string .= ", ";
+			$string .= $link->assignee;
+		}
+		return $string;
+	}
 }
 
 class Task_Link extends Model

@@ -31,7 +31,6 @@ require_once(home_dir . "apps/core/models.php");
 				}
 				$max_progress = $tasks->count() * 100;
 				$progress = ($total_progress / $max_progress) * 100;
-				$progress = 16;
 				print '<tr>
 					<td>'.$milestone->name.'</td>
 					<td>
@@ -62,7 +61,28 @@ require_once(home_dir . "apps/core/models.php");
 			</tr>
 		</thead>
 		<tbody>
-			<tr><td colspan="5">No Data!</td></tr>
+			<?php
+			$tasks = Task::objects()->filter(array("project" => $request->project->pk));
+			foreach ($tasks as $task) {
+				if ($task->progress >= 100 || !$task->assigned($request->user))
+					continue;
+				
+				print '<tr>
+					<td>'.$task->milestone.'</td>
+					<td>'.$task->name.'</td>
+					<td>'.$task->_type.'</td>
+					<td>'.$task->_priority.'</td>
+					<td>
+						<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
+							<div class="progress-text">'.$task->progress.'%</div>
+							<div class="bar" style="width:'.$task->progress.'%;"></div>
+						</div>
+					</td>
+				</tr>';
+			}
+			if ($milestones->count() == 0)
+				print '<tr><td colspan="5">No Data!</td></tr>';
+			?>
 		</tbody>
 	</table>
 	<div class="pagination">
@@ -85,7 +105,29 @@ require_once(home_dir . "apps/core/models.php");
 			</tr>
 		</thead>
 		<tbody>
-			<tr><td colspan="6">No Data!</td></tr>
+			<?php
+			$tasks = Task::objects()->filter(array("project" => $request->project->pk));
+			foreach ($tasks as $task) {
+				if ($task->progress >= 100)
+					continue;
+				
+				print '<tr>
+					<td>'.$task->milestone.'</td>
+					<td>'.$task->name.'</td>
+					<td>'.$task->_type.'</td>
+					<td>'.$task->_priority.'</td>
+					<td>
+						<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
+							<div class="progress-text">'.$task->progress.'%</div>
+							<div class="bar" style="width:'.$task->progress.'%;"></div>
+						</div>
+					</td>
+					<td>'.$task->assignees().'</td>
+				</tr>';
+			}
+			if ($milestones->count() == 0)
+				print '<tr><td colspan="6">No Data!</td></tr>';
+			?>
 		</tbody>
 	</table>
 	<div class="pagination">
