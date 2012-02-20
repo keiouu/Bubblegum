@@ -3,6 +3,13 @@ require_once(home_dir . "apps/core/models.php");
 ?>
 {% extends "apps/core/templates/base.php" %}
 
+{% block endbody %}
+<script type="text/javascript">
+var project_id = <?php print $request->project->pk; ?>;
+</script>
+<script src="{{home_url}}apps/core/media/js/project.feeds.js"></script>
+{% endblock endbody %}
+    
 {% block body %}
 <div class="row-fluid">
 	<div class="page-header">
@@ -20,30 +27,8 @@ require_once(home_dir . "apps/core/models.php");
 				<th>Progress</th>
 			</tr>
 		</thead>
-		<tbody>
-			<?php
-			$milestones = Milestone::objects()->filter(array("project" => $request->project->pk));
-			foreach ($milestones as $milestone) {
-				$total_progress = 0;
-				$tasks = Task::objects()->filter(array("milestone" => $milestone->pk));
-				foreach ($tasks as $task) {
-					$total_progress += $task->progress;
-				}
-				$max_progress = $tasks->count() * 100;
-				$progress = ($total_progress / $max_progress) * 100;
-				print '<tr>
-					<td>'.$milestone->name.'</td>
-					<td>
-						<div class="progress progress-'.($progress <= 25 ? 'danger' : ($progress >= 75 ? 'success' : 'info')).' progress-striped active">
-							<div class="progress-text">'.$progress.'%</div>
-							<div class="bar" style="width:'.$progress.'%;"></div>
-						</div>
-					</td>
-				</tr>';
-			}
-			if ($milestones->count() == 0)
-				print '<tr><td colspan="2">No Data!</td></tr>';
-			?>
+		<tbody id="milestone_feed">
+			<tr><td colspan="2">Loading...</td></tr>
 		</tbody>
 	</table>
 	<hr />
@@ -60,29 +45,7 @@ require_once(home_dir . "apps/core/models.php");
 				<th>Progress</th>
 			</tr>
 		</thead>
-		<tbody>
-			<?php
-			$tasks = Task::objects()->filter(array("project" => $request->project->pk));
-			foreach ($tasks as $task) {
-				if ($task->progress >= 100 || !$task->assigned($request->user))
-					continue;
-				
-				print '<tr>
-					<td>'.$task->milestone.'</td>
-					<td>'.$task->name.'</td>
-					<td>'.$task->_type.'</td>
-					<td>'.$task->_priority.'</td>
-					<td>
-						<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
-							<div class="progress-text">'.$task->progress.'%</div>
-							<div class="bar" style="width:'.$task->progress.'%;"></div>
-						</div>
-					</td>
-				</tr>';
-			}
-			if ($milestones->count() == 0)
-				print '<tr><td colspan="5">No Data!</td></tr>';
-			?>
+		<tbody id="tasks_feed">
 		</tbody>
 	</table>
 	<div class="pagination">
@@ -125,7 +88,7 @@ require_once(home_dir . "apps/core/models.php");
 					<td>'.$task->assignees().'</td>
 				</tr>';
 			}
-			if ($milestones->count() == 0)
+			if ($tasks->count() == 0)
 				print '<tr><td colspan="6">No Data!</td></tr>';
 			?>
 		</tbody>

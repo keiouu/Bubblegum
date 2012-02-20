@@ -1,6 +1,6 @@
 <?php
 /*
- * Tikapot Template Tag base
+ * Tikapot Template Date Tag
  *
  */
 

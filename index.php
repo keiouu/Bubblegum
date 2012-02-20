@@ -16,7 +16,7 @@ define("font_dir", media_dir . "fonts/");
 define("admin_url", home_url . "admin/");
 
 // Best change these!
-define("project_name", 'Tikapot');                    // The name of your project
+define("project_name", 'TNet');                    // The name of your project
 define("site_logo", media_url . "images/logo.png");   // The URL to a logo for your project
 define("site_url", $_SERVER['SERVER_ADDR']);          // The URL of your website.
 

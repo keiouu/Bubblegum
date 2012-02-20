@@ -133,9 +133,10 @@ class FKField extends ModelField implements ModelInterface
 	/* This recieves pre-save signal from it's model. */
 	public function pre_save($model, $update) {
 		// Save our model and set this db value to it's ID
-		if ($this->is_set()) {
-			$this->value = $this->_obj->save();
-		}
+		// TODO - check recursive issues
+		//if ($this->is_set()) {
+			//$this->value = $this->_obj->save();
+		//}
 	}
 	
 	public function __get($name) {

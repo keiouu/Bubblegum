@@ -1,3 +1,14 @@
+.navbar .brand {
+	padding-left: 35px;
+}
+
+.brand img {
+	position: absolute;
+	top: 1px;
+	left: 5px;
+	height: 35px;
+}
+
 .progress {position: relative; margin-bottom: 0;}
 .progress .progress-text {position: absolute; text-align: center; width: 100%; font-weight: bold; color: #333;}
 .progress .bar {

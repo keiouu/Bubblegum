@@ -22,15 +22,15 @@ require_once(home_dir . "apps/core/models.php");
     </style>
     <link href="{{home_url}}apps/core/media/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="{{home_url}}apps/core/media/css/style.css" rel="stylesheet">
+	 {% jsvars %}
+	 
     {% block head %}
     {% endblock %}
     
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <!-- Le fav and touch icons -->
+    
     <link rel="shortcut icon" href="{{home_url}}favicon.ico">
   </head>
 
@@ -44,7 +44,7 @@ require_once(home_dir . "apps/core/models.php");
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="{{home_url}}">TNet</a>
+          <a class="brand" href="{{home_url}}"><?php if (defined("site_logo")) { print '<img src="'.site_logo.'" alt="logo" />'; } ?> {{project_name}}</a>
           <div class="nav-collapse">
             <ul class="nav">
               {% block menu %}
@@ -84,7 +84,7 @@ require_once(home_dir . "apps/core/models.php");
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header"><i class="icon-fire"></i> Activity Feed</li>
-              <li><a href="{{home_url}}">Something happened!</a></li>
+              <span id="activity_feed"><li>Loading...</li></span>
             </ul>
           </div><!--/.well -->
 			 {% endblock sidebar %}
@@ -115,6 +115,10 @@ require_once(home_dir . "apps/core/models.php");
     
     <script src="{{home_url}}apps/core/media/js/jquery.min.js"></script>
     <script src="{{home_url}}apps/core/media/js/bootstrap.min.js"></script>
+    <script src="{{home_url}}apps/core/media/js/tikapot.ajax.js"></script>
+    <script src="{{home_url}}apps/core/media/js/activity.feed.js"></script>
+    {% block endbody %}
+    {% endblock endbody %}
   </body>
 </html>
 

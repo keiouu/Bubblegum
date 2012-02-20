@@ -25,6 +25,10 @@ class Team extends Model
 		$this->add_field("leader", new FKField("auth.User"));
 	}
 	public function __toString() { return $this->name; }
+	
+	public function post_save($pk) {
+		Team_Link::get_or_create(array("team" => $this->pk, "user" => $this->leader->pk));
+	}
 }
 
 class Team_Link extends Model
