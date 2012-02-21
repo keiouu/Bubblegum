@@ -1,5 +1,6 @@
 <?php
 require_once(home_dir . "apps/core/models.php");
+require_once(home_dir . "apps/core/forms.php");
 ?>
 {% extends "apps/core/templates/base.php" %}
 
@@ -31,12 +32,29 @@ var project_id = <?php print $request->project->pk; ?>;
 			<tr><td colspan="2">Loading...</td></tr>
 		</tbody>
 	</table>
+	<p class="addlink"><a data-toggle="modal" href="#milestone-add">Add new Milestone &raquo;</a></p>
 	<div class="pagination" data-link="milestone_feed">
 		<ul>
 			<li class="prev disabled"><a href="#" onClick="return false;">&larr; Prev</a></li>
 			<span class="pages"></span>
 			<li class="next disabled"><a href="#" onClick="return false;">Next &rarr;</a></li>
 		</ul>
+	</div>
+	<div class="modal" id="milestone-add">
+	  <div class="modal-header">
+		 <a class="close" data-dismiss="modal">×</a>
+		 <h3>Add a new Milestone</h3>
+	  </div>
+	  <div class="modal-body">
+		 <?php
+		 $form = new MileStoneAddForm();
+		 $form->display();
+		 ?>
+	  </div>
+	  <div class="modal-footer">
+		 <a href="#" class="btn btn-primary btn-save">Save</a>
+		 <a href="#" class="btn" data-dismiss="modal">Close</a>
+	  </div>
 	</div>
 	<hr />
 	

@@ -16,6 +16,7 @@ new ProjectView("/projects/(?P<project>\d+)/", home_dir . "apps/core/templates/p
 // API
 new AJAX_ActivityFeedView("/api/activity_feed/");
 new AJAX_MileStonesView("/api/project/(?P<project>\d+)/milestones/");
+new AJAX_MileStoneAddView("/api/project/(?P<project>\d+)/milestones/add/");
 new AJAX_TasksView("/api/project/(?P<project>\d+)/tasks/");
 ?>
 

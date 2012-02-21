@@ -6,6 +6,7 @@
 
 require_once(home_dir . "framework/view.php");
 require_once(dirname(__FILE__) . "/models.php");
+require_once(dirname(__FILE__) . "/forms.php");
 
 class BaseView extends TemplateView
 {
@@ -112,8 +113,12 @@ class AJAX_MileStonesView extends JSONView
 			foreach ($tasks as $task) {
 				$total_progress += $task->progress;
 			}
-			$max_progress = $tasks->count() * 100;
-			$progress = ($total_progress / $max_progress) * 100;
+			if ($tasks->count() > 0) {
+				$max_progress = $tasks->count() * 100;
+				$progress = ($total_progress / $max_progress) * 100;
+			} else {
+				$progress = 0;
+			}
 			$request->dataset[] = array(
 				"name" => $milestone->name,
 				"progress" => '<div class="progress progress-'.($progress <= 25 ? 'danger' : ($progress >= 75 ? 'success' : 'info')).' progress-striped active">
@@ -123,6 +128,31 @@ class AJAX_MileStonesView extends JSONView
 			);
 		}
 		return $request->user->logged_in();
+	}
+}
+
+class AJAX_MileStoneAddView extends View
+{
+	public function setup($request, $args) {
+		$request->project = Project::get_or_ignore($args['project']);
+		return $request->project && $request->user->logged_in();
+	}
+	
+	public function render($request, $args) {
+		$form = new MileStoneAddForm();
+		if ($form->load_post_data($request->post)) {
+			list($o, $c) = MileStone::get_or_create(array(
+				"project" => $request->project->pk,
+				"name" => $form->get_value("name"),
+				"description" => $form->get_value("description"),
+			));
+			if ($c)
+				print 'Success!';
+			else
+				print 'A milestone with that name already exists!';
+		} else {
+			print 'Error loading data!';
+		}
 	}
 }
 

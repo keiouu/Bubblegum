@@ -143,5 +143,27 @@ function update_feeds() {
 }
 
 $(function () {
+	$('#milestone-add').modal({show: false}).find("input[type=submit]").hide();
+	$('#milestone-add .btn-save').click(function() {
+		var name = $('#milestone-add .name_field').val();
+		var description = $('#milestone-add .description_field').val();
+		var fdata = "";
+		$('#milestone-add input, #milestone-add textarea').each(function() {
+			fdata += $(this).attr("name") + '=' + $(this).val() + '&';
+		});
+		$.ajax({
+			url: tp_home_url + "api/project/" + project_id + "/milestones/add/",
+			type: "POST",
+			data: fdata,
+			success: function(data) {
+				var retval = $.trim(data);
+				if (retval != "Success!")
+					alert(retval);
+				else
+					update_feeds();
+			}
+		});
+		
+	});
 	update_feeds();
 });
