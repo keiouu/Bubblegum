@@ -48,6 +48,10 @@ class JSONView extends View
 	}
 }
 
+function sort_activity($arr) {
+
+}
+
 class AJAX_ActivityFeedView extends View
 {
 	public function setup($request, $args) {
@@ -55,11 +59,40 @@ class AJAX_ActivityFeedView extends View
 	}
 	
 	public function render($request, $args) {
-		// Joined team
-		// Closed task
-		// Added task
-		// Milestone progress - 25, 50, 75, 100
-		print '<li><a href="{{home_url}}">Something happened!</a></li>';
+		$team_joins = Team_Link::objects()->order_by(array("joined", "DESC"))->limit(10);
+		$closed_tasks = Task::objects()->find(array("progress" => 100))->order_by(array("completed", "DESC"))->limit(10);
+		$created_tasks = Task::objects()->order_by(array("created", "DESC"))->limit(10);
+		// TODO - Milestone progress - 25, 50, 75, 100
+		
+		$activity = array();
+		foreach ($team_joins as $obj) {
+			$activity[] = array(
+				$obj->joined,
+				$obj->user->get_short_display_name() . " joined ".$obj->team."!"
+			);
+		}
+		foreach ($closed_tasks as $obj) {
+			$activity[] = array(
+				$obj->completed,
+				$obj->completed_by->get_short_display_name() . " completed ".$obj->name."!"
+			);
+		}
+		foreach ($created_tasks as $obj) {
+			$activity[] = array(
+				$obj->created,
+				$obj->created_by->get_short_display_name() . " added task ".$obj->name."!"
+			);
+		}
+		
+		//usort($activity, "sort_activity");
+		
+		$i = 0;
+		foreach ($activity as $data) {
+			if ($i >= 10)
+				break;
+			print '<li>&raquo; <a href="'.home_url.'">'.$data[1].'</a></li>';
+			$i++;
+		}
 	}
 }
 
