@@ -101,6 +101,11 @@ class AJAX_TasksView extends JSONView
 		if (!$request->project)
 			die('{"error":"Incorrect Project!"}');
 		$tasks = Task::objects()->filter(array("project" => $request->project->pk));
+		if (isset($request->get['milestone'])) {
+			$milestone = Milestone::get_or_ignore(array("name" => $request->get['milestone']));
+			if ($milestone)
+				$tasks = $tasks->filter(array("milestone" => $milestone->pk));
+		}
 		if ($tasks->count() == 0)
 			die('{"error":"No Data!"}');
 		foreach ($tasks as $task) {

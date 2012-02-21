@@ -39,16 +39,12 @@ require_once(home_dir . "apps/core/models.php");
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
           <a class="brand" href="{{home_url}}"><?php if (defined("site_logo")) { print '<img src="'.site_logo.'" alt="logo" />'; } ?> {{project_name}}</a>
           <div class="nav-collapse">
             <ul class="nav">
               {% block menu %}
               <li <?php print (isset($request->project) ? '' : 'class="active"'); ?>><a href="{{home_url}}">Home</a></li>
+              <?php if ($request->user->logged_in()) { ?>
               <li class="divider-vertical"></li>
               <li class="dropdown<?php print (isset($request->project) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 		           <ul class="dropdown-menu">
@@ -62,6 +58,7 @@ require_once(home_dir . "apps/core/models.php");
 		          	 <li><a href="{{home_url}}projects/new/"><i class="icon-plus"></i> Add New Project</a></li>
 		           </ul>
 		        </li>
+              <?php } ?>
               {% endblock %}
             </ul>
             <?php

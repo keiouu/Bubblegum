@@ -31,6 +31,13 @@ var project_id = <?php print $request->project->pk; ?>;
 			<tr><td colspan="2">Loading...</td></tr>
 		</tbody>
 	</table>
+	<div class="pagination" data-link="milestone_feed">
+		<ul>
+			<li class="prev disabled"><a href="#" onClick="return false;">&larr; Prev</a></li>
+			<span class="pages"></span>
+			<li class="next disabled"><a href="#" onClick="return false;">Next &rarr;</a></li>
+		</ul>
+	</div>
 	<hr />
 	
 	<h4><i class="icon-check"></i> Your Tasks</h4>
