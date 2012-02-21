@@ -48,9 +48,14 @@ require_once(home_dir . "apps/core/models.php");
               <li class="divider-vertical"></li>
               <li class="dropdown<?php print (isset($request->project) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 		           <ul class="dropdown-menu">
-		            <li class="nav-header">Select a Project</li>
 		           	 <?php
-		           	 foreach (Project::objects()->all() as $obj) {
+		           	 $org = "";
+		           	 foreach (Project::objects()->order_by("owner") as $obj) {
+		           	 	$owner = $obj->owner->__toString();
+		           	 	if ($org != $owner) {
+		           	 		$org = $owner;
+		           	 		print '<li class="nav-header">'.$org.'</li>';
+		           	 	}
 		           	 	print '<li><a href="{{home_url}}projects/'.$obj->pk.'/">'.$obj->name.'</a></li>';
 		           	 }
 		           	 ?>
