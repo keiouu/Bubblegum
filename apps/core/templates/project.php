@@ -49,11 +49,11 @@ var project_id = <?php print $request->project->pk; ?>;
 			<tr><td colspan="5">Loading...</td></tr>
 		</tbody>
 	</table>
-	<div class="pagination">
+	<div class="pagination" data-link="tasks_feed">
 		<ul>
-			<li class="prev disabled"><a href="/admin/Users/Team/?" onClick="return false;">&larr; Prev</a></li>
-			<li class="active"><a href="/admin/Users/Team/?page=1">1</a></li>
-			<li class="next disabled"><a href="/admin/Users/Team/?" onClick="return false;">Next &rarr;</a></li>
+			<li class="prev disabled"><a href="#" onClick="return false;">&larr; Prev</a></li>
+			<span class="pages"></span>
+			<li class="next disabled"><a href="#" onClick="return false;">Next &rarr;</a></li>
 		</ul>
 	</div>
 	<hr />
@@ -75,11 +75,11 @@ var project_id = <?php print $request->project->pk; ?>;
 			<tr><td colspan="6">Loading...</td></tr>
 		</tbody>
 	</table>
-	<div class="pagination">
+	<div class="pagination" data-link="all_tasks_feed">
 		<ul>
-			<li class="prev disabled"><a href="/admin/Users/Team/?" onClick="return false;">&larr; Prev</a></li>
-			<li class="active"><a href="/admin/Users/Team/?page=1">1</a></li>
-			<li class="next disabled"><a href="/admin/Users/Team/?" onClick="return false;">Next &rarr;</a></li>
+			<li class="prev disabled"><a href="#" onClick="return false;">&larr; Prev</a></li>
+			<span class="pages"></span>
+			<li class="next disabled"><a href="#" onClick="return false;">Next &rarr;</a></li>
 		</ul>
 	</div>
 </div>
