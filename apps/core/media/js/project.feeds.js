@@ -66,12 +66,19 @@ function update_pagination(obj) {
 					page++;
 					advance_page(obj, link, pages, page);
 				}
+				return false;
 			});
 			obj.find(".prev").addClass('disabled').click(function() {
 				if (page > 1) {
 					page--;
 					advance_page(obj, link, pages, page);
 				}
+				return false;
+			});
+			obj.find(".pages li").click(function() {
+				page = $(this).attr("data-page");
+				advance_page(obj, link, pages, page);
+				return false;
 			});
 		}
 	}
