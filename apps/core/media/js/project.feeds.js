@@ -92,20 +92,29 @@ function update_pagination(obj) {
 
 function update_milestone_feed() {
 	if ($("#milestone_feed").length > 0) {
-		$.getJSON(tp_home_url + "api/project/" + project_id + "/milestones/",
-			function(data) {
-				$("#milestone_feed").html(json_to_table(data, ["name", "progress"])).find("tr td:first-child").each(function() {
-					$(this).wrapInner('<a href="#" />').click(function() {
-						feed_milestone = $(this).find("a").html();
-						$("#milestoneCollapse").collapse('hide');
-						update_feeds();
-						return false;
-					});
+		$.getJSON(tp_home_url + "api/project/" + project_id + "/milestones/", function(data) {
+			$("#milestone_feed").html(json_to_table(data, ["name", "progress"])).find("tr td:first-child").each(function() {
+				$(this).wrapInner('<a href="#" />').click(function() {
+					feed_milestone = $(this).find("a").html();
+					$("#milestoneCollapse").collapse('hide');
+					update_feeds();
+					return false;
 				});
-				update_pagination($(".pagination[data-link=milestone_feed]"));
-			}
-		);
+			});
+			update_pagination($(".pagination[data-link=milestone_feed]"));
+		});
 	}
+}
+
+function task_view(task) {
+	// Show a dialog box with details, and editing capability
+	$("#task-edit .task-title").html(task);
+	$.getJSON(tp_home_url + "api/project/" + project_id + "/task/detail/?name=" + task, function(data) {
+		$("#task-edit input[name=task-name]").val(data[0].name);
+		$("#task-edit textarea[name=task-description]").html(data[0].description);
+		$("#task-edit input[name=task-progress]").val(data[0].progress);
+		$("#task-edit").modal('show');
+	});
 }
 
 function update_tasks_feed() {
@@ -113,17 +122,15 @@ function update_tasks_feed() {
 		var url = tp_home_url + "api/project/" + project_id + "/tasks/?own_tasks_only=1";
 		if (feed_milestone.length > 0)
 			url += '&milestone=' + feed_milestone;
-		$.getJSON(url,
-			function(data) {
-				$("#tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress"])).find("tr td:nth-child(2)").each(function() {
-					$(this).wrapInner('<a href="#" />').click(function() {
-						// TODO
-						return false;
-					});
+		$.getJSON(url, function(data) {
+			$("#tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress"])).find("tr td:nth-child(2)").each(function() {
+				$(this).wrapInner('<a href="#" />').click(function() {
+					task_view($(this).find("a").html())
+					return false;
 				});
-				update_pagination($(".pagination[data-link=tasks_feed]"));
-			}
-		);
+			});
+			update_pagination($(".pagination[data-link=tasks_feed]"));
+		});
 	}
 }
 
@@ -132,17 +139,15 @@ function update_all_tasks_feed() {
 		var url = tp_home_url + "api/project/" + project_id + "/tasks/";
 		if (feed_milestone.length > 0)
 			url += '?milestone=' + feed_milestone;
-		$.getJSON(url,
-			function(data) {
-				$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress", "assignees"])).find("tr td:nth-child(2)").each(function() {
-					$(this).wrapInner('<a href="#" />').click(function() {
-						// TODO
-						return false;
-					});
+		$.getJSON(url, function(data) {
+			$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress", "assignees"])).find("tr td:nth-child(2)").each(function() {
+				$(this).wrapInner('<a href="#" />').click(function() {
+					task_view($(this).find("a").html())
+					return false;
 				});
-				update_pagination($(".pagination[data-link=all_tasks_feed]"));
-			}
-		);
+			});
+			update_pagination($(".pagination[data-link=all_tasks_feed]"));
+		});
 	}
 }
 

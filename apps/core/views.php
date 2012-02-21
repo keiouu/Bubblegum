@@ -191,5 +191,35 @@ class AJAX_TasksView extends JSONView
 		return $request->user->logged_in();
 	}
 }
+
+class AJAX_TaskDetailView extends JSONView
+{
+	public function setup($request, $args) {
+		$request->dataset = array();
+		$request->project = Project::get_or_ignore($args['project']);
+		if (!$request->project)
+			die('{"error":"Incorrect Project!"}');
+			
+		if (isset($request->get['pk']))
+			$task = Task::get_or_ignore(array("pk" => $request->get['pk']));
+			
+		if (isset($request->get['name']))
+			$task = Task::get_or_ignore(array("name" => $request->get['name']));
+			
+		if (isset($task)) {
+			$request->dataset[] = array(
+				"milestone" => $task->milestone->__toString(),
+				"name" => $task->name,
+				"description" => $task->description,
+				"type" => $task->_type->__toString(),
+				"priority" => $task->_priority->__toString(),
+				"name" => $task->name,
+				"progress" => $task->progress,
+				"assignees" => $task->assignees(),
+			);
+		}
+		return $request->user->logged_in();
+	}
+}
 ?>
 

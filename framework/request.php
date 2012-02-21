@@ -37,7 +37,28 @@ class Request
 		$this->add_val("media_url", media_url);
 		$this->add_val("project_name", project_name);
 		$this->add_val("page_url", $this->fullPath);
+		$this->add_val("csrf_token", $this->get_csrf_token());
 		$this->init_i18n();
+	}
+	
+	public function get_csrf_token() {
+		$token = md5(uniqid(rand(), true));
+		if (!isset($_SESSION["tprequesttokens"]))
+			$_SESSION["tprequesttokens"] = array();
+		$_SESSION["tprequesttokens"][] = $token;
+		return $token;
+	}
+	
+	public function validate_csrf_token($token) {
+		if (in_array($token, $_SESSION["tprequesttokens"])) {
+			$backup = $_SESSION["tprequesttokens"];
+			$_SESSION["tprequesttokens"] = array();
+			foreach ($backup as $val)
+				if ($val !== $token)
+					$_SESSION["tprequesttokens"][] = $val;
+			return;
+		}
+		return false;
 	}
 	
 	public function query_string() {
