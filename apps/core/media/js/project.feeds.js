@@ -83,12 +83,11 @@ function update_pagination(obj) {
 				advance_page(obj, link, pages, page);
 				return false;
 			});
+			obj.show();
+		} else {
+			obj.hide();
 		}
 	}
-	if (obj.find(".pages").length == 1)
-		obj.hide();
-	else
-		obj.show();
 }
 
 function update_milestone_feed() {
@@ -98,6 +97,7 @@ function update_milestone_feed() {
 				$("#milestone_feed").html(json_to_table(data, ["name", "progress"])).find("tr td:first-child").each(function() {
 					$(this).wrapInner('<a href="#" />').click(function() {
 						feed_milestone = $(this).find("a").html();
+						$("#milestoneCollapse").collapse('hide');
 						update_feeds();
 						return false;
 					});
@@ -115,7 +115,12 @@ function update_tasks_feed() {
 			url += '&milestone=' + feed_milestone;
 		$.getJSON(url,
 			function(data) {
-				$("#tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress"]));
+				$("#tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress"])).find("tr td:nth-child(2)").each(function() {
+					$(this).wrapInner('<a href="#" />').click(function() {
+						// TODO
+						return false;
+					});
+				});
 				update_pagination($(".pagination[data-link=tasks_feed]"));
 			}
 		);
@@ -129,7 +134,12 @@ function update_all_tasks_feed() {
 			url += '?milestone=' + feed_milestone;
 		$.getJSON(url,
 			function(data) {
-				$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress", "assignees"]));
+				$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress", "assignees"])).find("tr td:nth-child(2)").each(function() {
+					$(this).wrapInner('<a href="#" />').click(function() {
+						// TODO
+						return false;
+					});
+				});
 				update_pagination($(".pagination[data-link=all_tasks_feed]"));
 			}
 		);

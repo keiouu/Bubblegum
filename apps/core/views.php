@@ -85,7 +85,7 @@ class AJAX_ActivityFeedView extends View
 			);
 		}
 		
-		//usort($activity, "sort_activity");
+		usort($activity, "sort_activity");
 		
 		$i = 0;
 		foreach ($activity as $data) {
@@ -122,7 +122,7 @@ class AJAX_MileStonesView extends JSONView
 			$request->dataset[] = array(
 				"name" => $milestone->name,
 				"progress" => '<div class="progress progress-'.($progress <= 25 ? 'danger' : ($progress >= 75 ? 'success' : 'info')).' progress-striped active">
-						<div class="progress-text">'.$progress.'%</div>
+						<div class="progress-text">'.round($progress, 0).'%</div>
 						<div class="bar" style="width:'.$progress.'%;"></div>
 					</div>'
 			);
