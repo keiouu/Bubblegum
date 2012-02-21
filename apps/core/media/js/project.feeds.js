@@ -15,7 +15,7 @@ function json_to_table(data, headings) {
 		}
 		html += '</tr>';
 		items++;
-		if (items == 1) {
+		if (items == 10) { // Maximum 10 items per page
 			items = 0;
 			page++;
 		}
