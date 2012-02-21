@@ -93,63 +93,34 @@ class AJAX_MileStonesView extends JSONView
 	}
 }
 
-class AJAX_MileStonesView_old extends View
+class AJAX_TasksView extends JSONView
 {
-	public function render($request, $args) {
+	public function setup($request, $args) {
+		$request->dataset = array();
 		$request->project = Project::get_or_ignore($args['project']);
 		if (!$request->project)
-			die('{"error":"Incorrect project"}');
-			//die('<tr><td colspan="2">Error - Incorrect project!</td></tr>');
-		$milestones = Milestone::objects()->filter(array("project" => $request->project->pk));
-		foreach ($milestones as $milestone) {
-			$total_progress = 0;
-			$tasks = Task::objects()->filter(array("milestone" => $milestone->pk));
-			foreach ($tasks as $task) {
-				$total_progress += $task->progress;
-			}
-			$max_progress = $tasks->count() * 100;
-			$progress = ($total_progress / $max_progress) * 100;
-			print '<tr>
-				<td>'.$milestone->name.'</td>
-				<td>
-					<div class="progress progress-'.($progress <= 25 ? 'danger' : ($progress >= 75 ? 'success' : 'info')).' progress-striped active">
-						<div class="progress-text">'.$progress.'%</div>
-						<div class="bar" style="width:'.$progress.'%;"></div>
-					</div>
-				</td>
-			</tr>';
-		}
-		if ($milestones->count() == 0)
-			print '<tr><td colspan="2">No Data!</td></tr>';
-	}
-}
-
-class AJAX_TasksView extends View
-{
-	public function render($request, $args) {
-		$request->project = Project::get_or_ignore($args['project']);
-		if (!$request->project)
-			die('<tr><td colspan="5">Error - Incorrect project!</td></tr>');
+			die('{"error":"Incorrect Project!"}');
 		$tasks = Task::objects()->filter(array("project" => $request->project->pk));
+		if ($tasks->count() == 0)
+			die('{"error":"No Data!"}');
 		foreach ($tasks as $task) {
-			if ($task->progress >= 100 || !$task->assigned($request->user))
+			if ($task->progress >= 100 || (isset($request->get['own_tasks_only']) && !$task->assigned($request->user)))
 				continue;
 			
-			print '<tr>
-				<td>'.$task->milestone.'</td>
-				<td>'.$task->name.'</td>
-				<td>'.$task->_type.'</td>
-				<td>'.$task->_priority.'</td>
-				<td>
-					<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
+			$request->dataset[] = array(
+				"milestone" => $task->milestone->__toString(),
+				"name" => $task->name,
+				"type" => $task->_type->__toString(),
+				"priority" => $task->_priority->__toString(),
+				"name" => $task->name,
+				"progress" => '<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
 						<div class="progress-text">'.$task->progress.'%</div>
 						<div class="bar" style="width:'.$task->progress.'%;"></div>
-					</div>
-				</td>
-			</tr>';
+					</div>',
+				"assignees" => $task->assignees(),
+			);
 		}
-		if ($tasks->count() == 0)
-			print '<tr><td colspan="5">No Data!</td></tr>';
+		return $request->user->logged_in();
 	}
 }
 ?>

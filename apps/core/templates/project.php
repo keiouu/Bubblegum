@@ -46,11 +46,15 @@ var project_id = <?php print $request->project->pk; ?>;
 			</tr>
 		</thead>
 		<tbody id="tasks_feed">
+			<tr><td colspan="5">Loading...</td></tr>
 		</tbody>
 	</table>
 	<div class="pagination">
 		<ul>
-			<li class="prev disabled"><a href="/admin/Users/Team/?" onClick="return false;">&larr; Prev</a></li><li class="active"><a href="/admin/Users/Team/?page=1">1</a></li><li class="next disabled"><a href="/admin/Users/Team/?" onClick="return false;">Next &rarr;</a></li>		</ul>
+			<li class="prev disabled"><a href="/admin/Users/Team/?" onClick="return false;">&larr; Prev</a></li>
+			<li class="active"><a href="/admin/Users/Team/?page=1">1</a></li>
+			<li class="next disabled"><a href="/admin/Users/Team/?" onClick="return false;">Next &rarr;</a></li>
+		</ul>
 	</div>
 	<hr />
 	
@@ -67,35 +71,16 @@ var project_id = <?php print $request->project->pk; ?>;
 				<th>Assigned To</th>
 			</tr>
 		</thead>
-		<tbody>
-			<?php
-			$tasks = Task::objects()->filter(array("project" => $request->project->pk));
-			foreach ($tasks as $task) {
-				if ($task->progress >= 100)
-					continue;
-				
-				print '<tr>
-					<td>'.$task->milestone.'</td>
-					<td>'.$task->name.'</td>
-					<td>'.$task->_type.'</td>
-					<td>'.$task->_priority.'</td>
-					<td>
-						<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
-							<div class="progress-text">'.$task->progress.'%</div>
-							<div class="bar" style="width:'.$task->progress.'%;"></div>
-						</div>
-					</td>
-					<td>'.$task->assignees().'</td>
-				</tr>';
-			}
-			if ($tasks->count() == 0)
-				print '<tr><td colspan="6">No Data!</td></tr>';
-			?>
+		<tbody id="all_tasks_feed">
+			<tr><td colspan="6">Loading...</td></tr>
 		</tbody>
 	</table>
 	<div class="pagination">
 		<ul>
-			<li class="prev disabled"><a href="/admin/Users/Team/?" onClick="return false;">&larr; Prev</a></li><li class="active"><a href="/admin/Users/Team/?page=1">1</a></li><li class="next disabled"><a href="/admin/Users/Team/?" onClick="return false;">Next &rarr;</a></li>		</ul>
+			<li class="prev disabled"><a href="/admin/Users/Team/?" onClick="return false;">&larr; Prev</a></li>
+			<li class="active"><a href="/admin/Users/Team/?page=1">1</a></li>
+			<li class="next disabled"><a href="/admin/Users/Team/?" onClick="return false;">Next &rarr;</a></li>
+		</ul>
 	</div>
 </div>
 {% endblock body %}
