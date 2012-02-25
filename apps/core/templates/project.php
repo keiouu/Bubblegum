@@ -78,6 +78,7 @@ var project_id = <?php print $request->project->pk; ?>;
 							<th>Name</th>
 							<th>Type</th>
 							<th>Priority</th>
+							<th>Status</th>
 							<th>Progress</th>
 						</tr>
 					</thead>
@@ -108,6 +109,7 @@ var project_id = <?php print $request->project->pk; ?>;
 							<th>Name</th>
 							<th>Type</th>
 							<th>Priority</th>
+							<th>Status</th>
 							<th>Progress</th>
 							<th>Assigned To</th>
 						</tr>
