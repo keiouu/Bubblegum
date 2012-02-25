@@ -106,24 +106,35 @@ function update_milestone_feed() {
 	}
 }
 
-function task_view(task) {
-	$("#task-edit .btn-save").click(function(){$("#task-edit-form").submit();});
-	
+function task_view(task) {	
 	// Show a dialog box with details, and editing capability
 	$("#task-edit .task-title").html(task);
 	$.getJSON(tp_home_url + "api/project/" + project_id + "/task/detail/?name=" + task, function(data) {
 		var tskpk = data[0].pk;
+		var milestone = data[0].milestone;
 		
 		$("#task-pk").val(data[0].pk);
 		$("#task-name").val(data[0].name);
 		$("#task-description").html(data[0].description);
 		$("#task-progress").val(data[0].progress);
+		$("#task-complete").attr('checked', false);
+		if (data[0].progress == "100")
+			$("#task-complete").attr('checked', true);
+		$("#task-complete").click(function() {
+			if($(this).val())
+				$("#task-progress").val("100");
+		});
 		
 		// Show milestones
 		$.getJSON(tp_home_url + "api/project/" + project_id + "/detail/", function(data) {
 			var milestones = data[0].milestones;
+			$("#task-milestone").html("");
 			$.each(milestones, function(i, v) {
-				$("#task-milestone").append('<option value="'+i+'">'+v+'</option>');
+				var html = '<option value="'+i+'" ';
+				if (milestone == v)
+					html += ' selected="selected"';
+				html += '>'+v+'</option>';
+				$("#task-milestone").append(html);
 			});
 			
 			$("#task-edit").modal('show');
@@ -195,7 +206,8 @@ $(function () {
 		
 	});
 	update_feeds();
-		
+	
+	$("#task-edit .btn-save").click(function(){$("#task-edit-form").submit();});
 	$("#task-edit-form").submit(function() {
 		var data_string = "";
 		$.each($("#task-edit form input, #task-edit form select, #task-edit form textarea"), function() {

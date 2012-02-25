@@ -155,6 +155,7 @@ var project_id = <?php print $request->project->pk; ?>;
 						  		<input name="progress" id="task-progress" class="span1" />
 						  		<span class="add-on">%</span>
 						  	</div>
+						  	<label class="checkbox"><input type="checkbox" name="complete" id="task-complete" /> Complete</label>
 					  	</div>
 				  	</div>
 					<div class="control-group">
