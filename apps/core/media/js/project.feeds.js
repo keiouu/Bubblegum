@@ -151,12 +151,15 @@ function update_tasks_feed() {
 		if (feed_milestone.length > 0)
 			url += '&milestone=' + feed_milestone;
 		$.getJSON(url, function(data) {
-			$("#tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress"])).find("tr td:nth-child(2)").each(function() {
+			$("#tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "status", "progress"])).find("tr td:nth-child(2)").each(function() {
 				$(this).wrapInner('<a href="#" />').click(function() {
 					task_view($(this).find("a").html())
 					return false;
 				});
 			});
+			if ($("#tasks_feed tr").length == 0) {
+				$("#tasks_feed").append('<tr><td colspan="6">No tasks!</td></tr>');
+			}
 			update_pagination($(".pagination[data-link=tasks_feed]"));
 		});
 	}
@@ -168,12 +171,15 @@ function update_all_tasks_feed() {
 		if (feed_milestone.length > 0)
 			url += '?milestone=' + feed_milestone;
 		$.getJSON(url, function(data) {
-			$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "progress", "assignees"])).find("tr td:nth-child(2)").each(function() {
+			$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "status", "progress", "assignees"])).find("tr td:nth-child(2)").each(function() {
 				$(this).wrapInner('<a href="#" />').click(function() {
 					task_view($(this).find("a").html())
 					return false;
 				});
 			});
+			if ($("#all_tasks_feed tr").length == 0) {
+				$("#all_tasks_feed").append('<tr><td colspan="7">No tasks!</td></tr>');
+			}
 			update_pagination($(".pagination[data-link=all_tasks_feed]"));
 		});
 	}
