@@ -206,6 +206,25 @@ var project_id = <?php print $request->project->pk; ?>;
 						  	</select>
 					  	</div>
 				  	</div>
+					<div class="control-group">
+						<label class="control-label" for="task-assignees">Assignees</label>
+				  		<div class="controls">
+						  	<select name="assignees" id="task-assignees" multiple="multiple">
+						  		<?php
+						  			$choices = get_potential_assignees();
+						  			foreach ($choices as $name => $arr) {
+						  				if ($name !== "All Users")
+						  					print '<option value="Team|'.htmlentities($name).'">'.$name.'</option>';
+						  				else
+						  					print '<option disabled="disabled">All Users</option>';
+						  				foreach ($arr as $obj) {
+						  					print '<option value="'.get_class($obj)."|".$obj->pk.'">&#160;&#160;&#160;&#160;&#160;'.$obj.'</option>';
+						  				}
+						  			}
+						  		?>
+						  	</select>
+					  	</div>
+				  	</div>
 		  		</fieldset>
 	  		</form>
 	  </div>

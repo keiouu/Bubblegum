@@ -5,6 +5,27 @@
  */
 require_once(home_dir . "framework/models.php");
 require_once(home_dir . "framework/model_fields/init.php");
+require_once(home_dir . "contrib/auth/models.php");
+
+function get_potential_assignees() {
+	$assignees = array();
+	
+	// Do Teams, and their members
+	foreach (Team::objects() as $team) {
+		$assignees[$team->name] = array();
+		foreach (Team_Link::find(array("team" => $team->pk)) as $team_link) {
+			$assignees[$team->name][] = $team_link->user;
+		}
+	}
+	
+	// All users
+	$assignees["All Users"] = array();
+	foreach (User::objects() as $user) {
+		$assignees["All Users"][] = $user;
+	}
+	
+	return $assignees;
+}
 
 class Organisation extends Model
 {

@@ -213,8 +213,25 @@ class AJAX_TaskEditView extends View
 				}
 			}
 			$task->save();
+			
+			$assignees = explode(",", $request->post['assignees']);
+			foreach ($assignees as $assignee) {
+				list($type, $name) = explode("|", $assignee);
+				$name = html_entity_decode($name);
+				if (class_exists($type)) {
+					if ($type == "Team")
+						$obj = Team::get_or_ignore(array("name" => $name));
+					else
+						$obj = $type::get_or_ignore(array("pk" => $name));
+					if ($obj) {
+						Task_Link::get_or_create(array(
+							"task" => $task->pk,
+							"assignee" => $type . "|" . $obj->pk,
+						));
+					}
+				}
+			}
 		}
-		print 'done';
 	}
 }
 
