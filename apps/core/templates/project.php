@@ -126,7 +126,7 @@ var project_id = <?php print $request->project->pk; ?>;
 			</div>
 		</div>
 	</div>
-	<div class="modal" id="task-edit">
+	<div class="modal" id="task-edit" style="max-height: 600px;">
 	  <div class="modal-header">
 		 <a class="close" data-dismiss="modal">×</a>
 		 <h3 class="task-title"></h3>
@@ -163,6 +163,46 @@ var project_id = <?php print $request->project->pk; ?>;
 				  		<div class="controls">
 						  	<select name="milestone" id="task-milestone">
 						  		
+						  	</select>
+					  	</div>
+				  	</div>
+					<div class="control-group">
+						<label class="control-label" for="task-type">Type</label>
+				  		<div class="controls">
+						  	<select name="type" id="task-type">
+						  		<?php
+						  			$dummy = new Task();
+						  			$choices = $dummy->_type->get_choices();
+						  			foreach ($choices as $num => $val) {
+						  				print '<option value="'.$num.'">'.$val.'</option>';
+						  			}
+						  		?>
+						  	</select>
+					  	</div>
+				  	</div>
+					<div class="control-group">
+						<label class="control-label" for="task-priority">Priority</label>
+				  		<div class="controls">
+						  	<select name="priority" id="task-priority">
+						  		<?php
+						  			$choices = $dummy->_priority->get_choices();
+						  			foreach ($choices as $num => $val) {
+						  				print '<option value="'.$num.'">'.$val.'</option>';
+						  			}
+						  		?>
+						  	</select>
+					  	</div>
+				  	</div>
+					<div class="control-group">
+						<label class="control-label" for="task-status">Status</label>
+				  		<div class="controls">
+						  	<select name="status" id="task-status">
+						  		<?php
+						  			$choices = $dummy->_status->get_choices();
+						  			foreach ($choices as $num => $val) {
+						  				print '<option value="'.$num.'">'.$val.'</option>';
+						  			}
+						  		?>
 						  	</select>
 					  	</div>
 				  	</div>

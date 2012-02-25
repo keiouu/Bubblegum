@@ -180,6 +180,7 @@ class AJAX_TasksView extends JSONView
 				"name" => $task->name,
 				"type" => $task->_type->__toString(),
 				"priority" => $task->_priority->__toString(),
+				"status" => $task->_status->__toString(),
 				"name" => $task->name,
 				"progress" => '<div class="progress progress-'.($task->progress <= 25 ? 'danger' : ($task->progress >= 75 ? 'success' : 'info')).' progress-striped active">
 						<div class="progress-text">'.$task->progress.'%</div>
@@ -203,8 +204,13 @@ class AJAX_TaskEditView extends View
 		$task = Task::get_or_ignore($request->post['pk']);
 		if ($project && $task) {
 			foreach ($request->post as $var => $val) {
-				if (isset($task->$var))
+				if (isset($task->$var)) {
+					if ($var == "progress" && $val === 100 && $task->progress < 100) {
+						$task->completed = true;
+						$task->completed_by = $request->user;
+					}
 					$task->$var = $val;
+				}
 			}
 			$task->save();
 		}
@@ -232,8 +238,12 @@ class AJAX_TaskDetailView extends JSONView
 				"milestone" => $task->milestone->__toString(),
 				"name" => $task->name,
 				"description" => $task->description,
-				"type" => $task->_type->__toString(),
-				"priority" => $task->_priority->__toString(),
+				"type" => $task->type,
+				"priority" => $task->priority,
+				"status" => $task->status,
+				"type_string" => $task->_type->__toString(),
+				"priority_string" => $task->_priority->__toString(),
+				"status_string" => $task->_status->__toString(),
 				"name" => $task->name,
 				"progress" => $task->progress,
 				"assignees" => $task->assignees(),

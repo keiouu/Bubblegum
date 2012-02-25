@@ -124,6 +124,9 @@ function task_view(task) {
 			if($(this).val())
 				$("#task-progress").val("100");
 		});
+		$("#task-type").val(data[0].type);
+		$("#task-priority").val(data[0].priority);
+		$("#task-status").val(data[0].status);
 		
 		// Show milestones
 		$.getJSON(tp_home_url + "api/project/" + project_id + "/detail/", function(data) {
@@ -213,7 +216,7 @@ $(function () {
 		$.each($("#task-edit form input, #task-edit form select, #task-edit form textarea"), function() {
 			data_string += $(this).attr("name") + "=" + $(this).val() + "&";
 		});
-	
+		
 		$.ajax({
 			url: tp_home_url + "api/project/" + project_id + "/task/edit/",
 			type: "POST",
