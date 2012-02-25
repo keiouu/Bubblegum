@@ -200,6 +200,7 @@ class AJAX_TaskEditView extends View
 	}
 	
 	public function render($request, $args) {
+		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
 		$task = Task::get_or_ignore($request->post['pk']);
 		if ($project && $task) {
@@ -213,16 +214,16 @@ class AJAX_TaskEditView extends View
 				}
 			}
 			$task->save();
-			
 			$assignees = explode(",", $request->post['assignees']);
 			foreach ($assignees as $assignee) {
 				list($type, $name) = explode("|", $assignee);
 				$name = html_entity_decode($name);
 				if (class_exists($type)) {
+					$obj = null;
 					if ($type == "Team")
 						$obj = Team::get_or_ignore(array("name" => $name));
-					else
-						$obj = $type::get_or_ignore(array("pk" => $name));
+					if ($type == "User")
+						$obj = User::get_or_ignore(array("pk" => $name));
 					if ($obj) {
 						Task_Link::get_or_create(array(
 							"task" => $task->pk,
