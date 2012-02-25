@@ -79,7 +79,7 @@ abstract class ModelField
 		$this->value = $this->default_value;
 	}
 	
-	public abstract function validate();
+	public abstract function validate($val = NULL);
 
 	public function db_create_query($db, $name, $table_name) {
 		return "\"" . $name . "\" " . $this->get_db_type();

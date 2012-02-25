@@ -132,36 +132,45 @@ var project_id = <?php print $request->project->pk; ?>;
 		 <h3 class="task-title"></h3>
 	  </div>
 	  <div class="modal-body">
-	  	<form action="#" method="post" class="form-horizontal">
-	  		<fieldset>
-				<input type="hidden" name="csrf-token" id="csrf-token" value="{{csrf_token}}" />
-   			<div class="control-group">
-   				<label class="control-label" for="task-name">Task Name</label>
-			  		<div class="controls">
-				  		<input name="task-name" id="task-name" />
-				  	</div>
-			  	</div>
-   			<div class="control-group">
-   				<label class="control-label" for="task-description">Task Description</label>
-			  		<div class="controls">
-				  		<textarea name="task-description" id="task-description"></textarea>
-				  	</div>
-			  	</div>
-   			<div class="control-group">
-   				<label class="control-label" for="task-progress">Task Progress</label>
-			  		<div class="controls">
-				  		<div class="input-append">
-					  		<input name="task-progress" id="task-progress" class="span1" />
-					  		<span class="add-on">%</span>
+			<form action="" method="post" id="task-edit-form" class="form-horizontal">
+		  		<fieldset>
+					<input type="hidden" name="csrf" id="csrf-token" value="{{csrf_token}}" />
+					<input type="hidden" name="pk" id="task-pk" value="" />
+					<div class="control-group">
+						<label class="control-label" for="task-name">Task Name</label>
+				  		<div class="controls">
+					  		<input name="name" id="task-name" />
 					  	</div>
 				  	</div>
-			  	</div>
-	  		</fieldset>
-	  	</form>
+					<div class="control-group">
+						<label class="control-label" for="task-description">Task Description</label>
+				  		<div class="controls">
+					  		<textarea name="description" id="task-description"></textarea>
+					  	</div>
+				  	</div>
+					<div class="control-group">
+						<label class="control-label" for="task-progress">Task Progress</label>
+				  		<div class="controls">
+					  		<div class="input-append">
+						  		<input name="progress" id="task-progress" class="span1" />
+						  		<span class="add-on">%</span>
+						  	</div>
+					  	</div>
+				  	</div>
+					<div class="control-group">
+						<label class="control-label" for="task-milestone">MileStone</label>
+				  		<div class="controls">
+						  	<select name="milestone" id="task-milestone">
+						  		
+						  	</select>
+					  	</div>
+				  	</div>
+		  		</fieldset>
+	  		</form>
 	  </div>
 	  <div class="modal-footer">
-		 <a href="#" class="btn btn-primary btn-save">Save</a>
-		 <a href="#" class="btn" data-dismiss="modal">Close</a>
+		 <button class="btn btn-primary btn-save">Save</button>
+		 <button class="btn" data-dismiss="modal">Close</button>
 	  </div>
 	</div>
 </div>

@@ -222,6 +222,7 @@ class AdminAddModelView extends AdminModelView
 				header("Location: " . $this->model_url);
 				die();
 			}
+			$request->modelform->clear_data();
 		}
 	}
 	
@@ -253,6 +254,8 @@ class AdminEditModelView extends AdminModelView
 				header("Location: " . $this->model_url);
 				die();
 			}
+			$request->modelform->clear_data();
+			$request->modelform->load_model_data($request->model_obj);
 		}
 	}
 	

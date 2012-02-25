@@ -29,6 +29,7 @@ class MySQL extends Database
 	}
 	
 	public function query($query, $args=array()) {
+		SignalManager::fire("on_db_query", array($query, $args));
 		if (debug_show_queries)
 			print $query . "\n";
 		if (!$this->_connected) {

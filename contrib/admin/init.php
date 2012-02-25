@@ -33,14 +33,13 @@ function admin_init($request) {
 	$request->apps = array();
 	$apps = AdminManager::get_all();
 	foreach ($apps as $safe_name => $apps) {
-		$name = prettify($safe_name);
 		$app_url = "admin/" . $safe_name . "/";
-		$request->apps[$name] = array();
-		new AdminAppView("/" . $app_url, home_dir . "contrib/admin/templates/app.php", $name, $apps);
+		$request->apps[$safe_name] = array();
+		new AdminAppView("/" . $app_url, home_dir . "contrib/admin/templates/app.php", $safe_name, $apps);
 		foreach ($apps as $app_model) {
 			$url = $app_url . $app_model->get_modelname() . "/";
 			$appname = prettify($app_model->get_modelname());
-			$request->apps[$name][$appname] = home_url . $url;
+			$request->apps[$safe_name][$appname] = home_url . $url;
 			new AdminModelView("/" . $url, home_dir . "contrib/admin/templates/model.php", $app_model);
 			new AdminAddModelView("/" . $url . "add/", home_dir . "contrib/admin/templates/newmodel.php", $app_model);
 			new AdminEditModelView("/" . $url . "edit/(?P<pk>\d+)/", home_dir . "contrib/admin/templates/editmodel.php", $app_model);

@@ -4,12 +4,16 @@
  *
  */
 
+require_once(home_dir . "framework/config_manager.php");
 require_once(home_dir . "framework/signal_manager.php");
 require_once(home_dir . "framework/forms.php");
 require_once(home_dir . "framework/form_fields/init.php");
 require_once(home_dir . "contrib/auth/models.php");
 
 SignalManager::register("auth_login", "auth_login_fail", "auth_pre_create", "auth_post_create");
+ConfigManager::register_app_config("auth", "email_address", "you@example.com");
+ConfigManager::register_app_config("auth", "cookie_timeout", 60 * 60 * 4 * 24 * 7);
+ConfigManager::register_app_config("auth", "session_timeout", 60 * 60 * 4);
 
 /* This checks the request to see if a user is trying to validate their email address */
 function check_email_verification($request) {

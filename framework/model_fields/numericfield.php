@@ -27,7 +27,8 @@ class NumericField extends ModelField
 		return $db->escape_string($val);
 	}
 
-	public function validate() {
+	public function validate($val = NULL) {
+		$val = ($val === NULL) ? $this->get_value() : $val;
 		if (strlen($this->precision) > 0) {
 			$parts = split(',', $this->precision);
 			if (count($parts) < 2 || !preg_match('/^\d+$/', $parts[0]) || !preg_match('/^\d+$/', $parts[1])) {
@@ -35,7 +36,7 @@ class NumericField extends ModelField
 				return False;
 			}
 		}
-		if (strlen($this->value) > 0 && !is_numeric($this->value)) {
+		if (strlen($val) > 0 && !is_numeric($val)) {
 			array_push($this->errors, $GLOBALS["i18n"]["fielderr10"]);
 			return False;
 		}

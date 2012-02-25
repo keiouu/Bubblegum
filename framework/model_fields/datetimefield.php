@@ -21,11 +21,12 @@ class DateTimeField extends DateField
 		return date(DateTimeField::$TIME_FORMAT, strtotime($this->get_value()));
 	}
 	
-	public function validate() {
-		if (strlen($this->get_value()) == 0)
+	public function validate($val = NULL) {
+		$val = ($val === NULL) ? $this->get_value() : $val;
+		if (strlen($val) == 0)
 			return True;
 		$regex = "/^(\d{4})(-)(\d{2})(-)(\d{2})\x20(\d{2})(:)(\d{2})(:)(\d{2})$/";
-		$valid = preg_match($regex, $this->value) == 1;
+		$valid = preg_match($regex, $val) == 1;
 		if (!$valid)
 			array_push($this->errors, $GLOBALS["i18n"]["fielderr4"]);
 		return $valid;

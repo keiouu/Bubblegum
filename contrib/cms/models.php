@@ -8,28 +8,54 @@ require_once(home_dir . "framework/model_fields/init.php");
 
 class ContentField extends TextField
 {
+	private static $replacables = array(
+		">" => "&gt;",
+		"<" => "&lt;",
+		"{" => "&#123;",
+		"}" => "&#125;",
+		"%" => "&#37;",
+		"'" => "&#39;",
+		"\"" => "&#34;",
+	);
+	
 	public function get_formfield($name) {
 		return new TextFormField($name, $this->get_value(), array("extra" => 'style="width: 650px; height: 550px;"'));
 	}
 	
-	public function get_real_value() {
-		return $this->value;
+	public static function sanitize($string) {
+		foreach (ContentField::$replacables as $var => $val)
+			$string = str_replace($var, $val, $string);
+		return $string;
+	}
+	
+	public static function desanitize($string) {
+		foreach (ContentField::$replacables as $var => $val)
+			$string = str_replace($val, $var, $string);
+		return $string;
 	}
 	
 	public function get_value() {
-		$string = $this->value;
-		$string = str_replace("{", "&#123;", $string);
-		$string = str_replace("}", "&#125;", $string);
-		$string = str_replace("%", "&#37;", $string);
-		return $string;
+		return ContentField::desanitize($this->value);
+	}
+	
+	public function set_value($value) {
+		// Get over firewalls
+		$value = str_replace("\\\"", "\"", $value);
+		$value = str_replace("\\'", "'", $value);
+		return parent::set_value($value);
+	}
+	
+	public function get_real_value() {
+		return $this->get_value();
 	}
 	
 	public function sql_value($db, $val = NULL) {
 		$val = ($val === NULL) ? $this->value : $val;
-		$val = str_replace("&#123;", "}", $val);
-		$val = str_replace("&#125;", "{", $val);
-		$val = str_replace("&#37;", "%", $val);
-		return parent::sql_value($db, $val);
+		return parent::sql_value($db, ContentField::sanitize($val));
+	}
+	
+	public function get_form_value() {
+		return ContentField::sanitize($this->value);
 	}
 }
 

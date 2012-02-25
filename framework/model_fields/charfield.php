@@ -28,8 +28,9 @@ class CharField extends ModelField
 		return "'" . $db->escape_string($val) . "'";
 	}
 	
-	public function validate() {
-		if ($this->max_length > 0 && strlen($this->value) > $this->max_length) {
+	public function validate($val = NULL) {
+		$val = ($val === NULL) ? $this->get_value() : $val;
+		if ($this->max_length > 0 && strlen($val) > $this->max_length) {
 			array_push($this->errors, $GLOBALS["i18n"]["fielderr2"]);
 			return False;
 		}

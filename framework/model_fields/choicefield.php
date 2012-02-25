@@ -57,6 +57,14 @@ class ChoiceField extends CharField implements ArrayAccess
 		return $value;
 	}
 	
+	public function sql_value($db, $val = NULL) {
+		$val = ($val === NULL) ? $this->value : $val;
+		foreach ($this->choices as $key => $choice)
+			if ($val == $choice)
+				return parent::sql_value($db, $key);
+		return parent::sql_value($db, $val);
+	}
+	
 	public function get_choices() {
 		return $this->choices;
 	}
@@ -77,11 +85,12 @@ class ChoiceField extends CharField implements ArrayAccess
 		return new SelectFormField($name, $this->choices, $this->get_value(), array("extra" => 'maxlength="'.$this->max_length.'"'));
 	}
 	
-	public function validate() {
+	public function validate($val = NULL) {
+		$mval = ($val === NULL) ? $this->get_value() : $val;
 		foreach ($this->choices as $val => $choice)
-			if ($this->get_value() == $val)
-				return parent::validate();
-		array_push($this->errors, $GLOBALS["i18n"]["fielderr13"] . " " . $this->get_value());
+			if ($mval == $val || $mval == $choice)
+				return parent::validate($val);
+		array_push($this->errors, $GLOBALS["i18n"]["fielderr13"] . " " . $mval);
 		return false;
 	}
 }

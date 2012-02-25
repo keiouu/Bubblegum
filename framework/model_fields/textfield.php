@@ -18,7 +18,7 @@ class TextField extends CharField
 		return new TextFormField($name, $this->get_value());
 	}
 	
-	public function validate() {
+	public function validate($val = NULL) {
 		// Not much to validate...
 		return True;
 	}

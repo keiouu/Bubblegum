@@ -55,7 +55,7 @@ class M2MField extends ModelField
 		return $this;
 	}
 	
-	public function validate() {
+	public function validate($val = NULL) {
 		return $this->intermediate->validate();
 	}
 	

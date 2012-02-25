@@ -8,10 +8,11 @@ require_once(home_dir . "framework/utils.php");
 
 abstract class FormField
 {
-	protected $name, $value, $options, $error, $helptext;
+	protected $name, $value, $options, $error, $helptext, $default_value;
 	
 	public function __construct($name, $initial_value = "", $options = array()) {
 		$this->name = $name;
+		$this->default_value = $initial_value;
 		$this->value = $initial_value;
 		$this->options = $options;
 		$this->error = "";
@@ -38,9 +39,13 @@ abstract class FormField
 		return $this->value;
 	}
 	
+	public function clear_value() {
+		$this->value = $this->default_value;
+	}
+	
 	// Used for Forms
 	public function get_display_value() {
-		return $this->value;
+		return htmlentities($this->value);
 	}
 	
 	public function get_type() { return ""; }

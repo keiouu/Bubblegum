@@ -1,4 +1,5 @@
 <?php
+require_once(home_dir . "framework/config_manager.php");
 require_once(home_dir . "framework/signal_manager.php");
 require_once(home_dir . "contrib/admin/core.php");
 ?>
@@ -69,28 +70,51 @@ require_once(home_dir . "contrib/admin/core.php");
 					{% block menu %}
 					<ul class="nav">
 						<?php
+						ConfigManager::init_app_configs();
+						$app_configs = ConfigManager::get_all_app_configs();
 						print '<li class="'.(!isset($request->app) ? "active" : "").'"><a href="'.home_url.'admin/">Home</a></li>';
 						foreach ($request->apps as $name => $app) {
 							if (!$request->user->has_permission("admin_site_app_" . $name))
 								continue;
 							print '<li class="dropdown'.((isset($request->app) && $request->app == $name) ? ' active' : ' ').'" data-dropdown="dropdown">';
-						?>
-	         			<a href="#" class="dropdown-toggle"><?php echo $name; ?></a>
+							?>
+	         			<a href="#" class="dropdown-toggle"><?php echo prettify($name); ?></a>
 	         			<ul class="dropdown-menu">
 					   		<?php
 					   		$count = 0;
-					   		foreach ($request->apps[$name] as $app_name => $url) {
+					   		foreach ($app as $app_name => $url) {
 									if (!$request->user->has_permission("admin_site_model_" . $app_name))
 										continue;
-					   			echo '<li><a href="' . $url . '">' . $app_name . '</a></li>';
+					   			print '<li><a href="' . $url . '">' . $app_name . '</a></li>';
 					   			$count++;
 					  			}
 					  			if ($count == 0)
-					   			echo '<li><a href="#">{% i18n "admin_no_apps" %}</a></li>';
+					   			print '<li><a href="#">{% i18n "admin_no_apps" %}</a></li>';
+								
+								// App cache
+								if ($request->user->has_permission("admin_site_app_" . $name . "_config")) {
+									if (isset($app_configs[$name]) && count($app_configs[$name]) > 0) {
+										print '<li class="divider"></li>';
+					   				print '<li><a href="{{home_url}}admin/core/App_Config/?_app='.$name.'">{% i18n "admin_app_config" %}</a></li>';
+										unset($app_configs[$name]);
+									}
+								}
 					  			?>
 	           			</ul>
          			</li>
-         			<?php } ?>
+         			<?php
+         			}
+         			foreach($app_configs as $cfg_app => $cfgs) {
+							if (!$request->user->has_permission("admin_site_model_" . $cfg_app . "_config"))
+								continue;
+							print '<li class="dropdown" data-dropdown="dropdown">
+								<a href="#" class="dropdown-toggle">'.prettify($cfg_app).'</a>
+	         				<ul class="dropdown-menu">
+	         					<li><a href="{{home_url}}admin/core/App_Config/?_app='.$cfg_app.'">{% i18n "admin_app_config" %}</a></li>
+	         				</ul>
+	         			</li>';
+         			}
+         			?>
 					</ul>
 					<ul class="nav secondary-nav">
 						<li><a href="#">{% i18n "admin_welcome2" %}&nbsp;{% date "H:ia" %}&nbsp;{% date "jS, M Y" %}</a></li>

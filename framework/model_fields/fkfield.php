@@ -13,6 +13,7 @@ class FKValidationException extends Exception { }
 
 class FKField extends ModelField implements ModelInterface
 {
+	private static $class_cache = array(), $string_cache = array();
 	protected static $db_type = "varchar"; // Beacuse the FK could be any type :(
 	private $_obj, $valid = false, $_model, $_class, $_override_db_type;
 	
@@ -22,6 +23,7 @@ class FKField extends ModelField implements ModelInterface
 		$this->_model = $model;
 		$this->determine_class();
 		$this->_override_db_type = $override_db_type;
+		$this->value = null;
 	}
 	
 	public function get_formfield($name) {
@@ -29,10 +31,16 @@ class FKField extends ModelField implements ModelInterface
 	}
 	
 	public function is_set() {
-		return $this->value !== 0 && isset($this->_obj);
+		return $this->value !== null && isset($this->_obj);
 	}
 	
 	private function determine_class() {
+		if (isset(FKField::$class_cache[$this->_model])) {
+			$this->valid = true;
+			$this->_class = FKField::$class_cache[$this->_model];
+			return;
+		}
+		
 		/*
 		 * Class is in the format: appname.modelName
 		 * We must scan app paths for the app, then import models.php.
@@ -55,16 +63,20 @@ class FKField extends ModelField implements ModelInterface
 				}
 			}
 		}
+		
 		if (class_exists($class)) {
 			$this->valid = true;
 			$this->_class = $class;
+			FKField::$class_cache[$this->_model] = $class;
 			return;
 		}
 		throw new FKValidationException($GLOBALS["i18n"]["error1"] . " '" . $this->_model . "' " . $GLOBALS["i18n"]["fielderr5"]);
 	}
 	
 	private function grab_object() {
-		if (strlen($this->value) > 0) {
+		if ($this->is_set())
+			return $this->_obj;
+		if ($this->value !== null && $this->value !== 0) {
 			try {
 				return call_user_func(array($this->_class, 'get'), array("pk" => $this->value));
 			} catch (Exception $e) {
@@ -82,28 +94,35 @@ class FKField extends ModelField implements ModelInterface
 	public function set_value($value) {
 		if (is_object($value))
 			$value = $value->pk;
-		parent::set_value($value);
-		if (strlen($value) > 0)
-			$this->_obj = $this->grab_object();
+		parent::set_value(($value === "0" || $value === 0) ? null : $value);
 	}
 	
 	public function get_value() {
-		return $this->is_set() ? $this->get_object() : false;
+		$this->check_obj();
+		return $this->is_set() ? $this->get_object() : null;
 	}
 	
 	public function get_form_value() {
-		return $this->is_set() ? "".$this->get_object()->pk : "0";
+		$this->check_obj();
+		return $this->is_set() ? "" . $this->get_object()->pk : "null";
 	}
 	
 	public function __toString() {
-		if ($this->is_set() && method_exists($this->get_object(), "__toString"))
-			return $this->get_object()->__toString();
-		return "" . $this->value;
+		$cache_string = $this->_model . "|" . $this->value;
+		if (isset(FKField::$string_cache[$cache_string])) {
+			return FKField::$string_cache[$cache_string];
+		}
+		$this->check_obj();
+		$string = "" . ($this->value === null ? "-" : $this->value);
+		if ($this->is_set() && method_exists($this->_obj, "__toString"))
+			$string = $this->_obj->__toString();
+		FKField::$string_cache[$cache_string] = $string;
+		return $string;
 	}
 	
 	public function sql_value($db, $val = NULL) {
 		$val = ($val === NULL) ? $this->value : $val;
-		return (strlen("" . $val)  > 0) ? $db->escape_string($val) : "0";
+		return ($val !== null) ? $db->escape_string($val) : "0";
 	}
 	
 	public function get_object() {
@@ -133,10 +152,9 @@ class FKField extends ModelField implements ModelInterface
 	/* This recieves pre-save signal from it's model. */
 	public function pre_save($model, $update) {
 		// Save our model and set this db value to it's ID
-		// TODO - check recursive issues
-		//if ($this->is_set()) {
-			//$this->value = $this->_obj->save();
-		//}
+		if ($this->is_set() && strlen($this->value) === 0) {
+			$this->value = $this->_obj->save();
+		}
 	}
 	
 	public function __get($name) {
@@ -168,7 +186,7 @@ class FKField extends ModelField implements ModelInterface
 			unset($this->_obj->$name);
 	}
 	
-	public function validate() {
+	public function validate($val = NULL) {
 		return $this->valid;
 	}
 	

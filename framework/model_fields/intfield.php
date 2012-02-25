@@ -29,12 +29,13 @@ class IntegerField extends ModelField
 		return intval($val);
 	}
 
-	public function validate() {
+	public function validate($val = NULL) {
+		$val = ($val === NULL) ? $this->get_value() : $val;
 		$regex = "/^(\d{0,".$this->max_length."})$/";
-		$valid = preg_match($regex, $this->value) == 1; // These == 1 are not needed but clarify test results
+		$valid = preg_match($regex, $val) == 1; // These == 1 are not needed but clarify test results
 		if (!$valid)
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr6"] . " " . $this->value);
-		return $valid && (strpos($this->value, ".") == False);
+			array_push($this->errors, $GLOBALS["i18n"]["fielderr6"] . " " . $val);
+		return $valid && (strpos($val, ".") == False);
 	}
 	
 	protected function sequence_name($db, $name, $table_name) {

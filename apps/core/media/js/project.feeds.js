@@ -107,13 +107,27 @@ function update_milestone_feed() {
 }
 
 function task_view(task) {
+	$("#task-edit .btn-save").click(function(){$("#task-edit-form").submit();});
+	
 	// Show a dialog box with details, and editing capability
 	$("#task-edit .task-title").html(task);
 	$.getJSON(tp_home_url + "api/project/" + project_id + "/task/detail/?name=" + task, function(data) {
-		$("#task-edit input[name=task-name]").val(data[0].name);
-		$("#task-edit textarea[name=task-description]").html(data[0].description);
-		$("#task-edit input[name=task-progress]").val(data[0].progress);
-		$("#task-edit").modal('show');
+		var tskpk = data[0].pk;
+		
+		$("#task-pk").val(data[0].pk);
+		$("#task-name").val(data[0].name);
+		$("#task-description").html(data[0].description);
+		$("#task-progress").val(data[0].progress);
+		
+		// Show milestones
+		$.getJSON(tp_home_url + "api/project/" + project_id + "/detail/", function(data) {
+			var milestones = data[0].milestones;
+			$.each(milestones, function(i, v) {
+				$("#task-milestone").append('<option value="'+i+'">'+v+'</option>');
+			});
+			
+			$("#task-edit").modal('show');
+		});
 	});
 }
 
@@ -181,4 +195,23 @@ $(function () {
 		
 	});
 	update_feeds();
+		
+	$("#task-edit-form").submit(function() {
+		var data_string = "";
+		$.each($("#task-edit form input, #task-edit form select, #task-edit form textarea"), function() {
+			data_string += $(this).attr("name") + "=" + $(this).val() + "&";
+		});
+	
+		$.ajax({
+			url: tp_home_url + "api/project/" + project_id + "/task/edit/",
+			type: "POST",
+			data: data_string + "save=1",
+			success: function(data) {
+				$("#task-edit").modal('hide');
+				update_tasks_feed();
+				update_all_tasks_feed();
+			},
+		});
+		return false;
+	});
 });

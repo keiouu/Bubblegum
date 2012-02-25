@@ -82,5 +82,18 @@ function urlCheck($url) {
 		$url = idn_to_ascii($url);
 	return filter_var($url, FILTER_VALIDATE_URL);
 }
+
+/* Debugging utilities */
+function analyze($var) {
+	ob_start();
+	print_r($var);
+	console_log(ob_get_clean());
+}
+
+function console_log($val) {
+	if (!isset($GLOBALS['console']))
+		$GLOBALS['console'] = array();
+	$GLOBALS['console'][] = $val;
+}
 ?>
  

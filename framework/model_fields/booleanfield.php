@@ -31,10 +31,11 @@ class BooleanField extends ModelField
 		return ($val) ? "true" : "false";
 	}
 
-	public function validate() {
-		$valid = $this->value === true || $this->value === false || strtolower($this->value) === 'true' || strtolower($this->value) === "t" || $this->value === "1" || $this->value === 1 || strtolower($this->value) === 'false' || strtolower($this->value) === "f" || $this->value === "0" || $this->value === 0 || $this->value === NULL;
+	public function validate($val = NULL) {
+		$val = ($val === NULL) ? $this->value : $val;
+		$valid = $val === true || $val === false || $val === 0 || $val === 1 || $val === NULL || strtolower($val) === 'true' || strtolower($val) === "t" || $val === "1" || strtolower($val) === 'false' || strtolower($val) === "f" || $val === "0";
 		if (!$valid)
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr1"] . " " . $this->get_value());
+			array_push($this->errors, $GLOBALS["i18n"]["fielderr1"] . " " . $val);
 		return $valid;
 	}
 }

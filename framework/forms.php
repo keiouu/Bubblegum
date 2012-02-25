@@ -165,10 +165,10 @@ class Form
 	
 	public function clear_data() {
 		foreach($this->fieldsets as $name => $fieldset) {
-			if($name == "control")
+			if($name === "control")
 				continue;
 			foreach($fieldset as $field_name => $field) {
-				$field->set_value("");
+				$field->clear_value();
 			}
 		}
 	}

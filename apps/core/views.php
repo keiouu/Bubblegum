@@ -163,7 +163,7 @@ class AJAX_TasksView extends JSONView
 		$request->project = Project::get_or_ignore($args['project']);
 		if (!$request->project)
 			die('{"error":"Incorrect Project!"}');
-		$tasks = Task::objects()->filter(array("project" => $request->project->pk));
+		$tasks = Task::objects()->filter(array("project" => $request->project->pk))->order_by(array("priority"));
 		if (isset($request->get['milestone'])) {
 			$milestone = Milestone::get_or_ignore(array("name" => $request->get['milestone']));
 			if ($milestone)
@@ -192,6 +192,26 @@ class AJAX_TasksView extends JSONView
 	}
 }
 
+class AJAX_TaskEditView extends View
+{
+	public function setup($request, $args) {
+		return $request->user->logged_in() && isset($request->post['csrf']) && $request->validate_csrf_token($request->post['csrf']);
+	}
+	
+	public function render($request, $args) {
+		$project = Project::get_or_ignore($args['project']);
+		$task = Task::get_or_ignore($request->post['pk']);
+		if ($project && $task) {
+			foreach ($request->post as $var => $val) {
+				if (isset($task->$var))
+					$task->$var = $val;
+			}
+			$task->save();
+		}
+		print 'done';
+	}
+}
+
 class AJAX_TaskDetailView extends JSONView
 {
 	public function setup($request, $args) {
@@ -208,6 +228,7 @@ class AJAX_TaskDetailView extends JSONView
 			
 		if (isset($task)) {
 			$request->dataset[] = array(
+				"pk" => $task->pk,
 				"milestone" => $task->milestone->__toString(),
 				"name" => $task->name,
 				"description" => $task->description,
@@ -218,6 +239,28 @@ class AJAX_TaskDetailView extends JSONView
 				"assignees" => $task->assignees(),
 			);
 		}
+		return $request->user->logged_in();
+	}
+}
+
+class AJAX_ProjectDetailView extends JSONView
+{
+	public function setup($request, $args) {
+		$request->dataset = array();
+		$request->project = Project::get_or_ignore($args['project']);
+		if (!$request->project)
+			die('{"error":"Incorrect Project!"}');
+		
+		$milestones = array();
+		foreach (Milestone::find(array("project" => $request->project->pk)) as $milestone) {
+			$milestones[$milestone->pk] = $milestone->__toString();
+		}
+		
+		$request->dataset[] = array(
+			"name" => $request->project->name,
+			"milestones" => $milestones,
+		);
+		
 		return $request->user->logged_in();
 	}
 }

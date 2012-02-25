@@ -18,6 +18,7 @@ $tp_options = array(
 	"password_salt2" => "12ct71tcm168trgcm61mct618n2cr7612tcr716", // Make this unique
 	"session_timeout" => 60 * 60 * 4,                       // 4 hours
 	"disable_auth_emailer" => true,
+	"auth_dont_verify" => false, // Dont send verification emails
 	
 	/* The following are used by the admin app */
 	"admin_password" => "f72f06801a1ba079be55e2b3ae09b6b8a554d37f", // Make this unique

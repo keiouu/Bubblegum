@@ -26,7 +26,7 @@ class ConfirmationCode extends Model
 	
 	public function email() {
 		$to = $this->user->email;
-		$from = ConfigManager::get('email_address', "no-reply@example.com");
+		$from = ConfigManager::get_app_config('auth', 'email_address');
 		$subject = "Email Verification";
 		$body = '
 			Welcome to '.project_name.'!
@@ -96,8 +96,8 @@ class UserSession extends Model
 	
 	public function save() {
 		parent::save();
-		CookieManager::set("tp_auth_id", $this->user->pk, ConfigManager::get('session_timeout', -1));
-		CookieManager::set("tp_auth_kc", $this->keycode, ConfigManager::get('session_timeout', -1));
+		CookieManager::set("tp_auth_id", $this->user->pk, ConfigManager::get_app_config('auth', 'cookie_timeout'));
+		CookieManager::set("tp_auth_kc", $this->keycode, ConfigManager::get_app_config('auth', 'cookie_timeout'));
 	}
 	
 	public function delete() {
@@ -240,7 +240,7 @@ class User extends Model
 	public function update_session($usersession = Null) {
 		if ($usersession === Null)
 			$usersession = UserSession::get(array("user" => $this->pk));
-		$expiry = time() + ConfigManager::get('session_timeout', 0);
+		$expiry = time() + ConfigManager::get_app_config('auth', 'session_timeout');
 		$usersession->expires = date(DateTimeField::$FORMAT, $expiry);
 		$usersession->save();
 	}

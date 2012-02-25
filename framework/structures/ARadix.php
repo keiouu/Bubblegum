@@ -75,15 +75,27 @@ class ARadix
 		return starts_with($this->value, "(") && ends_with($this->value, ")");
 	}
 	
-	public function get_branch($q) {
-		if (isset($this->branches[$q]))
-			return $this->branches[$q];
+	/**
+	 * Get one (or all) branches whose key matches $q
+	 */
+	public function get_branch($q, $multipleMatch = false) {
+		$objects = array();
+		if (isset($this->branches[$q])) {
+			$objects[] = $this->branches[$q];
+			if (!$multipleMatch)
+				return $objects[0];
+		}
 		foreach ($this->children() as $val => $branch) {
 			if ($branch->is_regex()) {
-				if ($branch->match($q))
-					return $branch;
+				if ($branch->match($q)) {
+					$objects[] = $branch;
+					if (!$multipleMatch)
+						return $branch;
+				}
 			}
 		}
+		if (count($objects) > 0)
+			return $objects;
 		return null;
 	}
 	
@@ -99,13 +111,14 @@ class ARadix
 		if (!is_array($query)) throw new InvalidTrieQueryException();
 		$next = $query[0];
 		
-		// Six cases here:
+		// Five cases here:
 		//    - There is no next node
+		//    - It is a regex branch
 		//    - This is the final node ($query has one element)
-		//        - And it is a regex
 		//    - There is a next node
-		//        - It is hardcoded
-		//        - Its a regex
+		//    - There are multiple possible next nodes (regex and hardcoded)
+		//      hardcoded take preference, unless it does not have the required
+		//      child elements where the regex branch does
 		
 		$branch = $this->get_branch($next);
 		if ($branch === null) {
@@ -114,19 +127,39 @@ class ARadix
 		}
 		
 		if ($branch->is_regex()) {
-			// Case 6: It is a regex
+			// Case 2: It is a regex branch
 			$args = array_merge_recursive($args, $branch->match($next));
 		}
 		
-		// Case 2: This is the final node
+		// Case 3: This is the final node
 		if (count($query) == 1) {
 			return array($branch->get_resource(), $args);
 		}
 		
 		// Case 4: There is a next node
 		if (count($query) > 1) {
-			// Case 5: It is hardcoded
-			return $branch->query(array_slice($query, 1), $args);
+			try {
+				$result = $branch->query(array_slice($query, 1), $args);
+			} catch (NotFoundException $e) {
+				$branches = $this->get_branch($next, true);
+				if (count($branches) <= 1)
+					throw new NotFoundException();
+				// Case 5 - There are multiple possible next nodes
+				foreach ($branches as $branch) {
+					$branch_args = $args;
+					if ($branch->is_regex())
+						$branch_args = array_merge_recursive($branch_args, $branch->match($next));
+					try {
+						$result = $branch->query(array_slice($query, 1), $branch_args);
+						break;
+					} catch (NotFoundException $e) {
+						$result = null;
+					}
+				}
+			}
+			if ($result == null)
+				throw new NotFoundException();
+			return $result;
 		}
 		
 		// Query somehow hit length 0

@@ -50,10 +50,6 @@ class FileField extends CharField
 	public function get_formfield($name) {
 		return new FileUploadFormField($name, $this->location, $this->extensions);
 	}
-	
-	public function validate() {
-		return parent::validate();
-	}
 }
 
 class ImageField extends FileField

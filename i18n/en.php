@@ -10,6 +10,7 @@ $i18n_data = array(
 	"error1" => "Error: ",
 	"error2" => "Unknown Error",
 	"warn1" => "Warning: ",
+	"appcachewarn" => "Warning! Invalid app config: ",
 	"remove" => "Remove",
 	"noobjexist" => "No objects matching query exist",
 	"multiobjexist" => "Multiple objects matching query exist",
@@ -76,6 +77,15 @@ $i18n_data = array(
 	"password_strength_3" => "Good",
 	"password_strength_4" => "Strong",
 	"password_strength_5" => "Very Strong",
+	"debug_profiler" => "Profiler",
+	"debug_console" => "Console",
+	"profiler_unclosed" => "Unclosed",
+	"profiler_seconds" => "seconds",
+	"profiler_title" => "Profiling Information",
+	"debug_nooutput" => "No Output!",
+	"debug_scriptout" => "Script Output:",
+	"debug_db" => "Database",
+	"debug_dbqueries" => "Database Queries:",
 	
 	/* Example App */
 	"welcometp" => "Welcome to Tikapot!",
@@ -93,6 +103,7 @@ $i18n_data = array(
 	
 	/* Admin App */
 	"admin" => "Admin",
+	"admin_app_config" => "Config",
 	"admin_home" => "Home",
 	"admin_new" => "New",
 	"admin_delete" => "Delete",

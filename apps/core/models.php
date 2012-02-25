@@ -106,6 +106,15 @@ class Task extends Model
 			"3" => "Low",
 			"4" => "n/a",
 		), "2"));
+		$this->add_field("status", new ChoiceField(array(
+			"0" => "New",
+			"1" => "Confirmed",
+			"2" => "In Progress",
+			"3" => "Testing",
+			"4" => "Awaiting Feedback",
+			"5" => "Complete",
+			"6" => "n/a",
+		), "0"));
 		$this->add_field("project", new FKField("core.Project"));
 		$this->add_field("milestone", new FKField("core.Milestone"));
 		$this->add_field("progress", new IntegerField(6, 0));

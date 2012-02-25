@@ -282,15 +282,21 @@ class SelectFormField extends FormField
 
 class FKFormField extends SelectFormField
 {
+	private static $_FKCache = array();
 	protected $field, $model_string, $obj;
 	
 	public function __construct($name, $model_string, $obj, $initial_value = "", $options = array()) {
 		$this->model_string = $model_string;
 		$this->obj = $obj;
 		$field_options = array();
-		$objects = $obj::objects()->all();
-		foreach ($objects as $object) {
-			$field_options[$object->pk] = $object->__toString();
+		if (!isset(FKFormField::$_FKCache[get_class($obj)])) {
+			$objects = $obj::objects()->all();
+			foreach ($objects as $object) {
+				$field_options[$object->pk] = $object->__toString();
+			}
+			FKFormField::$_FKCache[get_class($obj)] = $field_options;
+		} else {
+			$field_options = FKFormField::$_FKCache[get_class($obj)];
 		}
 		parent::__construct($name, $field_options, (($initial_value === "" && $this->obj->fromDB()) ? "" . $this->obj->pk : $initial_value), $options);
 	}

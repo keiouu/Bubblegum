@@ -12,7 +12,7 @@ abstract class TplTag
 		TemplateView::register_tag(new static());
 	}
 	
-	public function render($request, $args, $page) {
+	public function render($request, $args, $page, $local_app) {
 		return $page;
 	}
 }

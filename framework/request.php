@@ -56,7 +56,7 @@ class Request
 			foreach ($backup as $val)
 				if ($val !== $token)
 					$_SESSION["tprequesttokens"][] = $val;
-			return;
+			return true;
 		}
 		return false;
 	}

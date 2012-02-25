@@ -43,6 +43,9 @@ class ModelFieldTest extends UnitTestCase {
 		$this->assertEqual($obj->test_prop, $obj->test_prop);
 		$field = new FKField("framework.ContentType");
 		$this->assertTrue($field->validate());
+		
+		$obj = new TestRecursionModel1();
+		$obj->save();
 	}
 	
 	function testM2MField() {

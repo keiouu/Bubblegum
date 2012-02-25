@@ -4,11 +4,14 @@
  *
  */
 
+require_once(home_dir . "framework/signal_manager.php");
 include_once(home_dir . "framework/databases/mysql.php");
 include_once(home_dir . "framework/databases/postgres.php");
 
 class NotConnectedException extends Exception { }
 class QueryException extends Exception { }
+
+SignalManager::register("on_db_query");
 
 abstract class Database
 {

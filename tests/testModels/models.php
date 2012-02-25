@@ -48,5 +48,26 @@ class TestInclusionModelFour extends Model
 		$this->add_field("val_prop", new CharField(7, "bye"));
 	}
 }
+
+class TestRecursionModel1 extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("test_prop", new CharField("", $max_length=7));
+	}
+	
+	public function post_save($pk) {
+		TestRecursionModel2::get_or_create(array("inc" => $this->pk));
+	}
+}
+
+class TestRecursionModel2 extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("test_prop", new CharField("", $max_length=7));
+		$this->add_field("inc", new FKField("testModels.TestRecursionModel1"));
+	}
+}
 ?>
 
