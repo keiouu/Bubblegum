@@ -17,6 +17,14 @@
   border-radius: 4px;
 }
 
-.addlink {margin-left: 10px;}
+.add-links {margin-left: 25px;}
+.add-links a {display: block;}
 .modal {display: none;}
 #activity_feed li {margin-bottom: 5px; margin-left: 10px;}
+
+.progress .bar {
+   box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -15px 20px rgba(255,255,255,0.1);
+   -webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -15px 20px rgba(255,255,255,0.1);
+   -moz-box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -15px 20px rgba(255,255,255,0.1);
+   -o-box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -15px 20px rgba(255,255,255,0.1);
+}
