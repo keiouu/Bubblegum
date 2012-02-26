@@ -128,6 +128,7 @@ function task_view(task) {
 		$("#task-priority").val(data[0].priority);
 		$("#task-status").val(data[0].status);
 		$("#task-assignees").val([]);
+		$("#task-assignees").val(data[0].assignees_full.split(", "));
 		
 		// Show milestones
 		$.getJSON(tp_home_url + "api/project/" + project_id + "/detail/", function(data) {

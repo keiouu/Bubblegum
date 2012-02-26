@@ -216,7 +216,7 @@ var project_id = <?php print $request->project->pk; ?>;
 						  			$choices = get_potential_assignees();
 						  			foreach ($choices as $name => $arr) {
 						  				if ($name !== "All Users")
-						  					print '<option value="Team|'.htmlentities($name).'">'.$name.'</option>';
+						  					print '<option value="Team|'.$name.'">'.$arr.'</option>';
 						  				else
 						  					print '<option disabled="disabled">All Users</option>';
 						  				foreach ($arr as $obj) {

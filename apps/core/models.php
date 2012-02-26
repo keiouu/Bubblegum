@@ -12,10 +12,10 @@ function get_potential_assignees() {
 	
 	// Do Teams, and their members
 	foreach (Team::objects() as $team) {
-		$assignees[$team->name] = array();
-		foreach (Team_Link::find(array("team" => $team->pk)) as $team_link) {
-			$assignees[$team->name][] = $team_link->user;
-		}
+		$assignees[$team->pk] = $team->name;//array();
+		//foreach (Team_Link::find(array("team" => $team->pk)) as $team_link) {
+		//	$assignees[$team->name][] = $team_link->user;
+		//}
 	}
 	
 	// All users
@@ -166,13 +166,13 @@ class Task extends Model
 		return false;
 	}
 	
-	public function assignees() {
+	public function assignees($full = false) {
 		$string = "";
 		$links = Task_Link::find(array("task" => $this->pk));
 		foreach ($links as $link) {
 			if (strlen($string) > 0)
 				$string .= ", ";
-			$string .= $link->assignee;
+			$string .= ($full ? $link->_assignee->__toString() : $link->assignee);
 		}
 		return $string;
 	}

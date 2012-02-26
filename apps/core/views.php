@@ -265,6 +265,7 @@ class AJAX_TaskDetailView extends JSONView
 				"name" => $task->name,
 				"progress" => $task->progress,
 				"assignees" => $task->assignees(),
+				"assignees_full" => $task->assignees(true),
 			);
 		}
 		return $request->user->logged_in();
