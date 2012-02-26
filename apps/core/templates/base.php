@@ -117,7 +117,6 @@ require_once(home_dir . "apps/core/models.php");
     
     <script src="{{home_url}}apps/core/media/js/jquery.min.js"></script>
     <script src="{{home_url}}apps/core/media/js/bootstrap.min.js"></script>
-    <script src="{{home_url}}apps/core/media/js/tikapot.ajax.js"></script>
     <script src="{{home_url}}apps/core/media/js/activity.feed.js"></script>
     {% block endbody %}
     {% endblock endbody %}

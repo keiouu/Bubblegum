@@ -162,8 +162,9 @@ class AJAX_TasksView extends JSONView
 		$request->dataset = array();
 		$request->project = Project::get_or_ignore($args['project']);
 		if (!$request->project)
-			die('{"error":"Incorrect Project!"}');
-		$tasks = Task::objects()->filter(array("project" => $request->project->pk))->order_by(array("priority"));
+			$tasks = Task::objects()->order_by(array("priority"));
+		else
+			$tasks = Task::objects()->filter(array("project" => $request->project->pk))->order_by(array("priority"));
 		if (isset($request->get['milestone'])) {
 			$milestone = Milestone::get_or_ignore(array("name" => $request->get['milestone']));
 			if ($milestone)

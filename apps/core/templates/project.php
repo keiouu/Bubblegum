@@ -8,6 +8,7 @@ require_once(home_dir . "apps/core/forms.php");
 <script type="text/javascript">
 var project_id = <?php print $request->project->pk; ?>;
 </script>
+<script src="{{home_url}}apps/core/media/js/utils.js"></script>
 <script src="{{home_url}}apps/core/media/js/project.feeds.js"></script>
 <script src="{{home_url}}apps/core/media/js/feeds.ajax.js"></script>
 {% endblock endbody %}

@@ -11,7 +11,7 @@
 		</tr>
 	</thead>
 	<tbody id="all_tasks_feed">
-		<tr><td colspan="6">Loading...</td></tr>
+		<tr><td colspan="7">Loading...</td></tr>
 	</tbody>
 </table>
 <div class="pagination" data-link="all_tasks_feed">
