@@ -71,12 +71,14 @@ $(function () {
 		var name = $('#add-task-name').val();
 		var description = $('#add-task-description').val();
 		var type = $('#add-task-type').val();
+		var data = 'csrf=' + csrf + '&name=' + name + '&description=' + description + '&type=' + type;
+		if (feed_milestone.length > 0)
+			data += '&milestone=' + feed_milstone_fk;
 		$.ajax({
 			url: tp_home_url + "api/project/" + project_id + "/task/add/",
 			type: "POST",
-			data: 'csrf=' + csrf + '&name=' + name + '&description=' + description + '&type=' + type,
+			data: data,
 			success: function(data) {
-				alert($.trim(data));
 				$("#task-add").modal('hide');
 				update_tasks_feed();
 				update_all_tasks_feed();

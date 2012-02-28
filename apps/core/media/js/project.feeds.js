@@ -1,12 +1,13 @@
-var feed_milestone = "";
+var feed_milestone = "", feed_milstone_fk = 0;
 
 function update_milestone_feed() {
 	if ($("#milestone_feed").length > 0) {
 		$.getJSON(tp_home_url + "api/project/" + project_id + "/milestones/", function(data) {
-			$("#milestone_feed").html(json_to_table(data, ["name", "progress"])).find("tr td:first-child").each(function() {
+			$("#milestone_feed").html(json_to_table(data, ["name", "progress"])).find("tr td:first-child").each(function(i) {
 				if ($.trim($(this).html()) != "No Data!") {
-					$(this).wrapInner('<a href="#" />').click(function() {
+					$(this).wrapInner('<a href="#" data-mpk="'+data[i].pk+'" />').click(function() {
 						feed_milestone = $(this).find("a").html();
+						feed_milstone_fk = $(this).find("a").attr("data-mpk");
 						$("#milestoneCollapse").collapse('hide');
 						update_feeds();
 						return false;
@@ -50,7 +51,9 @@ function update_all_tasks_feed() {
 		if (feed_milestone.length > 0)
 			url += '?milestone=' + feed_milestone;
 		$.getJSON(url, function(data) {
-			$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "status", "progress", "assignees"])).find("tr td:nth-child(2)").each(function() {
+			$("#all_tasks_feed").html(json_to_table(data, ["milestone", "name", "type", "priority", "status", "progress", "assignees"]))
+			                    .find("tr td:nth-child(2)")
+			                    .each(function() {
 				$(this).wrapInner('<a href="#" />').click(function() {
 					task_view($(this).find("a").html())
 					return false;
@@ -72,4 +75,11 @@ function update_feeds() {
 
 $(function () {
 	update_feeds();
+	
+	$('#milestoneCollapse').on('show', function () {
+		feed_milestone = "";
+		feed_milstone_fk = 0;
+		update_tasks_feed();
+		update_all_tasks_feed();
+	});
 });

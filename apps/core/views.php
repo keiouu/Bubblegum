@@ -120,6 +120,7 @@ class AJAX_MileStonesView extends JSONView
 				$progress = 0;
 			}
 			$request->dataset[] = array(
+				"pk" => $milestone->pk,
 				"name" => $milestone->name,
 				"progress" => '<div class="progress progress-'.($progress <= 25 ? 'danger' : ($progress >= 75 ? 'success' : 'info')).' progress-striped active">
 						<div class="progress-text">'.round($progress, 0).'%</div>
@@ -203,13 +204,17 @@ class AJAX_TaskAddView extends View
 	public function render($request, $args) {
 		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
-		Task::create(array(
+		$task = Task::create(array(
 			"project" => $project,
 			"name" => $request->post['name'],
 			"description" => $request->post['description'],
 			"type" => $request->post['type'],
 			"created_by" => $request->user
 		));
+		if ($task && isset($request->post['milestone'])) {
+			$task->milestone = $request->post['milestone'];
+			$task->save();
+		}
 	}
 }
 
