@@ -30,6 +30,19 @@ class LoginView extends TemplateView
 	}
 }
 
+class ProfileView extends BaseView
+{
+	public function setup($request, $args) {
+		if (!parent::setup($request, $args))
+			return false;
+		if (isset($args['user']))
+			$request->profile = User::get_or_ignore($args['user']);
+		else
+			$request->profile = $request->user;
+		return true;
+	}
+}
+
 class ProjectView extends BaseView
 {
 	public function setup($request, $args) {

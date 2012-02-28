@@ -38,7 +38,7 @@ require_once(home_dir . "apps/core/models.php");
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
+        <div class="container-fluid top-row">
           <a class="brand" href="{{home_url}}"><?php if (defined("site_logo")) { print '<img src="'.site_logo.'" alt="logo" />'; } ?> {{project_name}}</a>
           <div class="nav-collapse">
             <ul class="nav">
@@ -66,14 +66,23 @@ require_once(home_dir . "apps/core/models.php");
               <?php } ?>
               {% endblock %}
             </ul>
-            <?php
-            if ($request->user->logged_in())  {
-            	print '<p class="navbar-text pull-right">Logged in as <a href="{{home_url}}profile/'.$request->user->pk.'/">'.$request->user.'</a></p>';
-            } else {
-            	print '<p class="navbar-text pull-right"><a href="{{home_url}}login/">Log in</a></p>';
-            }
-            ?>
-            
+            <div class="pull-right">
+					<ul class="nav">
+						<li class="divider-vertical"></li>
+						<li><a href="{{home_url}}support/?referrer=<?php print htmlentities($request->fullPath); ?>"><i class="icon-question-sign icon-white"></i></a></li>
+		         </ul>
+				</div>
+            <div class="pull-right">
+		         <p class="navbar-text">
+		         <?php
+		         if ($request->user->logged_in())  {
+		         	print 'Logged in as <a href="{{home_url}}profile/'.$request->user->pk.'/">'.$request->user.'</a>';
+		         } else {
+		         	print '<a href="{{home_url}}login/">Log in</a>';
+		         }
+		         ?>
+		         </p>
+				</div>
           </div><!--/.nav-collapse -->
         </div>
       </div>
