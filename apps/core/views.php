@@ -177,7 +177,7 @@ class AJAX_TasksView extends JSONView
 				continue;
 			
 			$request->dataset[] = array(
-				"milestone" => $task->milestone->__toString(),
+				"milestone" => isset($task->milestone) ? $task->milestone->__toString() : "-",
 				"name" => $task->name,
 				"type" => $task->_type->__toString(),
 				"priority" => $task->_priority->__toString(),
@@ -194,6 +194,25 @@ class AJAX_TasksView extends JSONView
 	}
 }
 
+class AJAX_TaskAddView extends View
+{
+	public function setup($request, $args) {
+		return $request->user->logged_in() && isset($request->post['csrf']) && $request->validate_csrf_token($request->post['csrf']);
+	}
+	
+	public function render($request, $args) {
+		print $request->get_csrf_token();
+		$project = Project::get_or_ignore($args['project']);
+		Task::create(array(
+			"project" => $project,
+			"name" => $request->post['name'],
+			"description" => $request->post['description'],
+			"type" => $request->post['type'],
+			"created_by" => $request->user
+		));
+	}
+}
+
 class AJAX_TaskEditView extends View
 {
 	public function setup($request, $args) {
@@ -206,7 +225,7 @@ class AJAX_TaskEditView extends View
 		$task = Task::get_or_ignore($request->post['pk']);
 		if ($project && $task) {
 			foreach ($request->post as $var => $val) {
-				if (isset($task->$var)) {
+				if ($task->has_field($var)) {
 					if ($var == "progress" && $val === 100 && $task->progress < 100) {
 						$task->completed = true;
 						$task->completed_by = $request->user;
@@ -253,7 +272,7 @@ class AJAX_TaskDetailView extends JSONView
 		if (isset($task)) {
 			$request->dataset[] = array(
 				"pk" => $task->pk,
-				"milestone" => $task->milestone->__toString(),
+				"milestone" => isset($task->milestone) ? $task->milestone->__toString() : "-",
 				"name" => $task->name,
 				"description" => $task->description,
 				"type" => $task->type,

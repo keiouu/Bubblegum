@@ -139,7 +139,7 @@ class Request
 	
 	public function print_messages() {
 		foreach ($this->messages as $type => $messages) {
-			print '<div class="messages '.$type.'">';
+			print '<div id="tpmessages" class="messages '.$type.'">';
 			foreach ($messages as $message) {
 				print '<div class="message"><p>' . $message . '</p></div>';
 			}

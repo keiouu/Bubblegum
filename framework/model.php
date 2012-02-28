@@ -307,7 +307,7 @@ abstract class Model
 			throw new FieldException($GLOBALS["i18n"]["fieldne"] . " '$name'.");
 	}
 	
-	// Basically: Is $name a valid field name? (Doesnt say if the field has been set)
+	// isset checking for fields
 	public function __isset($name) {
 		if ($name == "pk")
 			return True;

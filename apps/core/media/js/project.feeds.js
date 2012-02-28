@@ -4,12 +4,14 @@ function update_milestone_feed() {
 	if ($("#milestone_feed").length > 0) {
 		$.getJSON(tp_home_url + "api/project/" + project_id + "/milestones/", function(data) {
 			$("#milestone_feed").html(json_to_table(data, ["name", "progress"])).find("tr td:first-child").each(function() {
-				$(this).wrapInner('<a href="#" />').click(function() {
-					feed_milestone = $(this).find("a").html();
-					$("#milestoneCollapse").collapse('hide');
-					update_feeds();
-					return false;
-				});
+				if ($.trim($(this).html()) != "No Data!") {
+					$(this).wrapInner('<a href="#" />').click(function() {
+						feed_milestone = $(this).find("a").html();
+						$("#milestoneCollapse").collapse('hide');
+						update_feeds();
+						return false;
+					});
+				}
 			});
 			update_pagination($(".pagination[data-link=milestone_feed]"));
 		});

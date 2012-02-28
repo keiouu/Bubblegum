@@ -37,7 +37,7 @@ function check_email_verification($request) {
 function check_logout($request) {
 	if (!isset($request->get['logout']) || !isset($request->get['key']))
 		return;
-	if ($request->get['logout'] && $request->get['key'] == $_SESSION['auth']['logout_key']) {
+	if ($request->get['logout'] && $request->validate_csrf_token($request->get['key'])) {
 		User::logout();
 		if (isset($request->get['referrer'])) {
 			header("Location: " . home_url . "/refer/?url=" . urlencode($request->get['referrer']));

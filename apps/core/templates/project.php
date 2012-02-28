@@ -58,6 +58,7 @@ var project_id = <?php print $request->project->pk; ?>;
 		</div>
 	</div>
 	<?php include_once(home_dir . "apps/core/templates/includes/add-milestone.php"); ?>
+	<?php include_once(home_dir . "apps/core/templates/includes/add-task.php"); ?>
 	<?php include_once(home_dir . "apps/core/templates/includes/edit-task.php"); ?>
 </div>
 {% endblock body %}

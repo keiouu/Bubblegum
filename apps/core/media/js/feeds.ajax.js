@@ -61,7 +61,29 @@ $(function () {
 				$("#milestone-add").modal('hide');
 			}
 		});
-		
+	});
+	
+	$("#task-add .btn-save").click(function(){
+		$("#task-add-form").submit();
+	});
+	$("#task-add-form").submit(function() {
+		var csrf = $('#add-task-csrf-token').val();
+		var name = $('#add-task-name').val();
+		var description = $('#add-task-description').val();
+		var type = $('#add-task-type').val();
+		$.ajax({
+			url: tp_home_url + "api/project/" + project_id + "/task/add/",
+			type: "POST",
+			data: 'csrf=' + csrf + '&name=' + name + '&description=' + description + '&type=' + type,
+			success: function(data) {
+				alert($.trim(data));
+				$("#task-add").modal('hide');
+				update_tasks_feed();
+				update_all_tasks_feed();
+				$("#add-task-csrf-token").val($.trim(data));
+			}
+		});
+		return false;
 	});
 	
 	$("#task-edit .btn-save").click(function(){

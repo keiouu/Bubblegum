@@ -165,9 +165,7 @@ class User extends Model
 	}
 	
 	public function get_logout_url($request) {
-		$key = $this->get_new_session_key();
-		$_SESSION['auth']['logout_key'] = $key;
-		return $request->fullPath . '?logout=true&key=' . $key;
+		return $request->fullPath . '?logout=true&key=' . $request->get_csrf_token();
 	}
 	
 	public function get_short_display_name() {

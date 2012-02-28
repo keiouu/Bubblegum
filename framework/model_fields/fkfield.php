@@ -14,7 +14,7 @@ class FKValidationException extends Exception { }
 class FKField extends ModelField implements ModelInterface
 {
 	private static $class_cache = array(), $string_cache = array();
-	protected static $db_type = "varchar"; // Beacuse the FK could be any type :(
+	protected static $db_type = "varchar";
 	private $_obj, $valid = false, $_model, $_class, $_override_db_type;
 	
 	public function __construct($model, $override_db_type = null) {
@@ -31,7 +31,7 @@ class FKField extends ModelField implements ModelInterface
 	}
 	
 	public function is_set() {
-		return $this->value !== null && isset($this->_obj);
+		return $this->value !== null;
 	}
 	
 	private function determine_class() {
@@ -74,7 +74,7 @@ class FKField extends ModelField implements ModelInterface
 	}
 	
 	private function grab_object() {
-		if ($this->is_set())
+		if ($this->is_set() && isset($this->_obj))
 			return $this->_obj;
 		if ($this->value !== null && $this->value !== 0) {
 			try {
@@ -114,7 +114,7 @@ class FKField extends ModelField implements ModelInterface
 		}
 		$this->check_obj();
 		$string = "" . ($this->value === null ? "-" : $this->value);
-		if ($this->is_set() && method_exists($this->_obj, "__toString"))
+		if ($this->is_set() && isset($this->_obj) && method_exists($this->_obj, "__toString"))
 			$string = $this->_obj->__toString();
 		FKField::$string_cache[$cache_string] = $string;
 		return $string;
@@ -152,7 +152,7 @@ class FKField extends ModelField implements ModelInterface
 	/* This recieves pre-save signal from it's model. */
 	public function pre_save($model, $update) {
 		// Save our model and set this db value to it's ID
-		if ($this->is_set() && strlen($this->value) === 0) {
+		if ($this->is_set() && isset($this->_obj) && strlen($this->value) === 0) {
 			$this->value = $this->_obj->save();
 		}
 	}

@@ -20,19 +20,23 @@ class FileField extends CharField
 	}
 	
 	public function __toString() {
-		return $this->get_filename();
+		return $this->get_value();
+	}
+	
+	public function get_value() {
+		return basename(parent::get_value());
 	}
 	
 	public function get_filename() {
-		return basename($this->get_value());
-	}
-	
-	public function get_full_filename() {
 		return $this->location . basename($this->get_value());
 	}
 	
+	public function get_full_filename() {
+		return $this->value;
+	}
+	
 	public function get_form_value() {
-		return $this->get_filename();
+		return $this->get_value();
 	}
 	
 	public function get_location() {
@@ -41,10 +45,6 @@ class FileField extends CharField
 	
 	public function get_extensions() {
 		return $this->extensions;
-	}
-	
-	public function set_value($value) {
-		return parent::set_value(basename($value));
 	}
 	
 	public function get_formfield($name) {
