@@ -7,6 +7,7 @@
 require_once(home_dir . "framework/view.php");
 require_once(dirname(__FILE__) . "/models.php");
 require_once(dirname(__FILE__) . "/forms.php");
+require_once(dirname(__FILE__) . "/support_handler.php");
 
 class BaseView extends TemplateView
 {
@@ -16,6 +17,14 @@ class BaseView extends TemplateView
 			return false;
 		}
 		return true;
+	}
+}
+
+class SupportView extends TemplateView
+{
+	public function setup($request, $args) {
+		$this->page = SupportHandler::get_page($request->get['referrer']);
+		return parent::setup($request, $args);
 	}
 }
 

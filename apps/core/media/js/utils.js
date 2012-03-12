@@ -1,4 +1,4 @@
-function json_to_table(data, headings) {
+function json_to_table(data, headings, max_items = 10) {
 	var html = '', page = 1, items = 0;
 	$.each(data, function(key, val) {
 		html += '<tr data-page="'+page+'"';
@@ -15,7 +15,7 @@ function json_to_table(data, headings) {
 		}
 		html += '</tr>';
 		items++;
-		if (items == 10) { // Maximum 10 items per page
+		if (items == max_items) {
 			items = 0;
 			page++;
 		}

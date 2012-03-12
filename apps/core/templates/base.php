@@ -69,7 +69,7 @@ require_once(home_dir . "apps/core/models.php");
             <div class="pull-right">
 					<ul class="nav">
 						<li class="divider-vertical"></li>
-						<li><a href="{{home_url}}support/?referrer=<?php print htmlentities($request->fullPath); ?>"><i class="icon-question-sign icon-white"></i></a></li>
+						<li><a href="{{home_url}}support/?referrer=<?php print htmlentities($request->fullPath); ?>" class="supportLink"><i class="icon-question-sign icon-white"></i></a></li>
 		         </ul>
 				</div>
             <div class="pull-right">
@@ -126,6 +126,7 @@ require_once(home_dir . "apps/core/models.php");
     
     <script src="{{home_url}}apps/core/media/js/jquery.min.js"></script>
     <script src="{{home_url}}apps/core/media/js/bootstrap.min.js"></script>
+    <script src="{{home_url}}apps/core/media/js/base.js"></script>
     <script src="{{home_url}}apps/core/media/js/activity.feed.js"></script>
     {% block endbody %}
     {% endblock endbody %}
