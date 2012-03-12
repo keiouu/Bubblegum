@@ -8,6 +8,7 @@ class SupportHandler
 {
 	private static $TPL_DIR = "apps/core/templates/support/";
 	private static $PAGES = array(
+		"/" => "index.php",
 		"/login/" => "login.php",
 	);
 	
