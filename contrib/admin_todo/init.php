@@ -13,7 +13,7 @@ class TodoSidebar extends AdminSidebar
 		$render_data = "";
 		$items = Todo_Item::find(array("completed" => false));
 		if ($items->count() > 0) {
-			$render_data .= '<ul>';
+			$render_data .= '<ul class="nav nav-list">';
 			$count = 0;
 			foreach ($items as $item) {
 				if ($count >= 4)

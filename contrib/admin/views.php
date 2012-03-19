@@ -12,7 +12,7 @@ require_once(home_dir . "framework/config_manager.php");
 require_once(home_dir . "contrib/auth/models.php");
 require_once(home_dir . "contrib/admin/core.php");
 
-
+// For externals
 class AdminPermissionsView extends View
 {
 	public function setup($request, $args) {
@@ -34,13 +34,10 @@ class BaseAdminView extends TemplateView
 class AdminView extends BaseAdminView
 {
 	public function setup($request, $args) {
-		if (!$request->user->logged_in() || !$request->user->has_permission("admin_site")) {
-			if ($request->user->logged_in()) {
-				$request->user->logout();
-				$request->message($request->i18n['admin_permissue'], "error");
-			}
+		if ($request->user->logged_in() && !$request->user->has_permission("admin_site"))
+			$request->message($request->i18n['admin_permissue'], "error");
+		if (!$request->user->logged_in())
 			header("Location: " . home_url . "admin/login/");
-		}
 		return $request->user->logged_in() && $request->user->has_permission("admin_site") && parent::setup($request, $args);
 	}
 }

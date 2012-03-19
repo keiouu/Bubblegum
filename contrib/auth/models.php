@@ -95,9 +95,10 @@ class UserSession extends Model
 	}
 	
 	public function save() {
-		parent::save();
+		$ret = parent::save();
 		CookieManager::set("tp_auth_id", $this->user->pk, ConfigManager::get_app_config('auth', 'cookie_timeout'));
 		CookieManager::set("tp_auth_kc", $this->keycode, ConfigManager::get_app_config('auth', 'cookie_timeout'));
+		return $ret;
 	}
 	
 	public function delete() {

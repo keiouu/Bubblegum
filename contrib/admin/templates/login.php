@@ -4,12 +4,6 @@
 <link href="{{admin_media_url}}css/auth.css" rel="stylesheet">
 {% endblock %}
 
-{% block menu %}
-<ul class="nav secondary-nav">
-	<li class="dropdown"><a href="{{home_url}}admin/register/">{% i18n "admin_register" %}</a></li>
-</ul>
-{% endblock %}
-
 {% block container %}
 <div class="container">
 	<div class="content">

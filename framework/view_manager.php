@@ -34,8 +34,12 @@ class ViewManager
 			$view->on_setup_success($request, $args);
 			return true;
 		}
-		$view->on_setup_failure($request, $args);
 		return false;
+	}
+	
+	public function render_setup_fail($request) {
+		list($view, $args) = $this->get($request->page);
+		print $view->on_setup_failure($request, $args);
 	}
 	
 	public function render($request) {

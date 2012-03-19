@@ -11,7 +11,11 @@
   border-radius: 6px;
 }
 
-.topbar h3 a, .topbar .brand {
+.top-row {
+	padding-right: 0;
+}
+
+.navbar h3 a, .navbar .brand {
 	padding-left: 35px;
 }
 
@@ -52,6 +56,13 @@
 }
 
 .well button {
+	margin-bottom: 10px;
+}
+
+.well h5 {
+	font-size: 15px;
+	border-bottom: 1px #ccc solid;
+	padding-left: 4px;
 	margin-bottom: 10px;
 }
 

@@ -130,8 +130,9 @@ abstract class Model
 		try {
 			$obj = new static();
 			$obj->load_values($args);
-			$obj->save();
-			return $obj;
+			if ($obj->save())
+				return $obj;
+			return Null;
 		} catch (Exception $e) {
 			throw new ModelQueryException($GLOBALS["i18n"]["error1"] . $e->getMessage());
 		}

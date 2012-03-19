@@ -89,8 +89,10 @@
 					  					print '<option value="Team|'.$name.'">'.$arr.'</option>';
 					  				else
 					  					print '<option disabled="disabled">All Users</option>';
-					  				foreach ($arr as $obj) {
-					  					print '<option value="'.get_class($obj)."|".$obj->pk.'">&#160;&#160;&#160;&#160;&#160;'.$obj.'</option>';
+					  				if (is_array($arr)) {
+						  				foreach ($arr as $obj) {
+						  					print '<option value="'.get_class($obj)."|".$obj->pk.'">&#160;&#160;&#160;&#160;&#160;'.$obj.'</option>';
+						  				}
 					  				}
 					  			}
 					  		?>

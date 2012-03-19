@@ -256,6 +256,13 @@ class ModelQuery implements Iterator, Countable
 		return $array;
 	}
 	
+	/* Shuffle Results */
+	public function shuffle() {
+		$potential = $this->all();
+		shuffle($potential);
+		return $potential;
+	}
+	
 	/* Essentially "or" but thats a php keyword :( */
 	public function _or($query) {
 		return $this->find(array_merge_recursive(array("op"=>"OR"), $query));

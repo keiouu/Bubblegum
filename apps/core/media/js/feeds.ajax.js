@@ -82,7 +82,8 @@ $(function () {
 				$("#task-add").modal('hide');
 				update_tasks_feed();
 				update_all_tasks_feed();
-				$("#add-task-csrf-token").val($.trim(data));
+				update_milestone_feed();
+				$("input[name=csrf]").val($.trim(data));
 			}
 		});
 		return false;
@@ -105,7 +106,8 @@ $(function () {
 				$("#task-edit").modal('hide');
 				update_tasks_feed();
 				update_all_tasks_feed();
-				$("#csrf-token").val($.trim(data));
+				update_milestone_feed();
+				$("input[name=csrf]").val($.trim(data));
 			},
 		});
 		return false;

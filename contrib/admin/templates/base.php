@@ -16,7 +16,7 @@ require_once(home_dir . "contrib/admin/core.php");
 		<![endif]-->
 
 		<link href="{{admin_media_url}}css/jquery-ui.css" rel="stylesheet">
-		<link href="{{admin_media_url}}css/bootstrap.css" rel="stylesheet">
+		<link href="{{admin_media_url}}css/bootstrap.min.css" rel="stylesheet">
 		<link href="{{admin_media_url}}css/style.css" rel="stylesheet">
 		<style type="text/css">
       body {
@@ -27,9 +27,7 @@ require_once(home_dir . "contrib/admin/core.php");
 		<script src="{{admin_media_url}}js/jquery.js"></script>
 		<script src="{{admin_media_url}}js/jquery-ui.js"></script>
 		<script src="{{admin_media_url}}js/jquery-ui-timepicker-addon.js"></script>
-		<script src="{{admin_media_url}}js/bootstrap-dropdown.js"></script>
-		<script src="{{admin_media_url}}js/bootstrap-modal.js"></script>
-		<script src="{{admin_media_url}}js/bootstrap-alerts.js"></script>
+		<script src="{{admin_media_url}}js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 		function show_messages() {
 			$('.messages').show();
@@ -63,9 +61,9 @@ require_once(home_dir . "contrib/admin/core.php");
 	</head>
 
 	<body>
-		<div class="topbar">
-      	<div class="topbar-inner">
-				<div class="container-fluid">
+		<div class="navbar navbar-fixed-top">
+      	<div class="navbar-inner">
+				<div class="container-fluid top-row">
 					<a class="brand" href="{{home_url}}admin/"><?php if (defined("site_logo")) { print '<img src="'.site_logo.'" alt="logo" />'; } ?>{{project_name}}</a>
 					{% block menu %}
 					<ul class="nav">
@@ -78,7 +76,7 @@ require_once(home_dir . "contrib/admin/core.php");
 								continue;
 							print '<li class="dropdown'.((isset($request->app) && $request->app == $name) ? ' active' : ' ').'" data-dropdown="dropdown">';
 							?>
-	         			<a href="#" class="dropdown-toggle"><?php echo prettify($name); ?></a>
+	         			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo prettify($name); ?><b class="caret"></b></a>
 	         			<ul class="dropdown-menu">
 					   		<?php
 					   		$count = 0;
@@ -116,10 +114,27 @@ require_once(home_dir . "contrib/admin/core.php");
          			}
          			?>
 					</ul>
-					<ul class="nav secondary-nav">
-						<li><a href="#">{% i18n "admin_welcome2" %}&nbsp;{% date "H:ia" %}&nbsp;{% date "jS, M Y" %}</a></li>
-						<li><a href="{{logout_url}}">{% i18n "admin_logout" %}</a></li>
-					</ul>
+					<?php if($request->user->logged_in()) { ?>
+					<div class="pull-right">
+						<ul class="nav">
+							<li class="divider-vertical"></li>
+							<li><a href="{{logout_url}}">{% i18n "admin_logout" %}</a></li>
+						</ul>
+					</div>
+					<div class="pull-right">
+						<p class="navbar-text">
+							{% i18n "admin_welcome2" %}&nbsp;{% date "H:ia" %}&nbsp;{% date "jS, M Y" %}
+						</p>
+					</div>
+					<?php } else { ?>
+					<div class="pull-right">
+						<ul class="nav">
+							<li><a href="{{home_url}}admin/login/">{% i18n "admin_login" %}</a></li>
+							<li class="divider-vertical"></li>
+							<li><a href="{{home_url}}admin/register/">{% i18n "admin_register" %}</a></li>
+						</ul>
+					</div>
+					<?php } ?>
 					{% endblock %}
         		</div>
       	</div>
@@ -136,26 +151,34 @@ require_once(home_dir . "contrib/admin/core.php");
 		</div>
 		{% block container %}
 		<div class="container-fluid">
-		   <div class="sidebar">
+			<div class="row-fluid">
+				<div class="span2">
+            
 				{% block sidebar %}
 				<?php SignalManager::fire("admin_pre_sidebar", $request); ?>
 				{% block sidebar_menu %}
 				<?php if ($request->user->has_permission("tikapot_config_view") || $request->user->has_permission("tikapot_upgrade") || $request->user->has_permission("tikapot_update")) { ?>
-				<div class="well">
-				  <h5>{% i18n "admin_menu" %}</h5>
-				  <ul>
-					 <?php if ($request->user->has_permission("tikapot_config_view")) { ?><li><a href="{{home_url}}admin/config/">{% i18n "admin_edit_config" %}</a></li><?php } ?>
-					 <?php if ($request->user->has_permission("tikapot_upgrade")) { ?><li><a href="{{home_url}}admin/upgrade/">{% i18n "admin_upgrade" %}</a></li><?php } ?>
-					 <?php if ($request->user->has_permission("tikapot_update")) { ?><li><a href="{{home_url}}admin/update/">{% i18n "admin_update" %}</a></li><?php } ?>
-				  </ul>
-				</div>
+					<div class="well sidebar-nav">
+						<h5>{% i18n "admin_menu" %}</h5>
+						<ul class="nav nav-list">
+							<?php if ($request->user->has_permission("tikapot_config_view")) { ?>
+							<li><a href="{{home_url}}admin/config/">{% i18n "admin_edit_config" %}</a></li>
+							<?php } ?>
+							<?php if ($request->user->has_permission("tikapot_upgrade")) { ?>
+							<li><a href="{{home_url}}admin/upgrade/">{% i18n "admin_upgrade" %}</a></li>
+							<?php } ?>
+							<?php if ($request->user->has_permission("tikapot_update")) { ?>
+							<li><a href="{{home_url}}admin/update/">{% i18n "admin_update" %}</a></li>
+							<?php } ?>
+						</ul>
+					</div>
 				<?php } ?>
 				{% endblock %}
 				<?php
 				foreach (AdminManager::get_sidebars() as $object) {
 					$data = $object->render($request);
 					if (strlen($data) > 0) {
-						print '	<div class="well">
+						print '	<div class="well sidebar-nav">
 										<h5>'.$object->get_title().'</h5>
 										'.$data.'
 								 	</div>';
@@ -164,36 +187,41 @@ require_once(home_dir . "contrib/admin/core.php");
 				SignalManager::fire("admin_post_sidebar", $request);
 				?>
 				{% endblock sidebar %}
-		   </div>
-		   <div class="content">
-		   	<ul class="breadcrumb">
-				{% block breadcrumbs %}
-					<?php
-					if (isset($request->app)) {
-						print '<li><a href="'.home_url.'admin/">{% i18n "admin_home" %}</a> <span class="divider">/</span></li>';
-						print '<li><a href="'.$request->app_url.'">'.$request->app.'</a> <span class="divider">/</span></li>';
-						if (isset($request->admin_add)) {
-							print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
-							print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_add_new" %}</a></li>';
-						} elseif (isset($request->admin_edit)) {
-							print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
-							print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_edit" %}</a></li>';
+		   	</div>
+				<div class="span9">
+					{% block breadcrumb_container %}
+					<ul class="breadcrumb">
+					{% block breadcrumbs %}
+						<?php
+						if (isset($request->app)) {
+							print '<li><a href="'.home_url.'admin/">{% i18n "admin_home" %}</a> <span class="divider">/</span></li>';
+							print '<li><a href="'.$request->app_url.'">'.$request->app.'</a> <span class="divider">/</span></li>';
+							if (isset($request->admin_add)) {
+								print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
+								print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_add_new" %}</a></li>';
+							} elseif (isset($request->admin_edit)) {
+								print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
+								print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_edit" %}</a></li>';
+							} else {
+								print '<li class="active"><a href="'.$request->fullPath.'">'.$request->model.'</a></li>';
+							}
 						} else {
-							print '<li class="active"><a href="'.$request->fullPath.'">'.$request->model.'</a></li>';
+							print '<li '.(isset($request->app_name) ? '' : 'class="active"').'><a href="'.home_url.'admin/">{% i18n "admin_home" %}</a></li>';
+							if (isset($request->app_name))
+								print ' <span class="divider">/</span><li class="active">'.$request->app_name.'</li>';
 						}
-					} else {
-						print '<li '.(isset($request->app_name) ? '' : 'class="active"').'><a href="'.home_url.'admin/">{% i18n "admin_home" %}</a></li>';
-						if (isset($request->app_name))
-							print ' <span class="divider">/</span><li class="active">'.$request->app_name.'</li>';
-					}
-					?>
-				{% endblock %}
-				</ul>
-				{% block body %}{% endblock %}
-				<footer>
-		     		<p>{% block footer %}{% i18n "admin_copyright" %}{% endblock %}</p>
-		  		</footer>
+						?>
+					{% endblock %}
+					</ul>
+					{% endblock breadcrumb_container %}
+					
+					{% block body %}{% endblock %}
+				</div>
 			</div>
+			<hr>
+			<footer>
+		  		<p>{% block footer %}{% i18n "admin_copyright" %}{% endblock %}</p>
+	  		</footer>
 		</div>
 		{% endblock container %}
 	</body>

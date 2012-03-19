@@ -9,8 +9,8 @@ require_once(home_dir . "framework/template_tags/tag.php");
 
 class Twitter
 {
-	public function get($screen_name, $count=3, $useSSL=true) {
-		$url = "http".($useSSL ? "s" : "")."://api.twitter.com/1/statuses/user_timeline.json?screen_name=".$screen_name."&count=" . $count;
+	public function get($screen_name, $count=3, $useSSL=true, $stream="user") {
+		$url = "http".($useSSL ? "s" : "")."://api.twitter.com/1/statuses/".$stream."_timeline.json?screen_name=".$screen_name."&count=" . $count;
 		$str = file_get_contents($url);
 		return json_decode($str);
 	}

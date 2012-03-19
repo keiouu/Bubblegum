@@ -78,7 +78,7 @@ class ChoiceField extends CharField implements ArrayAccess
 			if ($value == $choice) // In case they go by the right side of the array!
 				return parent::set_value($val);
 		}
-		throw new Exception($GLOBALS["i18n"]["fielderr14"] . " " . $value);
+		console_log($GLOBALS["i18n"]["fielderr14"] . " " . $value);
 	}
 	
 	public function get_formfield($name) {

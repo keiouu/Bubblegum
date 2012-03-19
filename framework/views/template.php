@@ -65,6 +65,9 @@ class TemplateView extends View
 					$blk_content = preg_replace("/{% block.parent %}/", $old_block['content'], $blk_content);
 			}
 			$page = preg_replace('/{% block '.$val['block'].' %}([\S\s]*?){% endblock '.$val['block'].' %}/', $blk_content, $page);
+			
+			// Fix Case 973 - Remove them from tpl_output too to ensure blocks below arent affected
+			$tpl_output = preg_replace('/{% block '.$val['block'].' %}([\S\s]*?){% endblock '.$val['block'].' %}/', "", $tpl_output);
 		}
 		// Now do normal blocks
 		preg_match_all('/{% block (?P<block>[[:punct:]\w]+) %}(?P<content>[\S\s]*?){% endblock %}/', $tpl_output, $matches, PREG_SET_ORDER);

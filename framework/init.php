@@ -90,6 +90,9 @@ try {
 		$page = ob_get_clean();
 	} else {
 		SignalManager::fire("page_load_setup_failure", $request);
+		ob_start();
+		$view_manager->render_setup_fail($request);
+		$page = ob_get_clean();
 	}
 	SignalManager::fire("page_load_end", $request);
 	$script_output = ob_get_clean();

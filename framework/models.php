@@ -22,13 +22,14 @@ class App_Config extends Model
 {	
 	public function __construct() {
 		parent::__construct();
-		$apps = ConfigManager::get_app_list();
+		// TODO - forms
+		/*$apps = ConfigManager::get_app_list();
 		$choices = array();
 		foreach ($apps as $name) {
 			list($dir, $app) = explode("/", $name);
 			$choices[$app] = $app;
-		}
-		$this->add_field("app", new ChoiceField($choices, "", 250));
+		}*/
+		$this->add_field("app", new CharField(250, ""));
 		$this->add_field("key", new CharField(250, ""));
 		$this->add_field("value", new CharField(250, ""));
 	}

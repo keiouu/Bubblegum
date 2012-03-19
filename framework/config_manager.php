@@ -75,7 +75,9 @@ class ConfigManager
 		$objs = App_Config::objects();
 		foreach ($objs as $obj) {
 			$app = $obj->_app->__toString();
-			$configs[$app][$obj->key] = ConfigManager::get_app_config($app, $obj->key);
+			if (isset($configs[$app]) && isset($configs[$app][$obj->key])) {
+				$configs[$app][$obj->key] = ConfigManager::get_app_config($app, $obj->key);
+			}
 		}
 		return $configs;
 	}

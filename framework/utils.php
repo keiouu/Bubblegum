@@ -53,6 +53,10 @@ function get_named_class($class) {
 	return null;
 }
 
+function get_file_extension($filename) {
+	return substr(strrchr($filename, '.'), 1);
+}
+
 function email_sanitize($str) {
 	$injections = array(
 		'/(\n+)/i',
@@ -81,6 +85,12 @@ function urlCheck($url) {
 	if (function_exists('idn_to_ascii'))
 		$url = idn_to_ascii($url);
 	return filter_var($url, FILTER_VALIDATE_URL);
+}
+
+function ellipsize($string, $length) {
+	if (strlen($string) <= $length)
+		return $string;
+	return substr($string, 0, $length - 3) . "..."; // TODO - break at words
 }
 
 /* Debugging utilities */

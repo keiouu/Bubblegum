@@ -16,7 +16,7 @@ class ComingSoonView extends TemplateView
 			$dnow = new DateTime("now");
 			if ($date && ($date > $dnow)) {
 				$timediff = $date->diff($dnow);
-				$days = $timediff->d;
+				$days = $timediff->days;
 				$hours = $timediff->h;
 				$minutes = $timediff->i;
 				$seconds = $timediff->s;
