@@ -35,7 +35,6 @@ require_once(home_dir . "apps/core/models.php");
   </head>
 
   <body>
-
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid top-row">

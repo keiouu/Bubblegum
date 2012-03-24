@@ -32,25 +32,4 @@ if ($projects !== null) {
 } else {
 	print '<p>You dont currently have any projects!</p>';
 }
-
-print '<div class="row well"><h3>Get involved in some other projects..</h3><br />';
-
-// Show some random public projects to "get involved in"
-$count = 0;
-$projects = Project::find(array("public" => true))->shuffle();
-foreach ($projects as $project) {
-	if (isset($shown[$project->pk]))
-		continue;
-	if ($count >= 3)
-		break;
-	print '<div class="span4">
-		<h4>'.$project->name.'</h4>
-		<p>'.$project->description.'</p>
-		<p><a class="btn" href="'.home_url.'projects/'.$project->pk.'/">Get Involved &raquo;</a></p>
-	</div>';
-	$count++;
-	$shown[$project->pk] = true;
-}
-
-print '</div>';
 ?>
