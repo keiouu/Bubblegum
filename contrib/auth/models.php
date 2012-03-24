@@ -108,7 +108,7 @@ class UserSession extends Model
 	}
 }
 
-class Permission extends Model
+class Auth_Permission extends Model
 {
 	public function __construct() {
 		parent::__construct();
@@ -118,19 +118,61 @@ class Permission extends Model
 	public function __toString() {
 		return $this->name;
 	}
+
+	public function check($obj, $default = false) {
+		$perm = Auth_Permission_Link::get_or_ignore(array("object" => $obj, "permission" => $this->pk));
+		return $perm === null ? $default : $perm->value;
+	}
 }
 
-class User_Permission extends Model
+class Auth_Permission_Link extends Model
 {
 	public function __construct() {
 		parent::__construct();
-		$this->add_field("user", new FKField("auth.User"));
-		$this->add_field("permission", new FKField("auth.Permission"));
+		$this->add_field("object", new MultiFKField("auth.User", "auth.User_Group"));
+		$this->add_field("permission", new FKField("auth.Auth_Permission"));
 		$this->add_field("value", new BooleanField(true));
 	}
 	
 	public function __toString() {
-		return $this->permission->name;
+		return $this->permission ? $this->permission->name : $this->pk;
+	}
+}
+
+class User_Group extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("name", new CharField($max_length=140));
+	}
+	
+	public function __toString() {
+		return $this->name;
+	}
+	
+	public function set_permission($name, $value = true) {
+		list($permission, $created) = Auth_Permission::get_or_create(array("name" => strtolower($name)));
+		list($perm, $created) = Auth_Permission_Link::get_or_create(array("object" => $this, "permission" => $permission->pk));
+		$perm->value = $value;
+		$perm->save();
+		return $value;
+	}
+	
+	public function give_permission($name) {
+		return $this->set_permission($name, true);
+	}
+	
+	public function revoke_permission($name) {
+		return $this->set_permission($name, false);
+	}
+}
+
+class User_Group_Link extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("group", new FKField("auth.User_Group"));
+		$this->add_field("user", new FKField("auth.User"));
 	}
 }
 
@@ -138,6 +180,8 @@ class AuthException extends Exception {}
 
 class User extends Model
 {
+	private $_groups = array();
+
 	public function __construct() {
 		parent::__construct();
 		$this->add_field("username", new CharField($max_length=40));
@@ -163,6 +207,23 @@ class User extends Model
 			$db->query('UPDATE "user" SET "status"=\'-1\' WHERE "status"=\'2\';');
 		}
 		return parent::upgrade($db, $old_version, $new_version);
+	}
+	
+	public function member_of($group) {
+		if (!is_object($group))
+			$group = User_Group::get(array("name" => $group));
+		return User_Group_Link::get_or_ignore(array("group" => $group->pk, "user" => $this->pk)) === null ? false : true;
+	}
+	
+	public function get_groups() {
+		if (count($this->_groups) > 0)
+			return $this->_groups;
+		$links = User_Group_Link::find(array("user" => $this->pk));
+		foreach ($links as $link) {
+			if (!in_array($link->group, $this->_groups))
+				$this->_groups[] = $link->group;
+		}
+		return $this->_groups;
 	}
 	
 	public function get_logout_url($request) {
@@ -201,17 +262,25 @@ class User extends Model
 		if ($this->status == $this->_status['admin'])
 			return true;
 		
-		list($permission, $created) = Permission::get_or_create(array("name" => strtolower($name)));
+		list($permission, $created) = Auth_Permission::get_or_create(array("name" => strtolower($name)));
 		if ($created)
 			return $default;
 		
-		$perm = User_Permission::get_or_ignore(array("user" => $this->pk, "permission" => $permission->pk));
-		return $perm === null ? $default : $perm->value;
+		// Check me
+		if ($permission->check($this, $default))
+			return true;
+		
+		// Check groups
+		foreach ($this->get_groups() as $group) {
+			if ($permission->check($group, $default))
+				return true;
+		}
+		return false;
 	}
 	
 	public function set_permission($name, $value = true) {
-		list($permission, $created) = Permission::get_or_create(array("name" => strtolower($name)));
-		list($perm, $created) = User_Permission::get_or_create(array("user" => $this->pk, "permission" => $permission->pk));
+		list($permission, $created) = Auth_Permission::get_or_create(array("name" => strtolower($name)));
+		list($perm, $created) = Auth_Permission_Link::get_or_create(array("object" => $this, "permission" => $permission->pk));
 		$perm->value = $value;
 		$perm->save();
 		return $value;

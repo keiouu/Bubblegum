@@ -13,17 +13,31 @@ class FKValidationException extends Exception { }
 
 class FKField extends ModelField implements ModelInterface
 {
-	private static $class_cache = array(), $string_cache = array();
+	private static $string_cache = array();
 	protected static $db_type = "varchar";
-	private $_obj, $valid = false, $_model, $_class, $_override_db_type;
+	protected $_obj, $_model, $_class, $_override_db_type, $valid = false;
 	
-	public function __construct($model, $override_db_type = null) {
+	public function __construct($model = "", $override_db_type = null) {
 		parent::__construct();
 		$this->_obj = Null;
 		$this->_model = $model;
-		$this->determine_class();
 		$this->_override_db_type = $override_db_type;
 		$this->value = null;
+		$this->_set_model($model);
+	}
+	
+	protected function _clean() {
+		$this->_obj = Null;
+		$this->value = null;
+		$this->valid = false;
+	}
+	
+	protected function _set_model($model) {
+		$this->_model = $model;
+		if ($this->_model !== "") {
+			$this->_class = $this->load_class($this->_model);
+			$this->valid = $this->_class !== null;
+		}
 	}
 	
 	public function get_formfield($name) {
@@ -34,51 +48,53 @@ class FKField extends ModelField implements ModelInterface
 		return $this->value !== null;
 	}
 	
-	private function determine_class() {
-		if (isset(FKField::$class_cache[$this->_model])) {
-			$this->valid = true;
-			$this->_class = FKField::$class_cache[$this->_model];
-			return;
-		}
+	public function is_valid() {
+		return $this->valid;
+	}
+	
+	private function load_class($model_str) {
+		list($app, $n, $class) = partition($model_str, '.');
+		
+		if (class_exists($class))
+			return $class;
 		
 		/*
 		 * Class is in the format: appname.modelName
 		 * We must scan app paths for the app, then import models.php.
 		 * Hopefully, $class will then exist
+		 * TODO - autoload?
 		 */
-		list($app, $n, $class) = partition($this->_model, '.');
-		if (!class_exists($class)) {
-			global $app_paths;
-			$test_paths = $app_paths;
-			if (!in_array("framework", $test_paths))
-				$test_paths[] = "framework";
-			foreach ($test_paths as $app_path) {
-				$path = home_dir . $app_path;
-				if ($app !== "framework")
-					$path .= '/' . $app;
-				$path .= "/models.php";
-				if (is_file($path)) {
-					include($path);
-					break;
-				}
+		global $app_paths;
+		$test_paths = $app_paths;
+		if (!in_array("framework", $test_paths))
+			$test_paths[] = "framework";
+		foreach ($test_paths as $app_path) {
+			$path = home_dir . $app_path;
+			if ($app !== "framework")
+				$path .= '/' . $app;
+			$path .= "/models.php";
+			if (is_file($path)) {
+				include_once($path);
+				break;
 			}
 		}
 		
-		if (class_exists($class)) {
-			$this->valid = true;
-			$this->_class = $class;
-			FKField::$class_cache[$this->_model] = $class;
-			return;
-		}
-		throw new FKValidationException($GLOBALS["i18n"]["error1"] . " '" . $this->_model . "' " . $GLOBALS["i18n"]["fielderr5"]);
+		if (class_exists($class))
+			return $class;
+		
+		console_warn($GLOBALS["i18n"]["error1"] . " '" . $model_str . "' " . $GLOBALS["i18n"]["fielderr5"]);
+		return false;
 	}
 	
-	private function grab_object() {
+	protected function grab_object() {
+		if (!$this->valid)
+			return null;
+		
 		if ($this->is_set() && isset($this->_obj))
 			return $this->_obj;
 		if ($this->value !== null && $this->value !== 0) {
 			try {
-				return call_user_func(array($this->_class, 'get'), array("pk" => $this->value));
+				return call_user_func(array($this->_class, 'get_or_ignore'), array("pk" => $this->value));
 			} catch (Exception $e) {
 				return null;
 			}
@@ -104,7 +120,8 @@ class FKField extends ModelField implements ModelInterface
 	
 	public function get_form_value() {
 		$this->check_obj();
-		return $this->is_set() ? "" . $this->get_object()->pk : "null";
+		$obj = $this->get_object();
+		return $this->is_set() && $obj !== null ? $obj->pk : "null";
 	}
 	
 	public function __toString() {
@@ -113,7 +130,7 @@ class FKField extends ModelField implements ModelInterface
 			return FKField::$string_cache[$cache_string];
 		}
 		$this->check_obj();
-		$string = "" . ($this->value === null ? "-" : $this->value);
+		$string = "" . ($this->value === null || $this->_obj === null ? "-" : $this->value);
 		if ($this->is_set() && isset($this->_obj) && method_exists($this->_obj, "__toString"))
 			$string = $this->_obj->__toString();
 		FKField::$string_cache[$cache_string] = $string;
@@ -122,6 +139,8 @@ class FKField extends ModelField implements ModelInterface
 	
 	public function sql_value($db, $val = NULL) {
 		$val = ($val === NULL) ? $this->value : $val;
+		if (is_object($val))
+			$val = $val->pk;
 		return ($val !== null) ? $db->escape_string($val) : "0";
 	}
 	

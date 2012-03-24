@@ -9,6 +9,50 @@ require_once(home_dir . "framework/form_fields/formfields.php");
 require_once(home_dir . "contrib/admin/core.php");
 require_once(home_dir . "contrib/auth/models.php");
 
+class GroupsPanel extends AdminIndexPanel
+{	
+	public function render($request) {
+		// Check we can add users to groups
+		if (!$request->user->has_permission("user_management"))
+			return "";
+	
+		$form = new Form(array(
+			new Fieldset("", array(
+				"group" => SelectFormField::from_model("Group", new User_Group()),
+				"user" => SelectFormField::from_model("User", new User()),
+			))
+		), $request->fullPath . "?group_panel=1");
+		
+		if (isset($request->get['group_panel'])) {
+			if ($form->load_post_data($request->post)) {
+				$group = User_Group::get_or_ignore(array("pk" => $form->group));
+				$user = User::get_or_ignore(array("pk" => $form->user));
+				if ($group && $user) {
+					list($obj, $created) = User_Group_Link::get_or_create(array(
+						"group" => $group,
+						"user" => $user,
+					));
+					if ($created)
+						$request->message($GLOBALS['i18n']['auth']['groups_admin_panel1'], "success");
+					else
+						$request->message($GLOBALS['i18n']['auth']['groups_admin_panel2'], "warning");
+				} else {
+					if (!$user)
+						$request->message($GLOBALS['i18n']['auth']['groups_admin_panel3'], "error");
+					if (!$group)
+						$request->message($GLOBALS['i18n']['auth']['groups_admin_panel4'], "error");
+				}
+				$form->clear_data();
+			}
+		}
+		
+		ob_start();
+		$form->display();
+		return "<p>Use the form below to add a user to a group.</p><br />" . ob_get_clean();
+	}
+}
+AdminManager::register_panel(new GroupsPanel($GLOBALS['i18n']['auth']['groups_title']));
+
 class AuthPasswordFormField extends PasswordFormField
 {
 	public function get_value() {
@@ -67,7 +111,9 @@ class AuthEditForm extends AuthForm
 }
 
 AdminModel::register("auth", new User(), new AuthForm(), new AuthEditForm(), array("id", "username", "email", "status", "created", "last_login"), array("username"));
-AdminModel::register("auth", new User_Permission());
-AdminModel::register("auth", new Permission());
+AdminModel::register("auth", new User_Group());
+AdminModel::register("auth", new User_Group_Link());
+AdminModel::register("auth", new Auth_Permission());
+AdminModel::register("auth", new Auth_Permission_Link());
 ?>
 

@@ -50,16 +50,19 @@ require_once(home_dir . "apps/core/models.php");
 		           <ul class="dropdown-menu">
 		           	 <?php
 		           	 $org = "";
-		           	 foreach (Project::objects()->order_by("owner") as $obj) {
-		           	 	$owner = $obj->owner->__toString();
-		           	 	if ($org != $owner) {
-		           	 		$org = $owner;
-		           	 		print '<li class="nav-header">'.$org.'</li>';
-		           	 	}
-		           	 	print '<li><a href="{{home_url}}projects/'.$obj->pk.'/">'.$obj->name.'</a></li>';
+		           	 $projects = Project::mine($request->user);
+		           	 if ($projects !== null) {
+				        	 foreach ($projects->order_by("owner") as $obj) {
+				        	 	$owner = $obj->owner->__toString();
+				        	 	if ($org != $owner) {
+				        	 		$org = $owner;
+				        	 		print '<li class="nav-header">'.$org.'</li>';
+				        	 	}
+				        	 	print '<li><a href="{{home_url}}projects/'.$obj->pk.'/">'.$obj->name.'</a></li>';
+				        	 }
+				        	 print '<li class="divider"></li>';
 		           	 }
 		           	 ?>
-		           	 <li class="divider"></li>
 		          	 <li><a href="{{home_url}}projects/new/"><i class="icon-plus"></i> Add New Project</a></li>
 		           </ul>
 		        </li>

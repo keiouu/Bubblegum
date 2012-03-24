@@ -69,10 +69,32 @@ class Project extends Model
 		$this->add_field("name", new CharField(250));
 		$this->add_field("description", new TextField());
 		$this->add_field("owner", new CharField(250));
+		$this->add_field("public", new BooleanField(true));
 		$this->add_field("created", new DateTimeField(true));
 		$this->add_field("updated", new DateTimeField(true, true));
 	}
+	
 	public function __toString() { return $this->name; }
+	
+	public static function mine($user) {
+		// All projects a user is a member of
+		$projects = array();
+		foreach (Project::find(array("owner" => "User|" . $user->pk)) as $project) {
+			$projects[$project->pk] = $project;
+		}
+		foreach (Project_Link::find(array("user" => $user->pk)) as $plink) {
+			$projects[$plink->project->pk] = $plink->project;
+		}
+		if (count($projects) <= 0)
+			return null;
+		$ids = "";
+		foreach($projects as $id => $project) {
+			if (strlen($ids) > 0)
+				$ids .= ",";
+			$ids .= $id;
+		}
+		return Project::find(array("pk" => array("(" . $ids . ")", "IN")));
+	}
 	
 	public function __set_owner($obj) {
 		return get_class($obj) . "|" . $obj->pk;

@@ -1,7 +1,6 @@
 <?php
 /*
  * Tikapot PostgreSQL Database Extension Class
- * v1.0
  *
  */
 
@@ -35,6 +34,7 @@ class PostgreSQL extends Database
 	}
 	
 	public function query($query, $args=array()) {
+		$id = Profiler::start("psql_query");
 		SignalManager::fire("on_db_query", array($query, $args));
 		if (debug_show_queries)
 			print $query . "\n";
@@ -44,6 +44,7 @@ class PostgreSQL extends Database
 		$res = pg_query_params($this->_link, $query, $args);
 		if (strpos($query, "ATE TABLE") > 0 || strpos($query, "OP TABLE") > 0)
 			$this->populate_tables();
+		Profiler::end("psql_query", $id);
 		return $res;
 	}
 	

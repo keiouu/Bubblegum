@@ -282,23 +282,25 @@ class SelectFormField extends FormField
 
 class FKFormField extends SelectFormField
 {
-	private static $_FKCache = array();
-	protected $field, $model_string, $obj;
+	protected static $_FKCache = array();
+	protected $model_string, $obj;
 	
 	public function __construct($name, $model_string, $obj, $initial_value = "", $options = array()) {
 		$this->model_string = $model_string;
 		$this->obj = $obj;
-		$field_options = array();
-		if (!isset(FKFormField::$_FKCache[get_class($obj)])) {
-			$objects = $obj::objects()->all();
-			foreach ($objects as $object) {
+		parent::__construct($name, $this->get_field_options(), (($initial_value === "" && isset($this->obj) && $this->obj->fromDB()) ? "" . $this->obj->pk : $initial_value), $options);
+	}
+	
+	public function get_field_options() {
+		$class = get_class($this->obj);
+		if (!isset(FKFormField::$_FKCache[$class])) {
+			$field_options = array("0" => "-");
+			foreach ($this->obj->objects()->all() as $object) {
 				$field_options[$object->pk] = $object->__toString();
 			}
-			FKFormField::$_FKCache[get_class($obj)] = $field_options;
-		} else {
-			$field_options = FKFormField::$_FKCache[get_class($obj)];
+			FKFormField::$_FKCache[$class] = $field_options;
 		}
-		parent::__construct($name, $field_options, (($initial_value === "" && $this->obj->fromDB()) ? "" . $this->obj->pk : $initial_value), $options);
+		return FKFormField::$_FKCache[$class];
 	}
 	
 	public function get_object() {
@@ -309,12 +311,39 @@ class FKFormField extends SelectFormField
 		return $this->model_string;
 	}
 	
-	public function get_field() {
-		return $this->field;
+	protected function get_field_class() {
+		return parent::get_field_class() . " fkfield";
+	}
+}
+
+class MultiFKFormField extends FKFormField
+{
+	protected $model_strings, $model_field;
+	
+	public function __construct($name, $model_strings, $model_field, $obj, $initial_value = "", $options = array()) {
+		$this->model_strings = $model_strings;
+		$this->model_field = $model_field;
+		parent::__construct($name, implode(",", $this->model_strings), $obj, $initial_value, $options);
+	}
+	
+	public function get_field_options() {
+		if (!isset(FKFormField::$_FKCache[$this->model_string])) {
+			$field_options = array();
+			foreach ($this->model_strings as $model => $app) {
+				$object = $this->model_field->_determine_object($app . "." . $model);
+				if ($object) {
+					foreach ($object->objects()->all() as $object) {
+						$field_options[$model."|".$object->pk] = $object->__toString();
+					}
+				}
+			}
+			FKFormField::$_FKCache[$this->model_string] = $field_options;
+		}
+		return FKFormField::$_FKCache[$this->model_string];
 	}
 	
 	protected function get_field_class() {
-		return parent::get_field_class() . " fkfield";
+		return parent::get_field_class() . " multifkfield";
 	}
 }
 

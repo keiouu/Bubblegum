@@ -118,10 +118,14 @@ class Form
 	}
 	
 	public function load_post_data($data) {
-		if (!isset($data["control_formid"]) || !isset($data["control_csrf"]))
-			throw new FormException($GLOBALS["i18n"]["formerrctrl"]);
-		if (!$this->check_csrf($data["control_formid"], $data["control_csrf"]))
-			throw new FormException($GLOBALS["i18n"]["formerrcsrf"]);
+		if (!isset($data["control_formid"]) || !isset($data["control_csrf"])) {
+			console_warn($GLOBALS["i18n"]["formerrctrl"]);
+			return false;
+		}
+		if (!$this->check_csrf($data["control_formid"], $data["control_csrf"])) {
+			console_warn($GLOBALS["i18n"]["formerrcsrf"]);
+			return false;
+		}
 	
 		// Work out the form key
 		$key = $data['control_formid'] . "_";
@@ -142,8 +146,10 @@ class Form
 				foreach($this->fieldsets as $ti => $tfields)
 					foreach ($tfields as $tname => $tfield)
 						$owned = $owned || $tfield->claim_own($tname, $field, $value);
-				if (!$owned)
-					throw new FormException($GLOBALS["i18n"]["formerrdata"] . $name);
+				if (!$owned) {
+					console_warn($GLOBALS["i18n"]["formerrdata"] . $name);
+					return false;
+				}
 			} else {
 				$field->set_value($value); 
 			}

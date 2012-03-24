@@ -63,8 +63,18 @@ abstract class AdminManager
 		return AdminManager::$models;
 	}
 	
-	public static function get($app) {
-		return isset(AdminManager::$models[$app]) ? AdminManager::$models[$app] : array();
+	public static function get($app, $class = null) {
+		if ($class === null)
+			return isset(AdminManager::$models[$app]) ? AdminManager::$models[$app] : array();
+		// We want a specific app
+		$class = strtolower($class);
+		$app_array = AdminManager::get($app);	
+		foreach ($app_array as $model_admin) {
+			$t_class = strtolower(get_class($model_admin->get_model()));
+			if ($t_class == $class) 
+				return $model_admin;
+		}
+		return null;
 	}
 	
 	public static function register_sidebar($object) {

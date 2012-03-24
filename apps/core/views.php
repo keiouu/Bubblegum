@@ -89,22 +89,28 @@ class AJAX_ActivityFeedView extends View
 		
 		$activity = array();
 		foreach ($team_joins as $obj) {
-			$activity[] = array(
-				$obj->joined,
-				$obj->user->get_short_display_name() . " joined ".$obj->team."!"
-			);
+			if (isset($obj->user)) {
+				$activity[] = array(
+					$obj->joined,
+					$obj->user->get_short_display_name() . " joined ".$obj->team."!"
+				);
+			}
 		}
 		foreach ($closed_tasks as $obj) {
-			$activity[] = array(
-				$obj->completed,
-				$obj->completed_by->get_short_display_name() . " completed ".$obj->name."!"
-			);
+			if (isset($obj->completed_by)) {
+				$activity[] = array(
+					$obj->completed,
+					$obj->completed_by->get_short_display_name() . " completed ".$obj->name."!"
+				);
+			}
 		}
 		foreach ($created_tasks as $obj) {
-			$activity[] = array(
-				$obj->created,
-				$obj->created_by->get_short_display_name() . " added task ".$obj->name."!"
-			);
+			if (isset($obj->created_by)) {
+				$activity[] = array(
+					$obj->created,
+					$obj->created_by->get_short_display_name() . " added task ".$obj->name."!"
+				);
+			}
 		}
 		
 		usort($activity, "sort_activity");

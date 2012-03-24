@@ -9,9 +9,9 @@ require_once(home_dir . "contrib/admin/filters.php");
 
 class AdminModel
 {
-	protected $app, $model, $add_form, $edit_form, $headings, $linked_headings, $filters;
+	protected $app, $model, $add_form, $edit_form, $headings, $linked_headings, $filters, $actions;
 	
-	public function __construct($app, $model, $add_form = null, $edit_form = null, $headings = array(), $linked_headings = array(), $filters = array()) {
+	public function __construct($app, $model, $add_form = null, $edit_form = null, $headings = array(), $linked_headings = array(), $filters = array(), $actions = array()) {
 		$this->app = $app;
 		$this->model = $model;
 		
@@ -51,6 +51,8 @@ class AdminModel
 			}
 		}
 		
+		$this->actions = $actions;
+		
 		// Add me to the admin manager
 		AdminManager::add($app, $this);
 	}
@@ -61,6 +63,14 @@ class AdminModel
 	
 	public function get_model() {
 		return $this->model;
+	}
+	
+	public function addAction($action) {
+		$this->actions[] = $action;
+	}
+	
+	public function get_actions() {
+		return $this->actions;
 	}
 	
 	public function get_filters() {
@@ -106,8 +116,8 @@ class AdminModel
 		return new DataSet($this->model, $this->model->objects()->filter($filter_values)->order_by($order), $this->get_headings(), $this->get_linked_headings());
 	}
 	
-	public static function register($app = null, $model = null, $add_form = null, $edit_form = null, $headings = array(), $linked_headings = array(), $filters = array()) {
-		$obj = new static($app, $model, $add_form, $edit_form, $headings, $linked_headings, $filters);
+	public static function register($app = null, $model = null, $add_form = null, $edit_form = null, $headings = array(), $linked_headings = array(), $filters = array(), $actions = array()) {
+		$obj = new static($app, $model, $add_form, $edit_form, $headings, $linked_headings, $filters, $actions);
 		return $obj;
 	}
 }

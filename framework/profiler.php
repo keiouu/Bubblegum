@@ -8,14 +8,26 @@ require_once(home_dir . "framework/signal_manager.php");
 require_once(home_dir . "framework/models.php");
 require_once(home_dir . "framework/model_fields/init.php");
 
-// TODO - should use tp 1.2 "historical models" to store data
+// TODO - should use tp 1.3 "historical models" to store data
 class ProfileData
 {
-	public static $db_total_queries = 0, $db_queries = array();
+	public static $db_total_queries = 0, $db_queries = array(); // TODO - move out
 	private $name, $start_time = 0, $end_time = 0;
 	
 	public function __construct($name) {
 		$this->name = $name;
+	}
+	
+	public function get_start_time() {
+		return $this->start_time;
+	}
+	
+	public function get_end_time() {
+		return $this->end_time;
+	}
+	
+	public function get_duration() {
+		return $this->end_time - $this->start_time;
 	}
 	
 	public function start() {
@@ -24,14 +36,14 @@ class ProfileData
 	
 	public function stop() {
 		$this->end_time = microtime(True);
-		return $this->end_time - $this->start_time;
+		return $this->get_duration();
 	}
 	
 	public function __toString() {
 		$string = $this->name . ": ";
 		if ($this->end_time === 0)
 			return $string . $GLOBALS['i18n']['profiler_unclosed'];
-		return $string . ($this->end_time - $this->start_time) . ' ' . $GLOBALS['i18n']['profiler_seconds'];
+		return $string . $this->get_duration() . ' ' . $GLOBALS['i18n']['profiler_seconds'];
 	}
 }
 
@@ -65,6 +77,22 @@ class Profiler
 	
 	public static function get_blocks() {
 		return Profiler::$blocks;
+	}
+	
+	public static function get_call_count($block) {
+		return count(Profiler::$blocks[$block]);
+	}
+	
+	public static function get_total($block) {
+		$total = 0;
+		foreach (Profiler::$blocks[$block] as $id => $obj)
+			if ($obj->get_end_time() > 0)
+				$total += $obj->get_duration();
+		return $total;
+	}
+	
+	public static function get_average($block) {
+		return Profiler::get_total($block) / Profiler::get_call_count($block);
 	}
 }
 ?>

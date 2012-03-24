@@ -4,6 +4,14 @@
 <div class="well">
   <h5>{% i18n "admin_menu" %}</h4>
   <button class="btn btn-primary" onClick="parent.location='<?php echo $request->fullPath; ?>add/'">{% i18n "admin_new" %} <?php echo $request->model; ?></button>
+  <?php
+  // Extra actions
+  foreach ($request->admin->get_actions() as $action) {
+  	if ($action->is_global()) {
+		print $action->render($request, $request->dataset);
+	}
+  }
+  ?>
   <button class="btn btn-danger" id="button_delete" data-toggle="modal" data-target="#delete-confirm-modal" data-backdrop="static">{% i18n "admin_delete_all" %}</button>
   <p>{% i18n "admin_max_items" %}</p>
   <select name="max_count" class="pagination_limit">

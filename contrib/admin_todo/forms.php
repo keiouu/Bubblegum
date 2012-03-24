@@ -30,7 +30,7 @@ class TodoItemEditForm extends TodoItemForm
 {
 	protected function get_fieldset() {
 		$fieldset = parent::get_fieldset();
-		$fieldset->add_item("completed", new CheckedFormField("Completed?", "", array("helptext" => "Has this been done yet?")));
+		$fieldset->add_item("completed", new CheckedFormField("Completed?", ""));
 		return $fieldset;
 	}
 	

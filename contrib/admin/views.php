@@ -211,7 +211,13 @@ class AdminAddModelView extends AdminModelView
 {
 	protected function model_create($request) {
 		$success = $request->modelform->load_post_data($request->post);
-		$obj = $request->modelform->save($this->model, $request);
+		try {
+			$obj = $request->modelform->save($this->model, $request);
+		}
+		catch (Exception $e) {
+			$success = false;
+			$request->message($GLOBALS['i18n']['admin_form_add_error']);
+		}
 		if ($success && $obj !== NULL) {
 			SignalManager::fire("admin_on_create", array($request->user, $obj));
 			$request->message($GLOBALS['i18n']['admin_model_add'], "success");
@@ -243,7 +249,14 @@ class AdminAddModelView extends AdminModelView
 class AdminEditModelView extends AdminModelView
 {	
 	protected function model_edit($request, $args) {
-		$success = $request->modelform->load_post_data($request->post) && ($request->modelform->save($request->model_obj, $request) !== null);
+		$success = $request->modelform->load_post_data($request->post);
+		try {
+			$obj = $request->modelform->save($request->model_obj, $request);
+		}
+		catch (Exception $e) {
+			$success = false;
+			$request->message($GLOBALS['i18n']['admin_form_add_error']);
+		}
 		if ($success) {
 			SignalManager::fire("admin_on_edit", array($request->user, $request->model_obj));
 			$request->message($GLOBALS['i18n']['admin_model_edit'], "success");

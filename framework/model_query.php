@@ -160,7 +160,7 @@ class ModelQuery implements Iterator, Countable
 								$query .= " $op ";
 								$op = "AND";
 							}
-							$query .= "\"" . $name . "\" ";
+							$query .= "\"" . $name . "\"";
 							if (is_array($val))
 								$query .= $val[1] . " " . $val[0];
 							else

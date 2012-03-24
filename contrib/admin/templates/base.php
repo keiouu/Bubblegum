@@ -31,11 +31,11 @@ require_once(home_dir . "contrib/admin/core.php");
 		<script type="text/javascript">
 		function show_messages() {
 			$('.messages').show();
-			$('.alert-message').show('blind', {}, 1000);
+			$('.alert').show('blind', {}, 1000);
 		}
 		
 		function hide_messages() {
-			$('.alert-message').hide('blind', {}, 1000, function() {
+			$('.alert').hide('blind', {}, 1000, function() {
 				$('.messages').hide();
 			});
 		}
@@ -44,9 +44,9 @@ require_once(home_dir . "contrib/admin/core.php");
 			$('#topbar').dropdown();
 			
 			// Messages
-			if ($('.alert-message').length > 0)
+			if ($('.alert').length > 0)
 				show_messages();
-			setTimeout("hide_messages();", 2000 * $('.alert-message').length);
+			setTimeout("hide_messages();", 2000 * $('.alert').length);
 			
 			// Forms
 			$(".datetimefield").datetimepicker({
@@ -143,7 +143,7 @@ require_once(home_dir . "contrib/admin/core.php");
 			<?php
 				foreach ($request->get_messages() as $type => $messages) {
 					foreach ($messages as $message) {
-						print '<div class="alert-message fade in '.$type.'" data-alert="true"><a class="close" href="#">×</a><p>' . $message . '</p></div>';
+						print '<div class="alert fade in alert-'.$type.'"><a class="close" data-dismiss="alert">×</a>' . $message . '</div>';
 					}
 				}
 				$request->delete_messages();

@@ -5,16 +5,10 @@
  */
  
 function starts_with($haystack, $needle) {
-	if (function_exists('tp_str_begins'))
-		return tp_str_begins($haystack, $needle);
-
 	return substr($haystack, 0, strlen($needle)) === $needle;
 }
  
 function partition($haystack, $needle) {
-	if (function_exists('tp_str_partition'))
-		return tp_str_partition($haystack, $needle);
-
 	$pos = strpos($haystack, $needle);
 	if ($pos > 0)
 		return array(substr($haystack, 0, $pos), $needle, substr($haystack, $pos + strlen($needle), strlen($haystack)));
@@ -22,9 +16,6 @@ function partition($haystack, $needle) {
 }
  
 function ends_with($haystack, $needle) {
-	if (function_exists('tp_str_ends'))
-		return tp_str_ends($haystack, $needle);
-
 	return strrpos($haystack, $needle) === strlen($haystack)-strlen($needle);
 }
 
@@ -104,6 +95,10 @@ function console_log($val) {
 	if (!isset($GLOBALS['console']))
 		$GLOBALS['console'] = array();
 	$GLOBALS['console'][] = $val;
+}
+
+function console_warn($val) {
+	console_log($val); // TODO
 }
 ?>
  

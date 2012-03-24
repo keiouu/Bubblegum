@@ -12,31 +12,12 @@ require_once(home_dir . "framework/profiler.php");
 Profiler::start("total");
 
 require_once(home_dir . "framework/config_manager.php");
+require_once(home_dir . "framework/i18n.php");
 
 global $app_paths, $apps_list;
 
 /* Setup i18n */
-Profiler::start("load_i18n");
-$file = isset($_SESSION['lang']) ? $_SESSION['lang'] : ConfigManager::get('default_i18n', "en");
-@setlocale(LC_ALL, $file);
-$filename = home_dir . "i18n/" . $file . ".php";
-if (!strpos($file, "..") && file_exists($filename))
-	require($filename);
-else
-	require(home_dir . "i18n/en.php");
-$GLOBALS["i18n"] = $i18n_data;
-// Per-App i18n
-foreach ($apps_list as $app) {
-	foreach ($app_paths as $app_path) {
-		$filename = home_dir . $app_path . "/" . $app . "/i18n/".$file.".php";
-		if (file_exists($filename)) {
-			include($filename);
-			$GLOBALS["i18n"][$app] = $i18n_data;
-			break;
-		}
-	}
-}
-Profiler::end("load_i18n");
+i18n::Init();
 
 /* Start up the signal manager, register some signals */
 require_once(home_dir . "framework/signal_manager.php");

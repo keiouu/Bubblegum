@@ -4,6 +4,8 @@
  *
  */
 
+require_once(home_dir . "framework/config_manager.php");
+
 class i18n implements Iterator, Countable, arrayaccess
 {
 	private $map;
@@ -13,6 +15,52 @@ class i18n implements Iterator, Countable, arrayaccess
 			$this->map = $map;
 		}
 	}
+	
+	public static function Init() {
+		global $app_paths, $apps_list;
+		Profiler::start("load_i18n");
+		
+		// Decide on file to load
+		$file = isset($_SESSION['lang']) ? $_SESSION['lang'] : ConfigManager::get('default_i18n', "en");
+		$file = str_replace(".", "", $file);
+		@setlocale(LC_ALL, $file);
+		
+		// Deprecated - Load old i18n
+		$filename = home_dir . "i18n/" . $file . ".php";
+		if (file_exists($filename))
+			require($filename);
+		else
+			require(home_dir . "i18n/en.php");
+		$GLOBALS["i18n"] = $i18n_data;
+		$i18n_data = array();
+		
+		// Load Framework i18n
+		$filename = home_dir . "framework/i18n/" . $file . ".php";
+		if (file_exists($filename))
+			require($filename);
+		else
+			require(home_dir . "framework/i18n/en.php");
+		$GLOBALS["i18n"]["framework"] = $i18n_data;
+		$i18n_data = array();
+		
+		// Per-App i18n
+		foreach ($apps_list as $app) {
+			foreach ($app_paths as $app_path) {
+				$dir = home_dir . $app_path . "/" . $app . "/i18n/";
+				$filename = $dir . $file . ".php";
+				if (!file_exists($filename))
+					$filename = $dir . "en.php";
+				if (file_exists($filename)) {
+					include($filename);
+					$GLOBALS["i18n"][$app] = $i18n_data;
+					$i18n_data = array();
+					break;
+				}
+			}
+		}
+		Profiler::end("load_i18n");
+	}
+	
 	
 	public function __get($name) {
 		return $this->map[$name];

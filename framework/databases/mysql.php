@@ -1,7 +1,6 @@
 <?php
 /*
  * Tikapot MySQL Database Extension Class
- * v1.0
  *
  */
 
@@ -29,6 +28,7 @@ class MySQL extends Database
 	}
 	
 	public function query($query, $args=array()) {
+		$id = Profiler::start("mysql_query");
 		SignalManager::fire("on_db_query", array($query, $args));
 		if (debug_show_queries)
 			print $query . "\n";
@@ -42,6 +42,7 @@ class MySQL extends Database
 		$res = mysql_query($query, $this->_link);
 		if (strpos($query, "ATE TABLE") > 0 || strpos($query, "OP TABLE") > 0)
 			$this->populate_tables();
+		Profiler::end("mysql_query", $id);
 		return $res;
 	}
 	
