@@ -96,6 +96,29 @@ class Project extends Model
 		return Project::find(array("pk" => array("(" . $ids . ")", "IN")));
 	}
 	
+	public function track($user) {
+		Project_Link::get_or_create(array(
+			"project" => $this->pk,
+			"user" => $user->pk
+		));
+	}
+	
+	public function untrack($user) {
+		$link = Project_Link::get_or_ignore(array(
+			"project" => $this->pk,
+			"user" => $user->pk
+		));
+		if ($link)
+			$link->delete();
+	}
+	
+	public function tracked_by($user) {
+		return Project_Link::get_or_ignore(array(
+			"project" => $this->pk,
+			"user" => $user->pk
+		)) === null;
+	}
+	
 	public function __set_owner($obj) {
 		return get_class($obj) . "|" . $obj->pk;
 	}

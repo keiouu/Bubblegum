@@ -26,6 +26,8 @@ new AJAX_TaskDetailView("/api/project/(?P<project>\d+)/task/detail/");
 new AJAX_ProjectDetailView("/api/project/(?P<project>\d+)/detail/");
 new AJAX_TaskEditView("/api/project/(?P<project>\d+)/task/edit/");
 new AJAX_TaskAddView("/api/project/(?P<project>\d+)/task/add/");
+new AJAX_ProjectTrackView("/api/project/(?P<project>\d+)/track/");
+new AJAX_ProjectUnTrackView("/api/project/(?P<project>\d+)/untrack/");
 
 // New API
 new AJAX_TasksView("/api/tasks/");

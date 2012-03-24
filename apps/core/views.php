@@ -92,7 +92,8 @@ class AJAX_ActivityFeedView extends View
 			if (isset($obj->user)) {
 				$activity[] = array(
 					$obj->joined,
-					$obj->user->get_short_display_name() . " joined ".$obj->team."!"
+					$obj->user->get_short_display_name() . " joined ".$obj->team."!",
+					home_url . ""
 				);
 			}
 		}
@@ -100,7 +101,8 @@ class AJAX_ActivityFeedView extends View
 			if (isset($obj->completed_by)) {
 				$activity[] = array(
 					$obj->completed,
-					$obj->completed_by->get_short_display_name() . " completed ".$obj->name."!"
+					$obj->completed_by->get_short_display_name() . " completed ".$obj->name."!",
+					home_url . "projects/".$obj->project->pk."/"
 				);
 			}
 		}
@@ -108,7 +110,8 @@ class AJAX_ActivityFeedView extends View
 			if (isset($obj->created_by)) {
 				$activity[] = array(
 					$obj->created,
-					$obj->created_by->get_short_display_name() . " added task ".$obj->name."!"
+					$obj->created_by->get_short_display_name() . " added task ".$obj->name."!",
+					home_url . "projects/".$obj->project->pk."/"
 				);
 			}
 		}
@@ -119,7 +122,7 @@ class AJAX_ActivityFeedView extends View
 		foreach ($activity as $data) {
 			if ($i >= 10)
 				break;
-			print '<li>&raquo; <a href="'.home_url.'">'.$data[1].'</a></li>';
+			print '<li>&raquo; <a href="'.$data[2].'">'.$data[1].'</a></li>';
 			$i++;
 		}
 	}
@@ -343,6 +346,27 @@ class AJAX_ProjectDetailView extends JSONView
 		);
 		
 		return $request->user->logged_in();
+	}
+}
+
+class AJAX_ProjectTrackView extends View
+{
+	public function setup($request, $args) {
+		$request->project = Project::get_or_ignore($args['project']);
+		if (!$request->project)
+			die('Incorrect Project!');
+		return $request->user->logged_in();
+	}
+	
+	public function render($request, $args) {
+		$request->project->track($request->user);
+	}
+}
+
+class AJAX_ProjectUnTrackView extends AJAX_ProjectTrackView
+{
+	public function render($request, $args) {
+		$request->project->untrack($request->user);
 	}
 }
 ?>

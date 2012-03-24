@@ -7,6 +7,20 @@ require_once(home_dir . "apps/core/forms.php");
 {% block endbody %}
 <script type="text/javascript">
 var project_id = <?php print $request->project->pk; ?>;
+
+$("#track").click(function() {
+	$.ajax({
+	  <?php if ($request->project->tracked_by($request->user)) { ?>
+	  url: tp_home_url + "api/project/<?php print $request->project->pk; ?>/track/",
+	  <?php } else { ?>
+	  url: tp_home_url + "api/project/<?php print $request->project->pk; ?>/untrack/",
+	  <?php } ?>
+	  success: function(data) {
+       window.location = window.location;
+	  }
+	});
+	return false;
+});
 </script>
 <script src="{{home_url}}apps/core/media/js/utils.js"></script>
 <script src="{{home_url}}apps/core/media/js/project.feeds.js"></script>
@@ -20,8 +34,13 @@ var project_id = <?php print $request->project->pk; ?>;
 	</div>
 	<p style="padding-left: 10px;"><?php print $request->project->description; ?></p>
 	<p class="add-links">
-		<a data-toggle="modal" href="#milestone-add">Add new Milestone &raquo;</a>
-		<a data-toggle="modal" href="#task-add">Add new Task &raquo;</a>
+		<a data-toggle="modal" href="#milestone-add">Add new milestone &raquo;</a>
+		<a data-toggle="modal" href="#task-add">Add new task &raquo;</a>
+		<?php if ($request->project->tracked_by($request->user)) { ?>
+		<a href="#" id="track">Track this project &raquo;</a>
+		<?php } else { ?>
+		<a href="#" id="track">Stop tracking this project &raquo;</a>
+		<?php } ?>
 	</p>
 	<hr />
 	
