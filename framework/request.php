@@ -5,6 +5,7 @@
  */
 
 require_once(home_dir . "framework/i18n.php");
+require_once(home_dir . "framework/utils.php");
 
 class Request
 {
@@ -19,12 +20,28 @@ class Request
 		$this->vars = $_REQUEST;
 		$this->cookies = $_COOKIE;
 		$this->page = "/";
+		
 		if (isset($this->get[page_def])) {
 			$this->page = trim($this->get[page_def]);
 		}
+		
+		if (PHP_SAPI === 'cli') {
+			$this->cmd_args = array();
+			global $argv;
+			foreach ($argv as $arg) {
+				list($name, $sep, $val) = partition($arg, "=");
+				if ($val !== "")
+					$this->cmd_args[$name] = $val;
+			}
+			if (isset($this->cmd_args[page_def])) {
+				$this->page = trim($this->cmd_args[page_def]);
+			}
+		}
+		
 		if (isset($this->page[0]) && $this->page[0] == '/') {
 			$this->page = substr($this->page, 1);
 		}
+		
 		$this->fullPath = home_url . $this->page;
 		$this->page = '/' . $this->page;
 		$this->mimeType = $this->get_mime_type($this->page);
@@ -195,5 +212,5 @@ class Request
 	}
 }
 
-?>
+
 

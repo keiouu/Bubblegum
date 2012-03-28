@@ -28,4 +28,9 @@
 <script src="{{home_url}}apps/core/media/js/project.feeds.js"></script>
 <script src="{{home_url}}apps/core/media/js/feeds.ajax.js"></script>
 {% endblock endbody %}
+			<?php
+			include_once(home_dir . "lib/tp-git/git.php");
+			$git = new Git();
+			print_r($git->log());
+			?>
 

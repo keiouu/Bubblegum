@@ -89,5 +89,3 @@ $i18n_data = array(
 	"mfk_err2" => "Error: MultipleFKField received an invalid value: ",
 );
 
-?>
-

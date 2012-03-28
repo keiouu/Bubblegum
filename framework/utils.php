@@ -84,6 +84,22 @@ function ellipsize($string, $length) {
 	return substr($string, 0, $length - 3) . "..."; // TODO - break at words
 }
 
+function rmrf($dir) {
+	if (!is_dir($dir))
+		return;
+	$objects = scandir($dir);
+	foreach ($objects as $object) {
+		if ($object == "." || $object == "..")
+			continue;
+		
+		if (is_dir($dir . "/" . $object))
+			rmrf($dir . "/" . $object);
+		else
+			unlink($dir . "/" . $object);
+	}
+	rmdir($dir);
+}
+
 /* Debugging utilities */
 function analyze($var) {
 	ob_start();
@@ -100,5 +116,5 @@ function console_log($val) {
 function console_warn($val) {
 	console_log($val); // TODO
 }
-?>
- 
+
+

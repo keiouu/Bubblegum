@@ -65,4 +65,4 @@ class TableFormPrinter extends FormPrinter
 		print '</form>';
 	}
 }
-?>
+

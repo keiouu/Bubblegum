@@ -444,5 +444,4 @@ class SearchFormField extends FormField
 		return "searchfield";
 	}
 }
-?>
 

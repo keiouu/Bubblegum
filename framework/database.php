@@ -63,5 +63,3 @@ abstract class Database
 	}
 }
 
-?>
-

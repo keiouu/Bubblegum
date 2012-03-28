@@ -40,5 +40,3 @@ class BooleanField extends ModelField
 	}
 }
 
-?>
-

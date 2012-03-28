@@ -83,5 +83,3 @@ class PostgreSQL extends Database
 	}
 }
 
-?>
-

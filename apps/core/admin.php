@@ -7,6 +7,8 @@
 require_once(home_dir . "contrib/admin/core.php");
 require_once(dirname(__FILE__) . "/models.php");
 
+AdminModel::register("Log", new Log());
+
 AdminModel::register("Users", new Organisation());
 AdminModel::register("Users", new Team());
 AdminModel::register("Users", new Team_Link());

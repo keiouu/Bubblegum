@@ -324,5 +324,4 @@ class Form
 		return @mail($to, $subject, $message, $headers);
 	}
 }
-?>
 

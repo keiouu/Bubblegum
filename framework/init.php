@@ -97,4 +97,4 @@ try {
 	print $error->post_render($request);
 	Profiler::end("total");
 }
-?>
+

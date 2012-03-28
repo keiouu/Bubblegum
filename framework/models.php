@@ -71,4 +71,4 @@ class ContentType extends Model
 	}
 }
 
-?>
+

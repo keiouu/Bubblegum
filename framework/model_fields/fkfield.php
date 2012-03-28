@@ -246,5 +246,3 @@ class FKField extends ModelField implements ModelInterface
 	}
 }
 
-?>
-

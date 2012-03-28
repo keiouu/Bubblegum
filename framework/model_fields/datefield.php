@@ -61,5 +61,3 @@ class DateField extends ModelField
 	}
 }
 
-?>
-

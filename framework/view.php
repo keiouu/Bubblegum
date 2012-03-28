@@ -48,5 +48,5 @@ class View
 		include($this->page);
 	}
 }
-?>
+
 

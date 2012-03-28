@@ -11,5 +11,3 @@ class BigIntField extends IntegerField
 	protected static $db_type = "BIGINT";
 }
 
-?>
-

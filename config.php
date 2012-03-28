@@ -54,5 +54,5 @@ if (file_exists(home_dir . "app_list.php")) {
 }
 
 date_default_timezone_set("Europe/London");
-?>
+
 

@@ -95,5 +95,5 @@ class Profiler
 		return Profiler::get_total($block) / Profiler::get_call_count($block);
 	}
 }
-?>
+
 

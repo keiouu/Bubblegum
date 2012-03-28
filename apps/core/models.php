@@ -5,7 +5,9 @@
  */
 require_once(home_dir . "framework/models.php");
 require_once(home_dir . "framework/model_fields/init.php");
+require_once(home_dir . "framework/utils.php");
 require_once(home_dir . "contrib/auth/models.php");
+require_once(home_dir . "lib/tp-git/git.php");
 
 function get_potential_assignees() {
 	$assignees = array();
@@ -25,6 +27,15 @@ function get_potential_assignees() {
 	}
 	
 	return $assignees;
+}
+
+class Log extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("content", new TextField());
+	}
+	public function __toString() { return $this->content; }
 }
 
 class Organisation extends Model
@@ -75,6 +86,12 @@ class Project extends Model
 	}
 	
 	public function __toString() { return $this->name; }
+	
+	public function post_create() {
+		// Create git repository
+		$path = repo_dir . $this->pk;
+		analyze(Git::Init($path));
+	}
 	
 	public static function mine($user) {
 		// All projects a user is a member of

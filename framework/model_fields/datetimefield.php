@@ -51,5 +51,3 @@ class DateTimeField extends DateField
 	}
 }
 
-?>
-

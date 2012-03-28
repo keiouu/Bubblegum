@@ -1,0 +1,82 @@
+#!/bin/sh
+
+# --- Command line
+refname="$1"
+oldrev="$2"
+newrev="$3"
+
+# --- Safety check
+if [ -z "$GIT_DIR" ]; then
+	echo "Don't run this script from the command line." >&2
+	echo " (if you want, you could supply GIT_DIR then run" >&2
+	echo "  $0 <ref> <oldrev> <newrev>)" >&2
+	exit 1
+fi
+
+if [ -z "$refname" -o -z "$oldrev" -o -z "$newrev" ]; then
+	echo "Usage: $0 <ref> <oldrev> <newrev>" >&2
+	exit 1
+fi
+
+# --- Config
+localdir=$(pwd)
+allowunannotated=$(git config --bool hooks.allowunannotated)
+
+# --- Check types
+# if $newrev is 0000...0000, it's a commit to delete a ref.
+zero="0000000000000000000000000000000000000000"
+if [ "$newrev" = "$zero" ]; then
+	newrev_type=delete
+else
+	newrev_type=$(git cat-file -t $newrev)
+fi
+
+case "$refname","$newrev_type" in
+	refs/tags/*,commit)
+		# un-annotated tag
+		short_refname=${refname##refs/tags/}
+		if [ "$allowunannotated" != "true" ]; then
+			echo "*** The un-annotated tag, $short_refname, is not allowed in this repository" >&2
+			echo "*** Use 'git tag [ -a | -s ]' for tags you want to propagate." >&2
+			exit 1
+		fi
+		;;
+	refs/tags/*,delete)
+		# delete tag
+		php ../../index.php tpage=/api/git/tag/delete/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		exit 0
+		;;
+	refs/tags/*,tag)
+		# annotated tag
+		php ../../index.php tpage=/api/git/tag/create/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		exit 0
+		;;
+	refs/heads/*,commit)
+		# branch
+		php ../../index.php tpage=/api/git/branch/create/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		exit 0
+		;;
+	refs/heads/*,delete)
+		# delete branch
+		php ../../index.php tpage=/api/git/branch/delete/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		exit 0
+		;;
+	refs/remotes/*,commit)
+		# tracking branch
+		php ../../index.php tpage=/api/git/tracking-branch/create/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		exit 0
+		;;
+	refs/remotes/*,delete)
+		# delete tracking branch
+		php ../../index.php tpage=/api/git/tracking-branch/delete/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		exit 0
+		;;
+	*)
+		# Anything else (is there anything else?)
+		echo "*** Update hook: unknown type of update to ref $refname of type $newrev_type" >&2
+		exit 1
+		;;
+esac
+
+# --- Finished
+exit 0

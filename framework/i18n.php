@@ -136,5 +136,4 @@ class i18n implements Iterator, Countable, arrayaccess
 	/* End Array Access */
 }
 
-?>
 

@@ -6,6 +6,8 @@
  * @author James Thompson <keiouu@gmail.com>
  */
 
+require_once(home_dir . "framework/utils.php");
+
 class SecurityException extends Exception {}
 
 class Git
@@ -30,7 +32,37 @@ class Git
 		return $output;
 	}
 	
-	public function log() {
+	/**
+	 * Equivalent to "git init --bare"
+	 * Also sets up our hooks
+	 *
+	 * @param string $dir The dir to the repo
+	 */
+	public static function Init($dir, $description) {
+		if (!ends_with($dir, "/"))
+			$dir = $dir . "/";
+		
+		// Create and move to the git dir
+		if (!is_file($dir))
+			mkdir($dir);
+		chdir($dir);
+		
+		// Init the git dir
+		$ret = Git::_exec("git init", array("--bare"));
+		
+		// Setup our hooks
+		rmrf($dir . "hooks");
+		mkdir($dir . "hooks");
+		$objects = scandir(home_dir . "repo/hooks/");
+		foreach ($objects as $object) {
+			if ($object == "." || $object == "..")
+				continue;
+			copy(home_dir . "repo/hooks/" . $object, $dir . "hooks/" . $object);
+		}
+		
+		// TODO - implement description
+		
+		return $ret;
 	}
 }
 ?>

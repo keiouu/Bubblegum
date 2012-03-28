@@ -361,5 +361,5 @@ class ModelQuery implements Iterator, Countable
 	/* End of Iterator methods */
 }
 
-?>
+
 
