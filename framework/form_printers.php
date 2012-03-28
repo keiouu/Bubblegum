@@ -29,7 +29,7 @@ class HTMLFormPrinter extends FormPrinter
 			print '</fieldset>';
 		}
 		print '<fieldset>';
-		print '<input type="submit" name="submit" value="'.(strlen($submit_text) > 0 ? $submit_text : $GLOBALS["i18n"]["submit"]).'" />';
+		print '<input type="submit" name="submit" value="'.(strlen($submit_text) > 0 ? $submit_text : $GLOBALS['i18n']['framework']["submit"]).'" />';
 		print '</fieldset>';
 		print '</form>';
 	}
@@ -60,9 +60,9 @@ class TableFormPrinter extends FormPrinter
 			print '</table></fieldset>';
 		}
 		print '<fieldset>';
-		print '<input type="submit" name="submit" value="'.(strlen($submit_text) > 0 ? $submit_text : $GLOBALS["i18n"]["submit"]).'" />';
+		print '<input type="submit" name="submit" value="'.(strlen($submit_text) > 0 ? $submit_text : $GLOBALS['i18n']['framework']["submit"]).'" />';
 		print '</fieldset>';
 		print '</form>';
 	}
 }
-
+?>

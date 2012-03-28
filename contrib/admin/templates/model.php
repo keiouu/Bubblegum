@@ -2,8 +2,8 @@
 
 {% block sidebar_menu %}
 <div class="well">
-  <h5>{% i18n "admin_menu" %}</h4>
-  <button class="btn btn-primary" onClick="parent.location='<?php echo $request->fullPath; ?>add/'">{% i18n "admin_new" %} <?php echo $request->model; ?></button>
+  <h5>{% local_i18n "admin_menu" %}</h4>
+  <button class="btn btn-primary" onClick="parent.location='<?php echo $request->fullPath; ?>add/'">{% local_i18n "admin_new" %} <?php echo $request->model; ?></button>
   <?php
   // Extra actions
   foreach ($request->admin->get_actions() as $action) {
@@ -12,8 +12,8 @@
 	}
   }
   ?>
-  <button class="btn btn-danger" id="button_delete" data-toggle="modal" data-target="#delete-confirm-modal" data-backdrop="static">{% i18n "admin_delete_all" %}</button>
-  <p>{% i18n "admin_max_items" %}</p>
+  <button class="btn btn-danger" id="button_delete" data-toggle="modal" data-target="#delete-confirm-modal" data-backdrop="static">{% local_i18n "admin_delete_all" %}</button>
+  <p>{% local_i18n "admin_max_items" %}</p>
   <select name="max_count" class="pagination_limit">
   	<?php
   	for ($i = 1; $i <= 1000; $i *= 2) {
@@ -33,7 +33,7 @@
 </div>
 <?php if (count($request->admin->get_filters()) > 0) { ?>
 <div class="well filters">
-	<h5>{% i18n "admin_filters" %}</h5>
+	<h5>{% local_i18n "admin_filters" %}</h5>
 	<?php
 	require_once(home_dir . "framework/utils.php");
 	foreach ($request->admin->get_filters() as $filter) {
@@ -71,7 +71,7 @@
 				$linked_headings = $request->dataset->get_linked_headings();
 				$dataset = $request->dataset->get_page($request->current_page, $request->pagination_limit);
 				if (count($dataset) == 0) {
-					print '<tr><td colspan="'.(count($request->dataset->get_headings()) + 1).'">{% i18n "admin_nodata" %}</td></tr>';
+					print '<tr><td colspan="'.(count($request->dataset->get_headings()) + 1).'">{% local_i18n "admin_nodata" %}</td></tr>';
 				} else {
 					foreach ($dataset as $data) {
 						print '<tr>';
@@ -98,10 +98,10 @@
 			// The previous button
 			if ($request->current_page == 1) {
 				$url = $request->fullPath . "?" . $request->query_string();
-				print '<li class="prev disabled"><a href="'.$url.'" onClick="return false;">&larr; {% i18n "admin_prev" %}</a></li>';
+				print '<li class="prev disabled"><a href="'.$url.'" onClick="return false;">&larr; {% local_i18n "admin_prev" %}</a></li>';
 			} else {
 				$url = $request->create_url($request->fullPath, $request->query_string(), "page=" . ($request->current_page - 1));
-				print '<li class="prev"><a href="'.$url.'">&larr; {% i18n "admin_prev" %}</a></li>';
+				print '<li class="prev"><a href="'.$url.'">&larr; {% local_i18n "admin_prev" %}</a></li>';
 			}
 			
 			// The middle buttons
@@ -114,10 +114,10 @@
 			// The next button
 			if ($count <= $request->current_page) {
 				$url = $request->fullPath . "?" . $request->query_string();
-				print '<li class="next disabled"><a href="'.$url.'" onClick="return false;">{% i18n "admin_next" %} &rarr;</a></li>';
+				print '<li class="next disabled"><a href="'.$url.'" onClick="return false;">{% local_i18n "admin_next" %} &rarr;</a></li>';
 			} else {
 				$url = $request->create_url($request->fullPath, $request->query_string(), "page=" . ($request->current_page + 1));
-				print '<li class="next"><a href="'.$url.'">{% i18n "admin_next" %} &rarr;</a></li>';
+				print '<li class="next"><a href="'.$url.'">{% local_i18n "admin_next" %} &rarr;</a></li>';
 			}
 			?>
 		</ul>

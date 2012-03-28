@@ -48,10 +48,10 @@ class TemplateView extends View
 		
 		// Do we want to set an app (for local i18n etc)
 		$local_app = "";
-		preg_match('/{% set_app \"(?P<app>[[:punct:]\w]+)\" %}/', $tpl_output, $matches);
+		preg_match('/{% set_app \"(?P<app>[[:punct:]\w]+)\" %}/', $page, $matches);
 		if (isset($matches['app'])) {
 			$local_app = $matches['app'];
-			$page = preg_replace('/{% set_app "'.$matches['app'].'" %}/', "", $tpl_output);
+			$page = preg_replace('/{% set_app "'.$matches['app'].'" %}/', "", $page);
 		}
 		
 		// Check blocks

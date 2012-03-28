@@ -1,8 +1,8 @@
 {% extends "contrib/admin/templates/base.php" %}
 
 {% block breadcrumbs %}
-<li><a href="{{home_url}}admin/">{% i18n "admin_home" %}</a> <span class="divider">/</span></li>
-<li class="active">{% i18n "admin_edit_config" %}</li>
+<li><a href="{{home_url}}admin/">{% local_i18n "admin_home" %}</a> <span class="divider">/</span></li>
+<li class="active">{% local_i18n "admin_edit_config" %}</li>
 {% endblock %}
             
 {% block body %}
@@ -11,7 +11,7 @@
 	if (is_writable(home_dir . "config.php")) {
 		print '<div class="alert-message warning fade in" data-alert="true">
         <a class="close" href="#">×</a>
-        <p>{% i18n "admin_config_error1" %}</p>
+        <p>{% local_i18n "admin_config_error1" %}</p>
       </div>';
 	}
 	?>

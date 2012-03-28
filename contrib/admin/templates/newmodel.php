@@ -2,8 +2,8 @@
 
 {% block sidebar_menu %}
 <div class="well">
-  <h5>{% i18n "admin_menu" %}</h5>
-  <p>{% i18n "admin_nothing" %}</p>
+  <h5>{% local_i18n "admin_menu" %}</h5>
+  <p>{% local_i18n "admin_nothing" %}</p>
 </div>
 {% endblock %}
             

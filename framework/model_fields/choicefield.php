@@ -13,7 +13,7 @@ class ChoiceField extends CharField implements ArrayAccess
 	
 	public function __construct($choices, $default = "", $max_length = 0, $_extra = "") {
 		if (!is_array($choices))
-			throw new Exception($GLOBALS["i18n"]["fielderr12"]);
+			throw new Exception($GLOBALS['i18n']['framework']["fielderr12"]);
 		
 		if ($max_length === 0) {
 			foreach ($choices as $val => $choice) {
@@ -27,7 +27,7 @@ class ChoiceField extends CharField implements ArrayAccess
 	}
 	
 	public function offsetSet($offset, $value) {
-		throw new Exception($GLOBALS["i18n"]["fielderr19"]);
+		throw new Exception($GLOBALS['i18n']['framework']["fielderr19"]);
 	}
 	
 	public function offsetExists($offset) {
@@ -78,7 +78,7 @@ class ChoiceField extends CharField implements ArrayAccess
 			if ($value == $choice) // In case they go by the right side of the array!
 				return parent::set_value($val);
 		}
-		console_log($GLOBALS["i18n"]["fielderr14"] . " " . $value);
+		console_log($GLOBALS['i18n']['framework']["fielderr14"] . " " . $value);
 	}
 	
 	public function get_formfield($name) {
@@ -90,8 +90,9 @@ class ChoiceField extends CharField implements ArrayAccess
 		foreach ($this->choices as $val => $choice)
 			if ($mval == $val || $mval == $choice)
 				return parent::validate($val);
-		array_push($this->errors, $GLOBALS["i18n"]["fielderr13"] . " " . $mval);
+		array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr13"] . " " . $mval);
 		return false;
 	}
 }
 
+?>

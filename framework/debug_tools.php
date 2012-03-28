@@ -18,8 +18,8 @@ class DebugTools
 				$debug_text .= trim($val) . '<br/>';
 		$debug_info = trim($debug_info);
 		if (strlen($debug_info) > 0)
-			$debug_text .= $GLOBALS["i18n"]["debug_scriptout"] . '<br/>' . $debug_info;
-		$tpl->register_var("debug_info", strlen($debug_text) > 0 ? $debug_text : $GLOBALS["i18n"]["debug_nooutput"]);
+			$debug_text .= $GLOBALS['i18n']['framework']["debug_scriptout"] . '<br/>' . $debug_info;
+		$tpl->register_var("debug_info", strlen($debug_text) > 0 ? $debug_text : $GLOBALS['i18n']['framework']["debug_nooutput"]);
 		$tpl->register_var("debug_info_count", strlen($debug_text) > 0 ? '(' . count(preg_split("/(<br\s*\/>|<br>)/", $debug_text)) . ')' : '');
 		$tpl->register_var("db_queries", ProfileData::$db_total_queries);
 		$query_info = "";
@@ -39,3 +39,4 @@ class DebugTools
 	}
 }
 
+?>

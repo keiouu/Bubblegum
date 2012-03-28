@@ -25,7 +25,7 @@ class PostgreSQL extends Database
 		$this->_link = pg_connect($connect_str);
 		$this->_connected = $this->_link ? true : false;
 		if (!$this->_connected)
-			throw new NotConnectedException($GLOBALS["i18n"]["dberr1"]);
+			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr1"]);
 		return $this->_connected;
 	}
 	
@@ -39,7 +39,7 @@ class PostgreSQL extends Database
 		if (debug_show_queries)
 			print $query . "\n";
 		if (!$this->_connected) {
-			throw new NotConnectedException($GLOBALS["i18n"]["dberr2"]);
+			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr2"]);
 		}
 		$res = pg_query_params($this->_link, $query, $args);
 		if (strpos($query, "ATE TABLE") > 0 || strpos($query, "OP TABLE") > 0)
@@ -50,7 +50,7 @@ class PostgreSQL extends Database
 	
 	public function fetch($result) {
 		if (!$this->_connected) {
-			throw new NotConnectedException($GLOBALS["i18n"]["dberr2"]);
+			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr2"]);
 		}
 		return pg_fetch_array($result, NULL, PGSQL_BOTH);
 	}
@@ -82,4 +82,6 @@ class PostgreSQL extends Database
 		return pg_escape_string($this->_link, $value);
 	}
 }
+
+?>
 

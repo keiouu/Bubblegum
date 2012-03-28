@@ -8,7 +8,7 @@
 <div class="container">
 	<div class="content">
 		<div class="page-header">
-			<h1>{% i18n "admin_register" %}</h1>
+			<h1>{% local_i18n "admin_register" %}</h1>
 		</div>
 		<?php
 		require_once(home_dir . "contrib/admin/core.php");
@@ -17,7 +17,7 @@
 		?>
 	</div>
 	<footer>
-	  <p>{% i18n "admin_copyright" %}</p>
+	  <p>{% local_i18n "admin_copyright" %}</p>
 	</footer>
 </div>
 {% endblock container %}

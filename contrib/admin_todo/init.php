@@ -22,13 +22,13 @@ class TodoSidebar extends AdminSidebar
 				$count++;
 			}
 			if ($items->count() > $count)
-				$render_data .= '<li><a href="'.home_url.'admin/todo/Todo_Item/">'.$request->i18n['admin_todo_message'].'</a></li>';
+				$render_data .= '<li><a href="'.home_url.'admin/todo/Todo_Item/">'.$request->i18n['admin_todo']['admin_todo_message'].'</a></li>';
 			$render_data .= '</ul>';
 		}
 		return $render_data;
 	}
 }
 
-AdminManager::register_sidebar(new TodoSidebar($GLOBALS['i18n']['admin_todo_title']));
+AdminManager::register_sidebar(new TodoSidebar($GLOBALS['i18n']['admin_todo']['admin_todo_title']));
 ?>
 

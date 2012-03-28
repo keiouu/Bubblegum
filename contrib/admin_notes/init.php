@@ -23,7 +23,7 @@ class NotePanel extends AdminIndexPanel
 }
 
 foreach (Admin_Note::objects() as $item) {
-	AdminManager::register_panel(new NotePanel($GLOBALS['i18n']['admin_notes_title'], $item));
+	AdminManager::register_panel(new NotePanel($GLOBALS['i18n']['admin_notes']['admin_notes_title'], $item));
 }
 ?>
 

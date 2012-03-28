@@ -38,7 +38,7 @@ class ConfigManager
 	public static function set_app_config($app, $key, $value) {
 		// Shouldnt exist!
 		if (!isset(ConfigManager::$app_vars[$app][$key])) {
-			console_log($GLOBALS['i18n']['appcachewarn'] . $app . "." . $key);
+			console_log($GLOBALS['i18n']['framework']['appcachewarn'] . $app . "." . $key);
 			return "";
 		}
 		
@@ -52,7 +52,7 @@ class ConfigManager
 	public static function get_app_config($app, $key) {
 		// Shouldnt exist!
 		if (!isset(ConfigManager::$app_vars[$app][$key])) {
-			console_log($GLOBALS['i18n']['appcachewarn'] . $app . "." . $key);
+			console_log($GLOBALS['i18n']['framework']['appcachewarn'] . $app . "." . $key);
 			return "";
 		}
 		
@@ -108,7 +108,7 @@ class ConfigManager
 	public static function get_or_except($key) {
 		$val = ConfigManager::get($key, null);
 		if ($val === null)
-			throw new ConfigException($GLOBALS["i18n"]["config_except"] . $key);
+			throw new ConfigException($GLOBALS['i18n']['framework']['config_except'] . $key);
 		return $val;
 	}
 	
@@ -130,3 +130,4 @@ class ConfigManager
 	}
 }
 
+?>

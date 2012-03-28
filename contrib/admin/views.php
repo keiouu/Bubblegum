@@ -35,7 +35,7 @@ class AdminView extends BaseAdminView
 {
 	public function setup($request, $args) {
 		if ($request->user->logged_in() && !$request->user->has_permission("admin_site"))
-			$request->message($request->i18n['admin_permissue'], "error");
+			$request->message($request->i18n['admin']['admin_permissue'], "error");
 		if (!$request->user->logged_in())
 			header("Location: " . home_url . "admin/login/");
 		return $request->user->logged_in() && $request->user->has_permission("admin_site") && parent::setup($request, $args);
@@ -58,10 +58,10 @@ class AdminRegisterView extends BaseAdminView
 	public function setup($request, $args) {
 		$request->admin_register_form = new Form(array(
 			new Fieldset("", array(
-				"admin_password" => new PasswordFormField($request->i18n["auth_apass"], "", array("placeholder"=>$request->i18n["auth_apass_holder"])),
-				"email" => new EmailFormField($request->i18n["auth_email"], "", array("placeholder"=>$request->i18n["auth_email_holder"])),
-				"password" => new PasswordFormField($request->i18n["auth_password"], "", array("placeholder"=>$request->i18n["auth_password_holder"])),
-				"password2" => new PasswordFormField($request->i18n["auth_password2"], "", array("placeholder"=>$request->i18n["auth_password2_holder"])),
+				"admin_password" => new PasswordFormField($request->i18n['admin']["auth_apass"], "", array("placeholder"=>$request->i18n['admin']["auth_apass_holder"])),
+				"email" => new EmailFormField($request->i18n['admin']["auth_email"], "", array("placeholder"=>$request->i18n['admin']["auth_email_holder"])),
+				"password" => new PasswordFormField($request->i18n['admin']["auth_password"], "", array("placeholder"=>$request->i18n['admin']["auth_password_holder"])),
+				"password2" => new PasswordFormField($request->i18n['admin']["auth_password2"], "", array("placeholder"=>$request->i18n['admin']["auth_password2_holder"])),
 			)),
 		), $request->fullPath, "POST");
 		
@@ -70,18 +70,18 @@ class AdminRegisterView extends BaseAdminView
 			$cfg_admin_pass = ConfigManager::get_or_except('admin_password');
 			$frm_admin_pass = $request->admin_register_form->get_value("admin_password");
 			if ($frm_admin_pass !== $cfg_admin_pass && sha1($frm_admin_pass) !== $cfg_admin_pass && md5($frm_admin_pass) !== $cfg_admin_pass) {
-				$request->message($request->i18n["auth_err1"], "error");
+				$request->message($request->i18n['admin']["auth_err1"], "error");
 				return true;
 			}
 			if (!$request->admin_register_form->get_value("password") == $request->admin_register_form->get_value("password2")) {
-				$request->message($request->i18n["auth_err2"], "error");
+				$request->message($request->i18n['admin']["auth_err2"], "error");
 				return true;
 			}
 			try {
 				list($user, $code) = User::create_user($request->admin_register_form->get_value("email"), $request->admin_register_form->get_value("password"), $request->admin_register_form->get_value("email"), $request->user->_status['admin'], true);
 				SignalManager::fire("admin_on_register", $user);
 				$request->admin_register_form->clear_data();
-				$request->message($request->i18n["auth_success"], "success");
+				$request->message($request->i18n['admin']["auth_success"], "success");
 				if ($code)
 					$code->delete();
 				@User::login($request, $request->admin_register_form->get_value("email"), $request->admin_register_form->get_value("password"));
@@ -216,11 +216,11 @@ class AdminAddModelView extends AdminModelView
 		}
 		catch (Exception $e) {
 			$success = false;
-			$request->message($GLOBALS['i18n']['admin_form_add_error']);
+			$request->message($request->i18n["admin"]['admin_form_add_error']);
 		}
 		if ($success && $obj !== NULL) {
 			SignalManager::fire("admin_on_create", array($request->user, $obj));
-			$request->message($GLOBALS['i18n']['admin_model_add'], "success");
+			$request->message($request->i18n["admin"]['admin_model_add'], "success");
 			if (!isset($request->post['submit_stay'])) {
 				header("Location: " . $this->model_url);
 				die();
@@ -255,11 +255,11 @@ class AdminEditModelView extends AdminModelView
 		}
 		catch (Exception $e) {
 			$success = false;
-			$request->message($GLOBALS['i18n']['admin_form_add_error']);
+			$request->message($request->i18n["admin"]['admin_form_add_error']);
 		}
 		if ($success) {
 			SignalManager::fire("admin_on_edit", array($request->user, $request->model_obj));
-			$request->message($GLOBALS['i18n']['admin_model_edit'], "success");
+			$request->message($request->i18n["admin"]['admin_model_edit'], "success");
 			if (!isset($request->post['submit_stay'])) {
 				header("Location: " . $this->model_url);
 				die();

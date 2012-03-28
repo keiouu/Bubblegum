@@ -13,7 +13,7 @@ class FileField extends CharField
 	
 	public function __construct($location, $extensions = array(), $_extra = "") {
 		if (!is_array($extensions))
-			throw new Exception($GLOBALS["i18n"]["fielderr15"]);
+			throw new Exception($GLOBALS['i18n']['framework']["fielderr15"]);
 		$this->location = $location;
 		$this->extensions = $extensions;
 		parent::__construct(strlen($location) + 500, "", $_extra);
@@ -63,3 +63,4 @@ class ImageField extends FileField
 	}
 }
 
+?>

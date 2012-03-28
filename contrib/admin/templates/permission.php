@@ -10,6 +10,6 @@
 
 {% block body %}
 <div class="hero-unit">
-	<h2>{% i18n "admin_permission_failure" %}</h2>
+	<h2>{% local_i18n "admin_permission_failure" %}</h2>
 </div>
 {% endblock %}

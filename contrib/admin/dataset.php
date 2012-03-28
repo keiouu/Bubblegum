@@ -11,7 +11,7 @@ class DataSet
 	
 	public function __construct($model, $queryset, $headings = null, $linked_headings = null) {
 		if (is_array($this->queryset))
-			throw new Exception($GLOBALS["i18n"]["dataset_error0"]);
+			throw new Exception($GLOBALS["i18n"]["admin"]["dataset_error0"]);
 		$this->model = $model;
 		$this->queryset = $queryset;
 		$this->headings = $headings;

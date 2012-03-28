@@ -25,14 +25,7 @@ class i18n implements Iterator, Countable, arrayaccess
 		$file = str_replace(".", "", $file);
 		@setlocale(LC_ALL, $file);
 		
-		// Deprecated - Load old i18n
-		$filename = home_dir . "i18n/" . $file . ".php";
-		if (file_exists($filename))
-			require($filename);
-		else
-			require(home_dir . "i18n/en.php");
-		$GLOBALS["i18n"] = $i18n_data;
-		$i18n_data = array();
+		$GLOBALS['i18n'] = array();
 		
 		// Load Framework i18n
 		$filename = home_dir . "framework/i18n/" . $file . ".php";
@@ -40,7 +33,7 @@ class i18n implements Iterator, Countable, arrayaccess
 			require($filename);
 		else
 			require(home_dir . "framework/i18n/en.php");
-		$GLOBALS["i18n"]["framework"] = $i18n_data;
+		$GLOBALS['i18n']['framework'] = $i18n_data;
 		$i18n_data = array();
 		
 		// Per-App i18n
@@ -52,7 +45,7 @@ class i18n implements Iterator, Countable, arrayaccess
 					$filename = $dir . "en.php";
 				if (file_exists($filename)) {
 					include($filename);
-					$GLOBALS["i18n"][$app] = $i18n_data;
+					$GLOBALS['i18n'][$app] = $i18n_data;
 					$i18n_data = array();
 					break;
 				}
@@ -70,18 +63,23 @@ class i18n implements Iterator, Countable, arrayaccess
 		return isset($this->map[$name]);
 	}
 
-	public function buildJS() {
-		$js = "var i18n = new Object();\n";
-		foreach ($this->map as $name => $val) {
-			$name = str_replace(" ", "_", $name);
-			if (!preg_match("/^[a-z]/", $name)) {
-				$name = "i" . $name;
-			}
-			$val = str_replace("'", "\\'", $val);
-			$val = str_replace("\n", "\\n", $val);
-			$js .= "i18n." . $name . " = '".$val."';\n";
+	private function toJS($name, $val) {
+		if (is_array($val)) {
+			$js = "";
+			foreach ($val as $_name => $_val)
+				$js .= $this->toJS($_name, $_val);
+			return $js;
 		}
-		return $js;
+		$name = str_replace(" ", "_", $name);
+		if (!preg_match("/^[a-z]/", $name))
+			$name = "i" . $name;
+		$val = str_replace("'", "\\'", $val);
+		$val = str_replace("\n", "\\n", $val);
+		return "i18n." . $name . " = '".$val."';\n";
+	}
+
+	public function buildJS() {
+		return "var i18n = new Object();\n" . $this->toJS("", $this->map);
 	}
 	
 	public function count() {
@@ -136,4 +134,5 @@ class i18n implements Iterator, Countable, arrayaccess
 	/* End Array Access */
 }
 
+?>
 

@@ -72,4 +72,5 @@ class IntermediateModel extends Model
 		return $this->link->validate();
 	}
 }
+?>
 

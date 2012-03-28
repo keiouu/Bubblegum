@@ -49,7 +49,7 @@ abstract class Model
 		if ($name === "")
 			$name = get_class(static::get_temp_instance());
 		$lower_name = strtolower($name);
-		return isset($GLOBALS["i18n"]["model_" . $lower_name]) ? $GLOBALS["i18n"]["model_" . $lower_name] : $name;
+		return isset($GLOBALS['i18n']['framework']["model_" . $lower_name]) ? $GLOBALS['i18n']['framework']["model_" . $lower_name] : $name;
 	}
 	
 	public static function get_content_type() {
@@ -118,9 +118,9 @@ abstract class Model
 		else
 			$results = static::find(array("pk" => $arg));
 		if ($results->count() == 0)
-			throw new ModelExistsException($GLOBALS["i18n"]["noobjexist"]);
+			throw new ModelExistsException($GLOBALS['i18n']['framework']["noobjexist"]);
 		if ($results->count() > 1)
-			throw new ModelQueryException($GLOBALS["i18n"]["multiobjexist"]);
+			throw new ModelQueryException($GLOBALS['i18n']['framework']["multiobjexist"]);
 		return $results->get(0);
 	}
 	
@@ -134,7 +134,7 @@ abstract class Model
 				return $obj;
 			return Null;
 		} catch (Exception $e) {
-			throw new ModelQueryException($GLOBALS["i18n"]["error1"] . $e->getMessage());
+			throw new ModelQueryException($GLOBALS['i18n']['framework']["error1"] . $e->getMessage());
 		}
 		return Null;
 	}
@@ -199,7 +199,7 @@ abstract class Model
 	protected function add_inclusive_field($name, $type, $direction = 2) {
 		// Check its an FK Field
 		if (!($type instanceof ModelInterface))
-			throw new InclusionException($GLOBALS['i18n']['fielderr16']);
+			throw new InclusionException($GLOBALS['i18n']['framework']['fielderr16']);
 		$this->add_field($name, $type);
 		$this->inclusive_fields[$name] = $direction;
 	}
@@ -280,7 +280,7 @@ abstract class Model
 				return $lifield->get_field($name);
 		}
 		
-		throw new FieldException($GLOBALS["i18n"]["fieldne"] . ' ' . get_class(new static()) . ":$name.");
+		throw new FieldException($GLOBALS['i18n']['framework']["fieldne"] . ' ' . get_class(new static()) . ":$name.");
 	}
 	
 	public function __set($name, $value) {
@@ -305,7 +305,7 @@ abstract class Model
 		}
 		
 		if (!$li_found && !isset($this->fields[$name]))
-			throw new FieldException($GLOBALS["i18n"]["fieldne"] . " '$name'.");
+			throw new FieldException($GLOBALS['i18n']['framework']["fieldne"] . " '$name'.");
 	}
 	
 	// isset checking for fields
@@ -407,11 +407,11 @@ abstract class Model
 		$columns = $db->get_columns($table_name);
 		foreach ($columns as $column => $type) {
 			if (!array_key_exists($column, $fields))
-				throw new TableValidationException($column . " ".$GLOBALS["i18n"]["nolongerpart"]." " . $table_name);
+				throw new TableValidationException($column . " ".$GLOBALS['i18n']['framework']["nolongerpart"]." " . $table_name);
 		}
 		foreach ($fields as $field => $type) {
 			if (!array_key_exists($field, $columns))
-				throw new TableValidationException($field . " ".$GLOBALS["i18n"]["shdin"]." " . $table_name);
+				throw new TableValidationException($field . " ".$GLOBALS['i18n']['framework']["shdin"]." " . $table_name);
 		}
 		return True;
 	}
@@ -506,11 +506,11 @@ abstract class Model
 	// Saves the object to the database, returns ID
 	public function save() {
 		if (!$this->pre_save())
-			throw new ValidationException($GLOBALS["i18n"]["saveerror1"]);
+			throw new ValidationException($GLOBALS['i18n']['framework']["saveerror1"]);
 		if (!$this->_valid_model)
-			throw new ValidationException($GLOBALS["i18n"]["saveerror2"] . " " . get_class($this));
+			throw new ValidationException($GLOBALS['i18n']['framework']["saveerror2"] . " " . get_class($this));
 		if (!$this->validate())
-			throw new ValidationException($GLOBALS["i18n"]["error1"] . get_class($this) . $GLOBALS["i18n"]["saveerror3"] . "<br />" . $this->get_error_string());
+			throw new ValidationException($GLOBALS['i18n']['framework']["error1"] . get_class($this) . $GLOBALS['i18n']['framework']["saveerror3"] . "<br />" . $this->get_error_string());
 
 		$this->create_table();
 		$db = Database::create($this->_using);
@@ -574,5 +574,5 @@ abstract class Model
 	}
 }
 
-
+?>
 

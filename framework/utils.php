@@ -116,5 +116,5 @@ function console_log($val) {
 function console_warn($val) {
 	console_log($val); // TODO
 }
-
-
+?>
+ 

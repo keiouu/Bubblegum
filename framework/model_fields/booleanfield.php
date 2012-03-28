@@ -35,8 +35,10 @@ class BooleanField extends ModelField
 		$val = ($val === NULL) ? $this->value : $val;
 		$valid = $val === true || $val === false || $val === 0 || $val === 1 || $val === NULL || strtolower($val) === 'true' || strtolower($val) === "t" || $val === "1" || strtolower($val) === 'false' || strtolower($val) === "f" || $val === "0";
 		if (!$valid)
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr1"] . " " . $val);
+			array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr1"] . " " . $val);
 		return $valid;
 	}
 }
+
+?>
 

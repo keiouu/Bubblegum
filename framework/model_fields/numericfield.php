@@ -32,12 +32,12 @@ class NumericField extends ModelField
 		if (strlen($this->precision) > 0) {
 			$parts = split(',', $this->precision);
 			if (count($parts) < 2 || !preg_match('/^\d+$/', $parts[0]) || !preg_match('/^\d+$/', $parts[1])) {
-				array_push($this->errors, $GLOBALS["i18n"]["fielderr9"]);
+				array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr9"]);
 				return False;
 			}
 		}
 		if (strlen($val) > 0 && !is_numeric($val)) {
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr10"]);
+			array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr10"]);
 			return False;
 		}
 		return True;

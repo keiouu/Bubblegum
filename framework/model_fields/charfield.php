@@ -31,7 +31,7 @@ class CharField extends ModelField
 	public function validate($val = NULL) {
 		$val = ($val === NULL) ? $this->get_value() : $val;
 		if ($this->max_length > 0 && strlen($val) > $this->max_length) {
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr2"]);
+			array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr2"]);
 			return False;
 		}
 		return True;
@@ -49,3 +49,4 @@ class CharField extends ModelField
 	}
 }
 
+?>

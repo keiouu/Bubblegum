@@ -172,7 +172,7 @@ class ARadix
 		print "ARadix (";
 		print $this->get();
 		if ($this->res)
-			print " (".$GLOBALS["i18n"]["hasres"].")";
+			print " (".$GLOBALS['i18n']['framework']["hasres"].")";
 		foreach ($this->children() as $val => $branch) {
 			print "\n";
 			$branch->print_radix($depth + 1);

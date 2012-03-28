@@ -42,8 +42,8 @@ class ProfileData
 	public function __toString() {
 		$string = $this->name . ": ";
 		if ($this->end_time === 0)
-			return $string . $GLOBALS['i18n']['profiler_unclosed'];
-		return $string . $this->get_duration() . ' ' . $GLOBALS['i18n']['profiler_seconds'];
+			return $string . $GLOBALS['i18n']['framework']['profiler_unclosed'];
+		return $string . $this->get_duration() . ' ' . $GLOBALS['i18n']['framework']['profiler_seconds'];
 	}
 }
 
@@ -95,5 +95,5 @@ class Profiler
 		return Profiler::get_total($block) / Profiler::get_call_count($block);
 	}
 }
-
+?>
 

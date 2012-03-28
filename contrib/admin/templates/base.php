@@ -3,6 +3,7 @@ require_once(home_dir . "framework/config_manager.php");
 require_once(home_dir . "framework/signal_manager.php");
 require_once(home_dir . "contrib/admin/core.php");
 ?>
+{% set_app "admin" %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -87,13 +88,13 @@ require_once(home_dir . "contrib/admin/core.php");
 					   			$count++;
 					  			}
 					  			if ($count == 0)
-					   			print '<li><a href="#">{% i18n "admin_no_apps" %}</a></li>';
+					   			print '<li><a href="#">{% local_i18n "admin_no_apps" %}</a></li>';
 								
 								// App cache
 								if ($request->user->has_permission("admin_site_app_" . $name . "_config")) {
 									if (isset($app_configs[$name]) && count($app_configs[$name]) > 0) {
 										print '<li class="divider"></li>';
-					   				print '<li><a href="{{home_url}}admin/core/App_Config/?_app='.$name.'">{% i18n "admin_app_config" %}</a></li>';
+					   				print '<li><a href="{{home_url}}admin/core/App_Config/?_app='.$name.'">{% local_i18n "admin_app_config" %}</a></li>';
 										unset($app_configs[$name]);
 									}
 								}
@@ -108,7 +109,7 @@ require_once(home_dir . "contrib/admin/core.php");
 							print '<li class="dropdown" data-dropdown="dropdown">
 								<a href="#" class="dropdown-toggle">'.prettify($cfg_app).'</a>
 	         				<ul class="dropdown-menu">
-	         					<li><a href="{{home_url}}admin/core/App_Config/?_app='.$cfg_app.'">{% i18n "admin_app_config" %}</a></li>
+	         					<li><a href="{{home_url}}admin/core/App_Config/?_app='.$cfg_app.'">{% local_i18n "admin_app_config" %}</a></li>
 	         				</ul>
 	         			</li>';
          			}
@@ -118,20 +119,20 @@ require_once(home_dir . "contrib/admin/core.php");
 					<div class="pull-right">
 						<ul class="nav">
 							<li class="divider-vertical"></li>
-							<li><a href="{{logout_url}}">{% i18n "admin_logout" %}</a></li>
+							<li><a href="{{logout_url}}">{% local_i18n "admin_logout" %}</a></li>
 						</ul>
 					</div>
 					<div class="pull-right">
 						<p class="navbar-text">
-							{% i18n "admin_welcome2" %}&nbsp;{% date "H:ia" %}&nbsp;{% date "jS, M Y" %}
+							{% local_i18n "admin_welcome2" %}&nbsp;{% date "H:ia" %}&nbsp;{% date "jS, M Y" %}
 						</p>
 					</div>
 					<?php } else { ?>
 					<div class="pull-right">
 						<ul class="nav">
-							<li><a href="{{home_url}}admin/login/">{% i18n "admin_login" %}</a></li>
+							<li><a href="{{home_url}}admin/login/">{% local_i18n "admin_login" %}</a></li>
 							<li class="divider-vertical"></li>
-							<li><a href="{{home_url}}admin/register/">{% i18n "admin_register" %}</a></li>
+							<li><a href="{{home_url}}admin/register/">{% local_i18n "admin_register" %}</a></li>
 						</ul>
 					</div>
 					<?php } ?>
@@ -159,16 +160,16 @@ require_once(home_dir . "contrib/admin/core.php");
 				{% block sidebar_menu %}
 				<?php if ($request->user->has_permission("tikapot_config_view") || $request->user->has_permission("tikapot_upgrade") || $request->user->has_permission("tikapot_update")) { ?>
 					<div class="well sidebar-nav">
-						<h5>{% i18n "admin_menu" %}</h5>
+						<h5>{% local_i18n "admin_menu" %}</h5>
 						<ul class="nav nav-list">
 							<?php if ($request->user->has_permission("tikapot_config_view")) { ?>
-							<li><a href="{{home_url}}admin/config/">{% i18n "admin_edit_config" %}</a></li>
+							<li><a href="{{home_url}}admin/config/">{% local_i18n "admin_edit_config" %}</a></li>
 							<?php } ?>
 							<?php if ($request->user->has_permission("tikapot_upgrade")) { ?>
-							<li><a href="{{home_url}}admin/upgrade/">{% i18n "admin_upgrade" %}</a></li>
+							<li><a href="{{home_url}}admin/upgrade/">{% local_i18n "admin_upgrade" %}</a></li>
 							<?php } ?>
 							<?php if ($request->user->has_permission("tikapot_update")) { ?>
-							<li><a href="{{home_url}}admin/update/">{% i18n "admin_update" %}</a></li>
+							<li><a href="{{home_url}}admin/update/">{% local_i18n "admin_update" %}</a></li>
 							<?php } ?>
 						</ul>
 					</div>
@@ -194,19 +195,19 @@ require_once(home_dir . "contrib/admin/core.php");
 					{% block breadcrumbs %}
 						<?php
 						if (isset($request->app)) {
-							print '<li><a href="'.home_url.'admin/">{% i18n "admin_home" %}</a> <span class="divider">/</span></li>';
+							print '<li><a href="'.home_url.'admin/">{% local_i18n "admin_home" %}</a> <span class="divider">/</span></li>';
 							print '<li><a href="'.$request->app_url.'">'.$request->app.'</a> <span class="divider">/</span></li>';
 							if (isset($request->admin_add)) {
 								print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
-								print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_add_new" %}</a></li>';
+								print '<li class="active"><a href="'.$request->fullPath.'">{% local_i18n "admin_add_new" %}</a></li>';
 							} elseif (isset($request->admin_edit)) {
 								print '<li><a href="'.$request->model_url.'">'.$request->model.'</a> <span class="divider">/</span></li>';
-								print '<li class="active"><a href="'.$request->fullPath.'">{% i18n "admin_edit" %}</a></li>';
+								print '<li class="active"><a href="'.$request->fullPath.'">{% local_i18n "admin_edit" %}</a></li>';
 							} else {
 								print '<li class="active"><a href="'.$request->fullPath.'">'.$request->model.'</a></li>';
 							}
 						} else {
-							print '<li '.(isset($request->app_name) ? '' : 'class="active"').'><a href="'.home_url.'admin/">{% i18n "admin_home" %}</a></li>';
+							print '<li '.(isset($request->app_name) ? '' : 'class="active"').'><a href="'.home_url.'admin/">{% local_i18n "admin_home" %}</a></li>';
 							if (isset($request->app_name))
 								print ' <span class="divider">/</span><li class="active">'.$request->app_name.'</li>';
 						}
@@ -220,7 +221,7 @@ require_once(home_dir . "contrib/admin/core.php");
 			</div>
 			<hr>
 			<footer>
-		  		<p>{% block footer %}{% i18n "admin_copyright" %}{% endblock %}</p>
+		  		<p>{% block footer %}{% local_i18n "admin_copyright" %}{% endblock %}</p>
 	  		</footer>
 		</div>
 		{% endblock container %}

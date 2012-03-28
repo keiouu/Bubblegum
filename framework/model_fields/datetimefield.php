@@ -28,7 +28,7 @@ class DateTimeField extends DateField
 		$regex = "/^(\d{4})(-)(\d{2})(-)(\d{2})\x20(\d{2})(:)(\d{2})(:)(\d{2})$/";
 		$valid = preg_match($regex, $val) == 1;
 		if (!$valid)
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr4"]);
+			array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr4"]);
 		return $valid;
 	}
 	
@@ -50,4 +50,6 @@ class DateTimeField extends DateField
 		return $time;
 	}
 }
+
+?>
 

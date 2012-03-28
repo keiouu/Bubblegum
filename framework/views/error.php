@@ -29,15 +29,15 @@ class ErrorView extends BasicHTMLView {
 	
 	public function render($request, $error) {
 		print '<div class="container">';
-		print '<h1>' . $request->i18n["stack_title"] . '</h1>';
-		print '<h3>' . $request->i18n["stack_desc"] . '</h3>';
-		print '<p>' . $request->i18n["stack_err"] . '<br /><strong>' . $error->getMessage() . '</strong></p>';
-		print '<h2 class="left">' . $request->i18n["stack"] . '</h2>';
+		print '<h1>' . $request->i18n['framework']["stack_title"] . '</h1>';
+		print '<h3>' . $request->i18n['framework']["stack_desc"] . '</h3>';
+		print '<p>' . $request->i18n['framework']["stack_err"] . '<br /><strong>' . $error->getMessage() . '</strong></p>';
+		print '<h2 class="left">' . $request->i18n['framework']["stack"] . '</h2>';
 		foreach ($error->getTrace() as $issue) {
 			print '<div class="stack">';
-			print '<p class="file"><strong>' . $request->i18n["stack_file"] . '</strong> ' . $issue["file"] . ' (' . $request->i18n["stack_line"] . ' '. $issue["line"].')</p>';
-			print '<p class="func"><strong>' . $request->i18n["stack_func"] . '</strong> ' . $issue["function"] . '</p>';
-			print '<p class="args"><strong>' . $request->i18n["stack_args"] . '</strong><ul>';
+			print '<p class="file"><strong>' . $request->i18n['framework']["stack_file"] . '</strong> ' . $issue["file"] . ' (' . $request->i18n['framework']["stack_line"] . ' '. $issue["line"].')</p>';
+			print '<p class="func"><strong>' . $request->i18n['framework']["stack_func"] . '</strong> ' . $issue["function"] . '</p>';
+			print '<p class="args"><strong>' . $request->i18n['framework']["stack_args"] . '</strong><ul>';
 			foreach ($issue["args"] as $arg) {
 				print '<li>';
 				if (is_array($arg)) {
@@ -46,7 +46,7 @@ class ErrorView extends BasicHTMLView {
 					if (!is_object($arg) || (is_object($arg) && method_exists($arg, '__toString')))
 						print $arg;
 					else
-						print $request->i18n['stack_objtyp'] . ' "' . get_class($arg) . '"';
+						print $request->i18n['framework']['stack_objtyp'] . ' "' . get_class($arg) . '"';
 				}
 				print '</li>';
 			}

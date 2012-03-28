@@ -47,22 +47,21 @@ require_once(home_dir . "framework/template_tags/init.php");
 /* Create the request */
 require_once(home_dir . "framework/request.php");
 $request = new Request();
-
-/* Setup the page */
 if ($request->mimeType !== "unknown")
 	header('Content-type: ' . $request->mimeType);
 
-/* Render the page */
 try {
 	Profiler::start("render_page");
 	SignalManager::fire("page_load_setup", $request);
 	SignalManager::fire("page_load_start", $request);
 
 	$page = "";
+	/* Setup the page */
 	Profiler::start("page_setup");
 	$setup_result = $view_manager->setup($request);
 	Profiler::end("page_setup");
 	if ($setup_result) {
+		/* Render the page */
 		SignalManager::fire("page_load_render", $request);
 		ob_start();
 		Profiler::start("page_render");
@@ -97,4 +96,4 @@ try {
 	print $error->post_render($request);
 	Profiler::end("total");
 }
-
+?>

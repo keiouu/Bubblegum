@@ -18,7 +18,7 @@ class M2MField extends ModelField
 	}
 	
 	public function get_formfield($name) {
-		throw new Exception($GLOBALS["i18n"]["fielderr7"]);
+		throw new Exception($GLOBALS['i18n']['framework']["fielderr7"]);
 	}
 	
 	protected function extrapolate_model() {
@@ -78,7 +78,7 @@ class M2MField extends ModelField
 	public function get($query) {
 		$objs = $this->objects()->find($query);
 		if ($objs->count() > 1)
-			throw new ModelQueryException($GLOBALS["i18n"]["fielderr8"]);
+			throw new ModelQueryException($GLOBALS['i18n']['framework']["fielderr8"]);
 		return $objs->get(0);
 	}
 	

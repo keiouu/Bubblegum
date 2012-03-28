@@ -22,7 +22,7 @@ class MySQL extends Database
 			$this->_connected = mysql_select_db($settings['name'], $this->_link);
 		} else {
 			$this->_connected = false;
-			throw new NotConnectedException($GLOBALS["i18n"]["dberr1"]);
+			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr1"]);
 		}
 		return $this->_connected;
 	}
@@ -33,7 +33,7 @@ class MySQL extends Database
 		if (debug_show_queries)
 			print $query . "\n";
 		if (!$this->_connected) {
-			throw new NotConnectedException($GLOBALS["i18n"]["dberr2"]);
+			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr2"]);
 		}
 		$vars = array();
 		foreach ($args as $arg)
@@ -48,7 +48,7 @@ class MySQL extends Database
 	
 	public function fetch($result) {
 		if (!$this->_connected) {
-			throw new NotConnectedException($GLOBALS["i18n"]["dberr2"]);
+			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr2"]);
 		}
 		return mysql_fetch_array($result, MYSQL_BOTH);
 	}
@@ -79,4 +79,6 @@ class MySQL extends Database
 		return mysql_real_escape_string($value, $this->_link);
 	}
 }
+
+?>
 

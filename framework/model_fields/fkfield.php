@@ -82,7 +82,7 @@ class FKField extends ModelField implements ModelInterface
 		if (class_exists($class))
 			return $class;
 		
-		console_warn($GLOBALS["i18n"]["error1"] . " '" . $model_str . "' " . $GLOBALS["i18n"]["fielderr5"]);
+		console_warn($GLOBALS['i18n']['framework']["error1"] . " '" . $model_str . "' " . $GLOBALS['i18n']['framework']["fielderr5"]);
 		return false;
 	}
 	
@@ -245,4 +245,6 @@ class FKField extends ModelField implements ModelInterface
 		}
 	}
 }
+
+?>
 

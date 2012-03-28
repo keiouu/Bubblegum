@@ -23,7 +23,7 @@ abstract class TPCache
 		// If it isnt disabled, the user must have enabled it and believe it to be avaliable,
 		// if it isnt.. let them know!
 		if (!class_exists("Memcached"))
-			throw new CacheException($GLOBALS["i18n"]["cacheerr1"]);
+			throw new CacheException($GLOBALS['i18n']['framework']["cacheerr1"]);
 			
 		if (isset(TPCache::$cache) && TPCache::$cache !== null)
 			return TPCache::$cache;
@@ -49,4 +49,4 @@ abstract class TPCache
 	}
 }
 
-
+?>

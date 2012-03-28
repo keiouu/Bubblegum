@@ -25,7 +25,7 @@ class CaptchaFormField extends CharFormField
 		parent::__construct($name, $initval, $options);
 		$this->width = isset($options['width']) ? $options['width'] : 200;
 		$this->height = isset($options['height']) ? $options['height'] : 70;
-		$this->options['placeholder'] = $GLOBALS["i18n"]["captchaplaceholder"];
+		$this->options['placeholder'] = $GLOBALS['i18n']['framework']["captchaplaceholder"];
 	}
 	
 	private function get_string($length = 7) { 
@@ -43,7 +43,7 @@ class CaptchaFormField extends CharFormField
 		$id = $this->get_field_id($base_id, $safe_name);
 		if(isset($_SESSION["captcha"][$id]) && $this->get_value() == $_SESSION["captcha"][$id])
 			return true;
-		$this->set_error($GLOBALS["i18n"]["captchaerr"]);
+		$this->set_error($GLOBALS['i18n']['framework']["captchaerr"]);
 		return false;
 	}
 	
@@ -103,12 +103,12 @@ class PasswordWithStrengthFormField extends PasswordFormField
 		return '<span class="password-strength-field-container">' . parent::get_input($base_id, $safe_name) . '<span style="display: none;" id="'.$id.'_message"></span></span>
 		<script type="text/javascript">
 			var strength_descs = new Array();
-			strength_descs[0] = "'.$GLOBALS['i18n']['password_strength_0'].'";
-			strength_descs[1] = "'.$GLOBALS['i18n']['password_strength_1'].'";
-			strength_descs[2] = "'.$GLOBALS['i18n']['password_strength_2'].'";
-			strength_descs[3] = "'.$GLOBALS['i18n']['password_strength_3'].'";
-			strength_descs[4] = "'.$GLOBALS['i18n']['password_strength_4'].'";
-			strength_descs[5] = "'.$GLOBALS['i18n']['password_strength_5'].'";
+			strength_descs[0] = "'.$GLOBALS['i18n']['framework']['password_strength_0'].'";
+			strength_descs[1] = "'.$GLOBALS['i18n']['framework']['password_strength_1'].'";
+			strength_descs[2] = "'.$GLOBALS['i18n']['framework']['password_strength_2'].'";
+			strength_descs[3] = "'.$GLOBALS['i18n']['framework']['password_strength_3'].'";
+			strength_descs[4] = "'.$GLOBALS['i18n']['framework']['password_strength_4'].'";
+			strength_descs[5] = "'.$GLOBALS['i18n']['framework']['password_strength_5'].'";
 		
 			document.getElementById("'.$id.'").onkeydown = function() {
 				var span = document.getElementById("'.$id.'_message");
@@ -146,7 +146,7 @@ class FileUploadFormField extends FormField
 			// Check type
 			$type = substr(strrchr($val['name'], '.'), 1);
 			if (!in_array($type, $this->types)) {
-				$this->set_error($GLOBALS['i18n']["fielderr18"]);
+				$this->set_error($GLOBALS['i18n']['framework']["fielderr18"]);
 				return;
 			}
 			
@@ -166,7 +166,7 @@ class FileUploadFormField extends FormField
 			if (@move_uploaded_file($val['tmp_name'], $filename)) {
 				return parent::set_value($filename);
 			} else {
-				$this->set_error($GLOBALS['i18n']["fielderr17"] . " " . (isset($php_errormsg) ? $php_errormsg : $GLOBALS['i18n']["error2"]));
+				$this->set_error($GLOBALS['i18n']['framework']["fielderr17"] . " " . (isset($php_errormsg) ? $php_errormsg : $GLOBALS['i18n']['framework']["error2"]));
 				return;
 			}
 		}
@@ -193,7 +193,7 @@ class FileUploadFormField extends FormField
 		$field = parent::get_input($base_id, $safe_name, $classes);
 		$check_field_id = $this->get_field_id($base_id, $safe_name) . "_check";
 		$field .= '<span class="checkfield_remove">
-		<input type="checkbox" id="'.$check_field_id.'" name="'.$check_field_id.'" value="0" class="checkedfield" /> '.$GLOBALS['i18n']['remove'].'</span>';
+		<input type="checkbox" id="'.$check_field_id.'" name="'.$check_field_id.'" value="0" class="checkedfield" /> '.$GLOBALS['i18n']['framework']['remove'].'</span>';
 		return $field;
 	}
 	
@@ -245,7 +245,7 @@ class SelectFormField extends FormField
 		if (is_array($field_options)) {
 			$this->field_options = $field_options;
 		} else {
-			throw new Exception($GLOBALS["i18n"]["fielderr11"]);
+			throw new Exception($GLOBALS['i18n']['framework']["fielderr11"]);
 		}
 		parent::__construct($name, $initial_value, $options);
 	}
@@ -444,4 +444,5 @@ class SearchFormField extends FormField
 		return "searchfield";
 	}
 }
+?>
 

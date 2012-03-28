@@ -119,16 +119,10 @@ class Request
 	private function init_i18n() {	
 		if (isset($this->get['langswitch'])) {
 			$_SESSION['lang'] = $this->get['langswitch'];
-			$file = isset($_SESSION['lang']) ? $_SESSION['lang'] : "en";
-			$filename = home_dir . "i18n/" . $file . ".php";
-			if (!strpos($file, "..") && file_exists($filename))
-				require($filename);
-			else
-				require(home_dir . "i18n/en.php");
-			$GLOBALS["i18n"] = $i18n_data;
+			i18n::Init();
 		}
 		
-		$this->i18n = new i18n($GLOBALS["i18n"]);
+		$this->i18n = new i18n($GLOBALS['i18n']);
 	}
 	
 	public function add_val($name, $val) {
@@ -212,5 +206,5 @@ class Request
 	}
 }
 
-
+?>
 

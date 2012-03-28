@@ -1,3 +1,4 @@
+{% set_app "framework" %}
 <style type="text/css">
 	.debug_panel {
 		width: 100%;
@@ -72,13 +73,13 @@ function debug_toggleTab(name) {
 <div style="height: 30px;"></div> {% comment %} Clear the buttons.. {% endcomment %}
 <div class="debug_panel">
 	<div style="padding: 10px 10px;">
-		<div class="debug_pill" onclick="debug_toggleTab('profile');">{% i18n "debug_profiler" %}</div>
-		<div class="debug_pill" onclick="debug_toggleTab('console');">{% i18n "debug_console" %} {{debug_info_count}}</div>
-		<div class="debug_pill" onclick="debug_toggleTab('db');">{% i18n "debug_db" %}</div>
+		<div class="debug_pill" onclick="debug_toggleTab('profile');">{% local_i18n "debug_profiler" %}</div>
+		<div class="debug_pill" onclick="debug_toggleTab('console');">{% local_i18n "debug_console" %} {{debug_info_count}}</div>
+		<div class="debug_pill" onclick="debug_toggleTab('db');">{% local_i18n "debug_db" %}</div>
 	</div>
 	<div id="profile-tab" class="debug_tab">
 		<div style="padding: 20px 30px;">
-			<h3 style="color: #EEE;">{% i18n "debug_profiler" %}</h3>
+			<h3 style="color: #EEE;">{% local_i18n "debug_profiler" %}</h3>
 			<table>
 				<thead>
 					<th>Function</th>
@@ -104,13 +105,13 @@ function debug_toggleTab(name) {
 		</div>
 	</div>
 	<div id="console-tab" class="debug_tab">
-		<div style="padding: 20px 30px;"><h3 style="color: #EEE;">{% i18n "debug_console" %}</h3>
+		<div style="padding: 20px 30px;"><h3 style="color: #EEE;">{% local_i18n "debug_console" %}</h3>
 			<p>{{debug_info}}</p>
 		</div>
 	</div>
 	<div id="db-tab" class="debug_tab">
-		<div style="padding: 20px 30px;"><h3 style="color: #EEE;">{% i18n "debug_db" %}</h3>
-			<p style="margin: 3px; color: #EEE;">{% i18n "debug_dbqueries" %} {{db_queries}}</p>
+		<div style="padding: 20px 30px;"><h3 style="color: #EEE;">{% local_i18n "debug_db" %}</h3>
+			<p style="margin: 3px; color: #EEE;">{% local_i18n "debug_dbqueries" %} {{db_queries}}</p>
 			<p>{{db_info}}</p>
 		</div>
 	</div>

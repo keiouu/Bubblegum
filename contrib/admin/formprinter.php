@@ -66,11 +66,11 @@ class AdminFormPrinter extends FormPrinter
 		}
 		print '<div class="form-actions">';
 		if ($buttons === "") {
-			print '<input type="submit" name="submit" value="'.$GLOBALS["i18n"]["admin_submit1"].'" class="btn btn-primary" /> ';
-			print '<input type="submit" name="submit_stay" value="'.($edit_mode ? $GLOBALS["i18n"]["admin_submit4"] : $GLOBALS["i18n"]["admin_submit3"]).'" class="btn" /> ';
+			print '<input type="submit" name="submit" value="'.$GLOBALS["i18n"]["admin"]["admin_submit1"].'" class="btn btn-primary" /> ';
+			print '<input type="submit" name="submit_stay" value="'.($edit_mode ? $GLOBALS["i18n"]["admin"]["admin_submit4"] : $GLOBALS["i18n"]["admin"]["admin_submit3"]).'" class="btn" /> ';
 		} else {
 			foreach ($buttons as $key => $button) {
-				print '<input type="submit" name="'.$key.'" value="'.prettify($GLOBALS["i18n"]["admin_".$button]).'" class="btn primary" /> ';
+				print '<input type="submit" name="'.$key.'" value="'.prettify($GLOBALS["i18n"]["admin"]["admin_".$button]).'" class="btn primary" /> ';
 			}
 		}
 		print '</div>';

@@ -34,7 +34,7 @@ class IntegerField extends ModelField
 		$regex = "/^(\d{0,".$this->max_length."})$/";
 		$valid = preg_match($regex, $val) == 1; // These == 1 are not needed but clarify test results
 		if (!$valid)
-			array_push($this->errors, $GLOBALS["i18n"]["fielderr6"] . " " . $val);
+			array_push($this->errors, $GLOBALS['i18n']['framework']["fielderr6"] . " " . $val);
 		return $valid && (strpos($val, ".") == False);
 	}
 	

@@ -89,7 +89,7 @@ class ViewManager
 			$view = $result[0];
 			$args = $result[1];
 			if (!$view)
-				throw new Exception($GLOBALS["i18n"]["pnfe"]);
+				throw new Exception($GLOBALS['i18n']['framework']["pnfe"]);
 			return array($view, $args);
 		}
 		catch (Exception $e) {
@@ -100,5 +100,5 @@ class ViewManager
 	}
 }
 
-
+?>
 

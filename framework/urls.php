@@ -18,4 +18,4 @@ new CaptchaVerificationView("/tikapot/api/captcha/verify/");
 if (debug) {
 	new UpgradeView("/tikapot/upgrade/");
 }
-
+?>

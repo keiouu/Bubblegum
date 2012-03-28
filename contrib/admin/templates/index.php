@@ -2,8 +2,8 @@
 
 {% block body %}
 <div class="hero-unit">
-	<h2>{% i18n "admin_welcome" %}</h2>
-	<p>{% i18n "admin_welcome_desc" %}</p>
+	<h2>{% local_i18n "admin_welcome" %}</h2>
+	<p>{% local_i18n "admin_welcome_desc" %}</p>
 </div>
 <?php
 require_once(home_dir . "contrib/admin/core.php");

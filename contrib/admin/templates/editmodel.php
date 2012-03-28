@@ -2,14 +2,16 @@
 
 {% block sidebar_menu %}
 <div class="well">
-  <h5>{% i18n "admin_menu" %}</h5>
+  <h5>{% local_i18n "admin_menu" %}</h5>
   <?php
   // Extra actions
   foreach ($request->admin->get_actions() as $action) {
-	print $action->render($request, $request->model_obj);
+  	if (!$action->is_global()) {
+	  print $action->render($request, $request->model_obj);
+	}
   }
   ?>
-  <button class="btn btn-danger" id="button_delete" data-toggle="modal" data-target="#delete-confirm-modal" data-backdrop="static">{% i18n "admin_delete" %}</button>
+  <button class="btn btn-danger" id="button_delete" data-toggle="modal" data-target="#delete-confirm-modal" data-backdrop="static">{% local_i18n "admin_delete" %}</button>
 </div>
 {% endblock %}
             

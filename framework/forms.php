@@ -119,11 +119,11 @@ class Form
 	
 	public function load_post_data($data) {
 		if (!isset($data["control_formid"]) || !isset($data["control_csrf"])) {
-			console_warn($GLOBALS["i18n"]["formerrctrl"]);
+			console_warn($GLOBALS['i18n']['framework']["formerrctrl"]);
 			return false;
 		}
 		if (!$this->check_csrf($data["control_formid"], $data["control_csrf"])) {
-			console_warn($GLOBALS["i18n"]["formerrcsrf"]);
+			console_warn($GLOBALS['i18n']['framework']["formerrcsrf"]);
 			return false;
 		}
 	
@@ -147,7 +147,7 @@ class Form
 					foreach ($tfields as $tname => $tfield)
 						$owned = $owned || $tfield->claim_own($tname, $field, $value);
 				if (!$owned) {
-					console_warn($GLOBALS["i18n"]["formerrdata"] . $name);
+					console_warn($GLOBALS['i18n']['framework']["formerrdata"] . $name);
 					return false;
 				}
 			} else {
@@ -223,7 +223,7 @@ class Form
 		if ($model === NULL)
 			$model = $this->model;
 		if (!$model)
-			throw new Exception($GLOBALS["i18n"]["formerrsave"]);
+			throw new Exception($GLOBALS['i18n']['framework']["formerrsave"]);
 		
 		foreach ($this->fieldsets as $fieldset => $fields) {
 			if ($fieldset !== "control") {
@@ -248,7 +248,7 @@ class Form
 	/* Emailing functions */
 	protected function add_attachment($name, $mime_boundary, $safe_name) {
 		if(!isset($_FILES[$name]))
-			return $GLOBALS["i18n"]["errorfile"]."<br />";
+			return $GLOBALS['i18n']['framework']["errorfile"]."<br />";
 		$file_path = $_FILES[$name]["tmp_name"];
 		if(!is_file($file_path))
 			return "";
@@ -324,4 +324,5 @@ class Form
 		return @mail($to, $subject, $message, $headers);
 	}
 }
+?>
 

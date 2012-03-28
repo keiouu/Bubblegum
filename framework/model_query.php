@@ -26,7 +26,7 @@ class ModelQuery implements Iterator, Countable
 	 */
 	public function __construct($model, $query = array(), $using = "default") {
 		if (!$model)
-			throw new ModelQueryException($GLOBALS["i18n"]["mqerr1"]);
+			throw new ModelQueryException($GLOBALS['i18n']['framework']["mqerr1"]);
 		$this->_count = false;
 		$this->_position = 0;
 		$this->_has_run = False;
@@ -45,7 +45,7 @@ class ModelQuery implements Iterator, Countable
 	
 	protected function sanitize_query($query) {
 		if (!is_array($query))
-			throw new ModelQueryException($GLOBALS["i18n"]["mqerr2"]);
+			throw new ModelQueryException($GLOBALS['i18n']['framework']["mqerr2"]);
 		$parsed_query = array();
 		if (array_key_exists("WHERE", $query)) {
 			$parsed_query["WHERE"] = array(); // Ensure WHERE is always first
@@ -286,7 +286,7 @@ class ModelQuery implements Iterator, Countable
 		$this->_ensure_run();
 		
 		if (count($this->_objects) < $n || $n < 0)
-			throw new ModelQueryException($GLOBALS["i18n"]["warn1"] . " $n " . $GLOBALS["i18n"]["mqerr3"]);
+			throw new ModelQueryException($GLOBALS['i18n']['framework']["warn1"] . " $n " . $GLOBALS['i18n']['framework']["mqerr3"]);
 		return $this->_objects[$n];
 	}
 	
@@ -361,5 +361,5 @@ class ModelQuery implements Iterator, Countable
 	/* End of Iterator methods */
 }
 
-
+?>
 
