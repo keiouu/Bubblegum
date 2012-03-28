@@ -23,6 +23,7 @@ class Request
 		
 		if (isset($this->get[page_def])) {
 			$this->page = trim($this->get[page_def]);
+			unset($this->get[page_def]);
 		}
 		
 		if (PHP_SAPI === 'cli') {
@@ -35,6 +36,7 @@ class Request
 			}
 			if (isset($this->cmd_args[page_def])) {
 				$this->page = trim($this->cmd_args[page_def]);
+				unset($this->cmd_args[page_def]);
 			}
 		}
 		
@@ -45,8 +47,6 @@ class Request
 		$this->fullPath = home_url . $this->page;
 		$this->page = '/' . $this->page;
 		$this->mimeType = $this->get_mime_type($this->page);
-		if (isset($this->get[page_def]))
-			unset($this->get[page_def]);
 		$this->visitor_ip = $this->getIP();
 		$this->messages = isset($_SESSION['request_messages']) ? $_SESSION['request_messages'] : array();
 		$this->safe_vals = array();

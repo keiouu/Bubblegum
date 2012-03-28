@@ -53,7 +53,13 @@ case "$refname","$newrev_type" in
 		;;
 	refs/heads/*,commit)
 		# branch
-		php ../../index.php tpage=/api/git/branch/create/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		if [ "$oldrev" = "$zero" ]; then
+			php ../../index.php tpage=/api/git/branch/create/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		fi
+		if [ "$newrev" = "$zero" ]; then
+			php ../../index.php tpage=/api/git/branch/delete/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
+		fi
+		php ../../index.php tpage=/api/git/commit/receive/ cwd=$localdir refname=$refname oldrev=$oldrev newrev=$newrev
 		exit 0
 		;;
 	refs/heads/*,delete)

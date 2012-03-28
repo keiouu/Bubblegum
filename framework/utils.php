@@ -44,8 +44,8 @@ function get_named_class($class) {
 	return null;
 }
 
-function get_file_extension($filename) {
-	return substr(strrchr($filename, '.'), 1);
+function get_file_extension($filename, $delimiter = ".") {
+	return substr(strrchr($filename, $delimiter), 1);
 }
 
 function email_sanitize($str) {
