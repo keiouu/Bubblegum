@@ -90,7 +90,7 @@ class Project extends Model
 	public function post_create() {
 		// Create git repository
 		$path = repo_dir . $this->pk;
-		analyze(Git::Init($path));
+		Git::Init($path, $this->description);
 	}
 	
 	public static function mine($user) {

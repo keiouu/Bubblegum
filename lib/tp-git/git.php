@@ -60,7 +60,7 @@ class Git
 			copy(home_dir . "repo/hooks/" . $object, $dir . "hooks/" . $object);
 		}
 		
-		// TODO - implement description
+		file_put_contents($dir . "description", $description);
 		
 		return $ret;
 	}
