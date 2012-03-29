@@ -106,7 +106,7 @@ require_once(home_dir . "apps/core/models.php");
 				<ul class="breadcrumb">
 				{% block breadcrumbs %}
 					<?php
-					print '<li '.(isset($request->project) ? '' : 'class="active"').'><a href="'.home_url.'">{% i18n "admin_home" %}</a></li>';
+					print '<li '.(isset($request->project) ? '' : 'class="active"').'><a href="'.home_url.'">Home</a></li>';
 					if (isset($request->project))
 						print ' <span class="divider">/</span><li class="active">'.$request->project->name.'</li>';
 					?>

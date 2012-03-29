@@ -174,14 +174,23 @@ class AdminModelView extends AdminView
 			return false;
 		
 		if (isset($request->get['delete'])) {
-			$ids = explode(",", $request->get['delete']);
-			foreach ($ids as $id) {
-				try {
-					$obj = $this->model->get(array("pk" => $id));
-					SignalManager::fire("admin_on_delete", array($request->user, $obj));
-					$obj->delete();
-				} catch (Exception $e) {
+			if (isset($request->get['confirm'])) {
+				if ($request->get['confirm'] == "true") {
+					$ids = explode(",", $request->get['delete']);
+					foreach ($ids as $id) {
+						try {
+							$obj = $this->model->get(array("pk" => $id));
+							SignalManager::fire("admin_on_delete", array($request->user, $obj));
+							if ($obj->delete(true)) {
+								$request->message($GLOBALS['i18n']['admin']['deleteerror'], "error");
+							}
+						} catch (Exception $e) {
+							$request->message($e->getMessage(), "error");
+						}
+					}
 				}
+			} else {
+				$this->page = home_dir . "contrib/admin/templates/deleteobject.php";
 			}
 		}
 		

@@ -18,4 +18,14 @@ class Branch extends Model
 	public function __toString() { return $this->name; }
 }
 
+class Tag extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("project", new FKField("core.Project"));
+		$this->add_field("name", new CharField(250));
+	}
+	public function __toString() { return $this->name; }
+}
+
 ?>

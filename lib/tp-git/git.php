@@ -12,6 +12,35 @@ class SecurityException extends Exception {}
 
 class Git
 {
+	protected $_path;
+	
+	/**
+	 * Construct a new virtual repo
+	 *
+	 * @param string $path The path to the repository
+	 */
+	public function __construct($path) {
+		$this->_path = $path;
+	}
+	
+	/**
+	 * Get the latest (n) commit logs
+	 *
+	 * @param string $count The number of logs to retrieve
+	 * @returns null|array Null on failure or array(commit, author, date, message) on success
+	 */
+	public function log($count = 1) {
+		if (!chdir($this->_path))
+			return null;
+		$ret = Git::_exec("git log", array("-n " . $count));
+		$array = array();
+		list($ignore, $array["commit"]) = explode(" ", $ret[0]);
+		list($ignore, $array["author"]) = explode(" ", $ret[1], 2);
+		list($ignore, $array["date"]) = explode(" ", $ret[2], 2);
+		$array["message"] = trim($ret[4]);
+		return $array;
+	}
+	
 	/**
 	 * This function provides a safe way to call "exec".
 	 *
@@ -43,7 +72,7 @@ class Git
 			$dir = $dir . "/";
 		
 		// Create and move to the git dir
-		if (!is_file($dir))
+		if (!file_exists($dir))
 			mkdir($dir);
 		chdir($dir);
 		

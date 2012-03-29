@@ -26,6 +26,12 @@ class FKField extends ModelField implements ModelInterface
 		$this->_set_model($model);
 	}
 	
+	public function db_create_query($db, $name, $table_name) {
+		$obj = new $this->_class();
+		$ref_str = " references " . $obj->get_table_name() . "(".$obj->_pk().")";
+		return parent::db_create_query($db, $name, $table_name) . ($db->get_type() == "psql" ? $ref_str : "");
+	}
+	
 	protected function _clean() {
 		$this->_obj = Null;
 		$this->value = null;
@@ -243,6 +249,11 @@ class FKField extends ModelField implements ModelInterface
 		if ($this->_obj) {
 			$this->value = $this->_obj->save();
 		}
+	}
+	
+	public function hasRelation($model) {
+		list($app, $n, $class) = partition($this->_model, '.');
+		return $model == $class;
 	}
 }
 

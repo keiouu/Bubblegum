@@ -105,6 +105,9 @@ abstract class ModelField
 	
 	/* Is this a pk field?. */
 	public function is_pk_field() { return false; }
+	
+	/* Could this have a relation to another model (e.g. FK Fields) */
+	public function hasRelation($model) { return false; }
 }
 
 ?>

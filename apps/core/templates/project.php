@@ -45,6 +45,20 @@ $("#track").click(function() {
 	<hr />
 	
 	<div class="accordion">
+		<?php 
+		$git = $request->project->getRepository();
+		if ($git !== null) { ?>
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#gitCollapse">
+				<h4><i class="icon-gift"></i> Git</h4>
+			</a>
+		</div>
+		<div id="gitCollapse" class="accordion-body in collapse" style="height: auto; ">
+			<div class="accordion-inner">
+				<?php include_once(home_dir . "apps/core/templates/includes/git-view.php"); ?>
+			</div>
+		</div>
+		<?php } ?>
 		<div class="accordion-heading">
 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#milestoneCollapse">
 				<h4><i class="icon-gift"></i> Milestones</h4>

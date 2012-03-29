@@ -86,11 +86,21 @@ class Project extends Model
 	}
 	
 	public function __toString() { return $this->name; }
+	public function gitDir() { return repo_dir . $this->pk; }
 	
 	public function post_create() {
 		// Create git repository
-		$path = repo_dir . $this->pk;
-		Git::Init($path, $this->description);
+		$this->getRepository();
+	}
+	
+	public function getRepository() {
+		$path = $this->gitDir();
+		if (!file_exists($path))
+			Git::Init($path, $this->description);
+		if (file_exists($path)) {
+			return new Git($path);
+		}
+		return null;
 	}
 	
 	public static function mine($user) {
@@ -180,6 +190,7 @@ class Task extends Model
 			"1" => "Feature",
 			"2" => "Enhancement",
 			"3" => "Aesthetic",
+			"5" => "QA",
 			"4" => "n/a",
 		), "1"));
 		$this->add_field("priority", new ChoiceField(array(

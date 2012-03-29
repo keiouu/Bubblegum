@@ -8,5 +8,5 @@ function update_activity_feed() {
 }
 
 $(function () {
-	update_activity_feed();
+	setInterval("update_activity_feed()", 10000);
 });

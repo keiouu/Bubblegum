@@ -8,7 +8,7 @@
 <div class="container">
 	<div class="content">
 		<div class="page-header">
-			<h1>{% i18n "admin_login" %}</h1>
+			<h1>Login</h1>
 		</div>
 		<?php
 		require_once(home_dir . "contrib/admin/core.php");
@@ -17,7 +17,7 @@
 		?>
 	</div>
 	<footer>
-	  <p>{% i18n "admin_copyright" %}</p>
+	  <p>© {{project_name}} 2012</p>
 	</footer>
 </div>
 {% endblock container %}

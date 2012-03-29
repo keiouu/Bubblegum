@@ -60,6 +60,10 @@ abstract class Model
 		$this->_using = $db;
 	}
 	
+	public function getDB() {
+		return $this->_using;
+	}
+	
 	public function fromDB() {
 		return $this->from_db;
 	}
@@ -550,18 +554,18 @@ abstract class Model
 		return $this->pk;
 	}
 
-	public function delete_query($db) {
-		return "DELETE FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->_pk() ."\"='" . $this->pk . "';";
+	public function delete_query($db, $cascade = false) {
+		return "DELETE " . ($cascade ? "CASCADE " : "") . "FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->_pk() ."\"='" . $this->pk . "';";
 	}
 
 	/* Returns True on success, False on failure */
-	public function delete() {
+	public function delete($cascade = false) {
 		if (!$this->from_db)
 			return False;
 		$db = Database::create($this->_using);
 		if (!$db)
 			return false;
-		$db->query($this->delete_query($db));
+		$db->query($this->delete_query($db, $cascade));
 		return True;
 	}
 	

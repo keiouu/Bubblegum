@@ -66,5 +66,8 @@ $i18n_data = array(
 	"admin_check_app" => "Checking #app#...",
 	"admin_update_app" => "Updating #app#...",
 	"admin_form_add_error" => "Oops, that form did not validate!",
+	"delete1" => "Are you sure?",
+	"delete2" => "You will be deleting the following objects...",
+	"deleteerror" => "Oops! Something went wrong, please try again!",
 );
 ?>

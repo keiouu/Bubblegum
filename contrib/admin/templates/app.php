@@ -1,7 +1,4 @@
 {% extends "contrib/admin/templates/base.php" %}
-
-{% block sidebar_menu %}
-{% endblock %}
             
 {% block body %}
 <div class="hero-unit">
