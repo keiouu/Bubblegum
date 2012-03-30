@@ -33,6 +33,10 @@
 	padding-right: 0;
 }
 
+.git-commit thead th a {
+	color: #333;
+}
+
 .git-commit .author img {
   vertical-align: middle;
   margin-right: 4px;
