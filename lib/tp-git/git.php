@@ -24,20 +24,17 @@ class Git
 	}
 	
 	/**
-	 * Get the latest (n) commit logs
+	 * Get the latest commit log
 	 *
-	 * @param string $count The number of logs to retrieve
-	 * @returns null|array Null on failure or array(commit, author, date, message) on success
+	 * @returns null|array Null on failure or array(hash, author, email, date, message) on success
 	 */
-	public function log($count = 1) {
+	public function log() {
 		if (!chdir($this->_path))
 			return null;
-		$ret = Git::_exec("git log", array("-n " . $count));
+		exec('git log -1 --pretty="format:%H##%ae##%an##%ad##%s"', $ret);
 		$array = array();
-		list($ignore, $array["commit"]) = explode(" ", $ret[0]);
-		list($ignore, $array["author"]) = explode(" ", $ret[1], 2);
-		list($ignore, $array["date"]) = explode(" ", $ret[2], 2);
-		$array["message"] = trim($ret[4]);
+		list($array["hash"], $array["email"], $array["author"], $array["date"], $array["message"]) = explode("##", $ret[0]);
+		$array["date"] = strtotime($array["date"]);
 		return $array;
 	}
 	
@@ -57,7 +54,7 @@ class Git
 		if ($expected_arg_count !== -1 && $arg_count !== $expected_arg_count)
 			throw new SecurityException("Expected arg count '".$expected_arg_count."' doesnt match real count '".$arg_count."'!");
 		$command = escapeshellcmd($command);
-		exec($command, &$output);
+		exec($command, $output);
 		return $output;
 	}
 	
