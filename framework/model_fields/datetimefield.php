@@ -17,6 +17,10 @@ class DateTimeField extends DateField
 		return new DateTimeFormField($name, $this->get_value());
 	}
 	
+	public function get_datetime() {
+		return date(DateTimeField::$FORMAT, strtotime($this->get_value()));
+	}
+	
 	public function get_time() {
 		return date(DateTimeField::$TIME_FORMAT, strtotime($this->get_value()));
 	}
@@ -33,9 +37,10 @@ class DateTimeField extends DateField
 	}
 	
 	public function get_readable_value() {
-		$date1 = new DateTime($this->get_time());
+		$date1 = new DateTime($this->get_datetime());
 		$date2 = new DateTime("now");
 		$interval = $date1->diff($date2);
+		
 		$time = $interval->s . " seconds ago";
 		if ($interval->y > 0)
 			$time = $interval->y . " years ago";

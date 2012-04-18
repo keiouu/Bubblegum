@@ -20,7 +20,7 @@ if ($git_changes && $project) {
 		} elseif ($status == "D") {
 			$status = '<i class="icon-minus"></i>';
 		} else {
-			// Flag sysadmin
+			// Flag sysadmin, the world is coming to an end.
 		}
 		print '<tr><td>'.$status.'</td><td>'.$change['file'].'</td></tr>';
 	}

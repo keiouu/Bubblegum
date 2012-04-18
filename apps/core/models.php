@@ -85,8 +85,13 @@ class Project extends Model
 		$this->add_field("updated", new DateTimeField(true, true));
 	}
 	
-	public function __toString() { return $this->name; }
-	public function gitDir() { return repo_dir . $this->pk; }
+	public function __toString() { 
+		return $this->name;
+	}
+	
+	public function gitDir() {
+		return repo_dir . $this->pk;
+	}
 	
 	public function post_create() {
 		// Create git repository
