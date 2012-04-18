@@ -8,11 +8,19 @@
 
 require_once(home_dir . "framework/utils.php");
 
+/**
+ * SecurityException
+ *
+ */
 class SecurityException extends Exception {}
 
+/**
+ * Git
+ *
+ */
 class Git
 {
-	protected $_path;
+	protected /** The path to the git repository */ $_path;
 	
 	/**
 	 * Construct a new virtual repo
@@ -26,6 +34,7 @@ class Git
 	/**
 	 * Get the latest commit log
 	 *
+	 * @param string $commit The commit ref to show (optional)
 	 * @returns null|array Null on failure or array(hash, author, email, date, message) on success
 	 */
 	public function log($commit = "-1") {
@@ -39,6 +48,44 @@ class Git
 			$array["date"] = strtotime($array["date"]);
 		}
 		return $array;
+	}
+	
+	/**
+	 * Returns all file changed for a given commit
+	 *
+	 * @param string $commit (optional) The hash to check
+	 * @return null|array Null on failure or array(hash, author, email, date, message) on success
+	 */
+	public function files_changed($commit = "-") {
+		if (!chdir($this->_path))
+			return null;
+		$commit = escapeshellarg($commit);
+		exec('git whatchanged '.$commit.' --oneline -1', $ret);
+		$ret = array_slice($ret, 1);
+		$array = array();
+		if (isset($ret[0])) {
+			foreach ($ret as $line) {
+				$elements = explode(" ", $line);
+				if (isset($elements[4])) {
+					$array[] = array("status" => substr($elements[4], 0, 1), "file" => substr($elements[4], 1));
+				}
+			}
+		}
+		return $array;
+	}
+	
+	/**
+	 * Returns all file changes for a given commit
+	 *
+	 * @param string $commit (optional) The hash to check
+	 * @return null|array Null on failure or array(hash, author, email, date, message) on success
+	 */
+	public function file_changes($commit = "-") {
+		if (!chdir($this->_path))
+			return null;
+		$commit = escapeshellarg($commit);
+		exec('git show '.$commit.' --oneline -1', $ret);
+		return array_slice($ret, 1);
 	}
 	
 	/**
@@ -66,6 +113,7 @@ class Git
 	 * Also sets up our hooks
 	 *
 	 * @param string $dir The dir to the repo
+	 * @param string $description The description of the repo
 	 */
 	public static function Init($dir, $description) {
 		if (!ends_with($dir, "/"))

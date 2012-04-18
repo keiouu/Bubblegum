@@ -37,9 +37,9 @@ $("#track").click(function() {
 		<a data-toggle="modal" href="#milestone-add">Add new milestone &raquo;</a>
 		<a data-toggle="modal" href="#task-add">Add new task &raquo;</a>
 		<?php if ($request->project->tracked_by($request->user)) { ?>
-		<a href="#" id="track">Track this project &raquo;</a>
+			<a href="#" id="track">Track this project &raquo;</a>
 		<?php } else { ?>
-		<a href="#" id="track">Stop tracking this project &raquo;</a>
+			<a href="#" id="track">Stop tracking this project &raquo;</a>
 		<?php } ?>
 	</p>
 	<hr />

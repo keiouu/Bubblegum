@@ -64,12 +64,18 @@ class ProjectView extends BaseView
 
 class Git_CommitView extends ProjectView
 {
-	public function setup($request, $args) {
+	public function setup($request, &$args) {
 		if (!parent::setup($request, $args))
 			return false;
 		
 		$git = $request->project->getRepository();
-		$request->git_info = $git->log();
+		
+		if (!isset($args['ref'])) {
+			$git_info = $git->log();
+			$args['ref'] = $git_info['hash'];
+		}
+		
+		$request->git_info = $git->log($args['ref']);
 		
 		return true;
 	}
