@@ -25,6 +25,10 @@ class PKField extends BigIntField
 			return "CONSTRAINT ".$table_name."_pkey PRIMARY KEY (".$name.")";
 	}
 	
+	public function db_extra_create_query_post($db, $name, $table_name) {
+		return "CREATE INDEX index_".$table_name."_".$name." ON ".$table_name." (".$name.");";
+	}
+	
 	/* Is this a pk field?. */
 	public function is_pk_field() { return true; }
 }

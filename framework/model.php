@@ -332,6 +332,24 @@ abstract class Model
 			$this->fields[$liname]->reset_field($name);
 	}
 	
+	public function relatesTo($object) {
+		foreach ($this->fields as $name => $field) {
+			if ($field->relatesTo(get_class($this)))
+				return true;
+		}
+		return false;
+	}
+	
+	public function getRelatedObjects($object) {
+		$class = get_class($object);
+		foreach ($this->fields as $name => $field) {
+			if ($field->relatesTo($class)) {
+				return $this->find(array($name => $object));
+			}
+		}
+		return array();		
+	}
+	
 	// Returns the query to create the table in the database
 	public function db_create_query($db) {
 		$table_name = $this->get_table_name();
@@ -554,19 +572,18 @@ abstract class Model
 		return $this->pk;
 	}
 
-	public function delete_query($db, $cascade = false) {
-		return "DELETE " . ($cascade ? "CASCADE " : "") . "FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->_pk() ."\"='" . $this->pk . "';";
+	public function delete_query($db) {
+		return "DELETE FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->_pk() ."\"='" . $this->pk . "';";
 	}
 
 	/* Returns True on success, False on failure */
-	public function delete($cascade = false) {
+	public function delete() {
 		if (!$this->from_db)
-			return False;
+			return false;
 		$db = Database::create($this->_using);
 		if (!$db)
 			return false;
-		$db->query($this->delete_query($db, $cascade));
-		return True;
+		return $db->query($this->delete_query($db)) == true;
 	}
 	
 	public function upgrade($db, $old_version, $new_version) {

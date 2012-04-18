@@ -71,8 +71,13 @@ class JSONView extends View
 	}
 }
 
-function sort_activity($arr) {
+class Git_CommitView extends View
+{
 
+}
+
+function sort_activity($a, $b) {
+	return $a[0] == $b[0] ? 0 : ($a[0] > $b[0] ? 1 : -1);
 }
 
 class AJAX_ActivityFeedView extends View

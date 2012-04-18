@@ -28,7 +28,7 @@ class FKField extends ModelField implements ModelInterface
 	
 	public function db_create_query($db, $name, $table_name) {
 		$obj = new $this->_class();
-		$ref_str = " references " . $obj->get_table_name() . "(".$obj->_pk().")";
+		$ref_str = " REFERENCES " . $obj->get_table_name() . "(" . $obj->_pk() . ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED";
 		return parent::db_create_query($db, $name, $table_name) . ($db->get_type() == "psql" ? $ref_str : "");
 	}
 	
@@ -251,7 +251,7 @@ class FKField extends ModelField implements ModelInterface
 		}
 	}
 	
-	public function hasRelation($model) {
+	public function relatesTo($model) {
 		list($app, $n, $class) = partition($this->_model, '.');
 		return $model == $class;
 	}

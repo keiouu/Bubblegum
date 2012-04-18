@@ -33,8 +33,10 @@ class Git
 			return null;
 		exec('git log -1 --pretty="format:%H##%ae##%an##%ad##%s"', $ret);
 		$array = array();
-		list($array["hash"], $array["email"], $array["author"], $array["date"], $array["message"]) = explode("##", $ret[0]);
-		$array["date"] = strtotime($array["date"]);
+		if (isset($ret[0])) {
+			list($array["hash"], $array["email"], $array["author"], $array["date"], $array["message"]) = explode("##", $ret[0]);
+			$array["date"] = strtotime($array["date"]);
+		}
 		return $array;
 	}
 	

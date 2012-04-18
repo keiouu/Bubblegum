@@ -91,6 +91,10 @@ class MultiFKField extends FKField
 		return ($val !== null) ? "'" . $db->escape_string($val) . "'" : "'0'";
 	}
 	
+	public function db_create_query($db, $name, $table_name) {
+		return "\"" . $name . "\" " . $this->get_db_type();
+	}
+	
 	public function get_formfield($name) {
 		return new MultiFKFormField($name, $this->_models, $this, $this->grab_object());
 	}
@@ -101,6 +105,15 @@ class MultiFKField extends FKField
 			return false;
 		list($model, $pk) = explode("|", $val);
 		return isset($this->_models[$model]);
+	}
+	
+	public function relatesTo($model) {
+		list($app, $n, $class) = partition($this->_model, '.');
+		foreach ($this->_models as $m => $a) {
+			if ($m == $class)
+				return true;
+		}
+		return false;
 	}
 }
 ?>

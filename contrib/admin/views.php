@@ -181,7 +181,7 @@ class AdminModelView extends AdminView
 						try {
 							$obj = $this->model->get(array("pk" => $id));
 							SignalManager::fire("admin_on_delete", array($request->user, $obj));
-							if ($obj->delete(true)) {
+							if (!$obj->delete()) {
 								$request->message($GLOBALS['i18n']['admin']['deleteerror'], "error");
 							}
 						} catch (Exception $e) {

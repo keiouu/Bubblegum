@@ -16,6 +16,8 @@ new BaseView("/projects/new/", home_dir . "apps/core/templates/new-project.php",
 new ProfileView("/profile/", home_dir . "apps/core/templates/profile.php", "Your Profile");
 new ProfileView("/profile/(?P<user>\d+)/", home_dir . "apps/core/templates/profile.php", "Profile");
 
+// Git
+new Git_CommitView("/projects/(?P<project>\d+)/git/(?P<ref>[a-z\d]+)/", home_dir . "apps/core/templates/git_commit.php", "Commit");
 
 // API
 new AJAX_ActivityFeedView("/api/activity_feed/");

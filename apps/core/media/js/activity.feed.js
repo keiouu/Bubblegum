@@ -8,5 +8,6 @@ function update_activity_feed() {
 }
 
 $(function () {
+	setTimeout("update_activity_feed()", 500);
 	setInterval("update_activity_feed()", 10000);
 });
