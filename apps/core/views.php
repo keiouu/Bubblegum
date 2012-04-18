@@ -62,6 +62,19 @@ class ProjectView extends BaseView
 	}
 }
 
+class Git_CommitView extends ProjectView
+{
+	public function setup($request, $args) {
+		if (!parent::setup($request, $args))
+			return false;
+		
+		$git = $request->project->getRepository();
+		$request->git_info = $git->log();
+		
+		return true;
+	}
+}
+
 class JSONView extends View
 {
 	public function render($request, $args) {
@@ -69,11 +82,6 @@ class JSONView extends View
 			die('{"error":"No Dataset!"');
 		return json_encode($request->dataset);
 	}
-}
-
-class Git_CommitView extends View
-{
-
 }
 
 function sort_activity($a, $b) {

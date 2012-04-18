@@ -52,5 +52,6 @@
 
 .git-commit .hash {
 	float: right;
+	margin-right: 5px;
 }
 

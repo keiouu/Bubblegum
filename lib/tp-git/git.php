@@ -28,13 +28,14 @@ class Git
 	 *
 	 * @returns null|array Null on failure or array(hash, author, email, date, message) on success
 	 */
-	public function log() {
+	public function log($commit = "-1") {
 		if (!chdir($this->_path))
 			return null;
-		exec('git log -1 --pretty="format:%H##%ae##%an##%ad##%s"', $ret);
+		$commit = escapeshellarg($commit);
+		exec('git log '.$commit.' --pretty="format:%H##%P##%ae##%an##%ad##%s"', $ret);
 		$array = array();
 		if (isset($ret[0])) {
-			list($array["hash"], $array["email"], $array["author"], $array["date"], $array["message"]) = explode("##", $ret[0]);
+			list($array["hash"], $array["parent"], $array["email"], $array["author"], $array["date"], $array["message"]) = explode("##", $ret[0]);
 			$array["date"] = strtotime($array["date"]);
 		}
 		return $array;
