@@ -55,3 +55,12 @@
 	margin-right: 5px;
 }
 
+.git-commit-file-changes {
+	
+}
+.git-commit-file-changes td:first-child, .git-commit-file-changes td:nth-child(2) {
+	width: 7px;
+	font-size: 10px;
+	color: #666;
+}
+
