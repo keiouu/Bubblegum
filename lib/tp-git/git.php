@@ -51,7 +51,7 @@ class Git
 	}
 	
 	/**
-	 * Returns all file changed for a given commit
+	 * Returns all file changed for a given commit (git whatchanged)
 	 *
 	 * @param string $commit (optional) The hash to check
 	 * @return null|array Null on failure or array(hash, author, email, date, message) on success
@@ -75,7 +75,7 @@ class Git
 	}
 	
 	/**
-	 * Returns all file changes for a given commit
+	 * Returns all file changes for a given commit (git show)
 	 *
 	 * @param string $commit (optional) The hash to check
 	 * @return null|array Null on failure or array(hash, author, email, date, message) on success
@@ -85,7 +85,27 @@ class Git
 			return null;
 		$commit = escapeshellarg($commit);
 		exec('git show '.$commit.' --oneline -1', $ret);
-		return array_slice($ret, 1);
+		$lines = array_slice($ret, 1);
+		
+		$array = array();
+		$current_file = "";
+		foreach ($lines as $line) {
+			if (starts_with($line, "diff")) {
+				continue;
+				/*preg_match('/diff --git a\/(?P<file>[[:punct:]\w]+) b\/\\1/', $line, $matches);
+				if (isset($matches['file']))
+					$current_file = trim($matches['file']);*/
+			}
+			if (starts_with($line, "+++") || starts_with($line, "---") ) {
+				$current_file = substr($line, 4);
+				if (!isset($array[$current_file]))
+					$array[$current_file] = array();
+			}
+			if ($current_file == "")
+				continue;
+			$array[$current_file][] = $line;
+		}
+		return $array;
 	}
 	
 	/**
