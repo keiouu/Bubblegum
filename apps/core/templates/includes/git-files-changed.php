@@ -36,38 +36,36 @@ print '</tbody></table>';
 
 if (isset($git_file_changes)) {
 	foreach ($git_file_changes as $name => $changes) {
-		print '<table class="table table-bordered table-striped git-commit-file-changes">';
-		print '<thead><tr><th colspan="3">'.$name.'</th></tr></thead>';
-		print '<tbody>';
+		print '<div class="git-commit-file-changes">';
+		print '<h3>'.$name.'</h3>';
+		print '<pre class="prettyprint"><div class="list">';
 		$left_line = 0;
 		$right_line = 0;
-		foreach ($changes as $line) {
-			print '<tr>';
-			
+		foreach ($changes as $line) {			
 			if (starts_with($line, '@@')) {
-				print '<td>...</td><td>...</td><td><span style="color: #888;">' . $line . '</span></td>';
 				$parts = explode(" ", $line);
 				list($left_line, $left_length) = explode(",", $parts[1]);
 				$left_line = substr($left_line, 1);
 				list($right_line, $right_length) = explode(",", $parts[2]);
 				$right_line = substr($right_line, 1);
+				print '<p class="grey R-- L--"><span>' . $line . '</span></p>';
 			} else {
 				if (starts_with($line, '+')) {
-					print '<td></td><td>' . $right_line . '</td><td><span style="color: green;">' . $line . '</span></td>';
+					print '<p class="R'.$right_line.'"><span style="color: green;">' . $line . '</span></p>';
 					$right_line += 1;
 				} elseif (starts_with($line, '-')) {
-					print '<td>' . $left_line . '</td><td></td><td><span style="color: red;">' . $line . '</span></td>';
+					print '<p class="L'.$left_line.'"><span style="color: red;">' . $line . '</span></p>';
 					$left_line += 1;
 				} else {
-					print '<td>' . $left_line . '</td><td>' . $right_line . '</td><td>' . $line . '</td>';
+					print '<p class="L'.$left_line.' R'.$right_line.'"><span>' . $line . '</span></p>';
 					$left_line += 1;
 					$right_line += 1;
 				}
 			}
 			
-			print '</tr>';
 		}
-		print '</tbody></table>';
+		print '</div></pre>';
+		print '</div>';
 	}
 }
 ?>
