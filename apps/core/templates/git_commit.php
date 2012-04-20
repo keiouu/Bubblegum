@@ -25,4 +25,7 @@
 	?>
 {% endblock body %}
 
-
+{% block endbody %}
+<link href="{{home_url}}apps/core/media/css/prettify.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="{{home_url}}apps/core/media/js/prettify/prettify.js"></script>
+{% endblock endbody %}

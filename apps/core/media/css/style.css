@@ -78,6 +78,14 @@
 	min-width: 60px;
 }
 
+.git-commit-file-changes .code-green {
+	/* background-color: rgba(0, 164, 23, 0.1); */
+}
+
+.git-commit-file-changes .code-red {
+	/* background-color: rgba(164, 0, 23, 0.1); */
+}
+
 .left-line-number, .right-line-number {
 	display: inline-block;
 	text-align: center;

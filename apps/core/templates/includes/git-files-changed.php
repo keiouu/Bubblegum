@@ -38,7 +38,7 @@ if (isset($git_file_changes)) {
 	foreach ($git_file_changes as $name => $changes) {
 		print '<div class="git-commit-file-changes">';
 		print '<h3>'.$name.'</h3>';
-		print '<pre class="prettyprint"><div class="list">';
+		print '<pre><div class="list">';
 		$left_line = 0;
 		$right_line = 0;
 		foreach ($changes as $line) {			
@@ -51,13 +51,13 @@ if (isset($git_file_changes)) {
 				print '<p class="grey R-- L--"><span>' . $line . '</span></p>';
 			} else {
 				if (starts_with($line, '+')) {
-					print '<p class="R'.$right_line.'"><span style="color: green;">' . $line . '</span></p>';
+					print '<p class="R'.$right_line.'"><code class="code-green">' . $line . '</code></p>';
 					$right_line += 1;
 				} elseif (starts_with($line, '-')) {
-					print '<p class="L'.$left_line.'"><span style="color: red;">' . $line . '</span></p>';
+					print '<p class="L'.$left_line.'"><code class="code-red">' . $line . '</code></p>';
 					$left_line += 1;
 				} else {
-					print '<p class="L'.$left_line.' R'.$right_line.'"><span>' . $line . '</span></p>';
+					print '<p class="L'.$left_line.' R'.$right_line.'"><code>' . $line . '</code></p>';
 					$left_line += 1;
 					$right_line += 1;
 				}
