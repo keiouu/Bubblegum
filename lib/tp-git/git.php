@@ -90,19 +90,21 @@ class Git
 		$array = array();
 		$current_file = "";
 		foreach ($lines as $line) {
-			if (starts_with($line, "diff")) {
+			if (starts_with($line, "diff") || (starts_with($line, "index") && $current_file == "")) {
+				$current_file = "";
 				continue;
-				/*preg_match('/diff --git a\/(?P<file>[[:punct:]\w]+) b\/\\1/', $line, $matches);
-				if (isset($matches['file']))
-					$current_file = trim($matches['file']);*/
 			}
+			
 			if (starts_with($line, "+++") || starts_with($line, "---") ) {
-				$current_file = substr($line, 4);
+				$current_file = substr($line, 6);
 				if (!isset($array[$current_file]))
 					$array[$current_file] = array();
+				continue;
 			}
+			
 			if ($current_file == "")
 				continue;
+			
 			$array[$current_file][] = $line;
 		}
 		return $array;

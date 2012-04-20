@@ -20,6 +20,7 @@
 	$git_data = $request->git_info;
 	include_once(home_dir . "apps/core/templates/includes/git-view.php");
 	$git_changes = $git->files_changed($request->git_info['hash']);
+	$git_file_changes = $git->file_changes($request->git_info['hash']);
 	include_once(home_dir . "apps/core/templates/includes/git-files-changed.php");
 	?>
 {% endblock body %}
