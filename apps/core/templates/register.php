@@ -8,14 +8,14 @@
 <div class="container">
 	<div class="content">
 		<div class="page-header">
-			<h1>Login</h1>
+			<h1>Register</h1>
 		</div>
 		<?php
 		require_once(home_dir . "contrib/admin/core.php");
 		$printer = new AdminFormPrinter();
-		$printer->run($request->login_form, false, array("submit_login" => "login"));
+		$printer->run($request->register_form, false, array("submit_register" => "register"));
 		?>
-		<p><a href="{{home_url}}register/"><i class="icon-user"></i> Dont have an account?</a></p>
+		<p><a href="{{home_url}}login/"><i class="icon-user"></i> Already have an account?</a></p>
 	</div>
 	<footer>
 	  <p>© {{project_name}} 2012</p>

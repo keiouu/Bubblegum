@@ -9,7 +9,8 @@ require_once(home_dir . "framework/utils.php");
 
 class Request
 {
-	public $method, $page, $get, $post, $cookies, $mimeType, $messages, $safe_vals;
+	private static $messages = array();
+	public $method, $page, $get, $post, $cookies, $mimeType, $safe_vals, $cmd_args;
 	
 	public function __construct() {
 		$this->method = "GET";
@@ -27,12 +28,17 @@ class Request
 		}
 		
 		if (PHP_SAPI === 'cli') {
+			$count = 0;
 			$this->cmd_args = array();
 			global $argv;
+			unset($argv[0]);
 			foreach ($argv as $arg) {
 				list($name, $sep, $val) = partition($arg, "=");
-				if ($val !== "")
-					$this->cmd_args[$name] = $val;
+				$this->cmd_args[$name] = $val;
+				if ($val == "") {
+					$this->cmd_args[$count] = $arg;
+					$count++;
+				}
 			}
 			if (isset($this->cmd_args[page_def])) {
 				$this->page = trim($this->cmd_args[page_def]);
@@ -48,7 +54,6 @@ class Request
 		$this->page = '/' . $this->page;
 		$this->mimeType = $this->get_mime_type($this->page);
 		$this->visitor_ip = $this->getIP();
-		$this->messages = isset($_SESSION['request_messages']) ? $_SESSION['request_messages'] : array();
 		$this->safe_vals = array();
 		$this->add_val("home_url", home_url);
 		$this->add_val("media_url", media_url);
@@ -89,7 +94,9 @@ class Request
 	}
 	
 	private function get_query_array($query) {
-		if (strlen($query) == 0)
+		if (starts_with($query, "?"))
+			$query = substr($query, 1);
+		if (trim($query) == "")
 			return array();
 		$vars = explode("&", $query);
 		$array = array();
@@ -132,24 +139,22 @@ class Request
 	/*
 	 * Messaging framework for requests
 	 */
-	public function message($message, $type = "info") {
-		if (!isset($this->messages[$type]))
-			$this->messages[$type] = array();
-		$this->messages[$type][] = $message;
-		$_SESSION['request_messages'] = $this->messages;
+	public static function message($message, $type = "info") {
+		if (!isset(Request::$messages[$type]))
+			Request::$messages[$type] = array();
+		Request::$messages[$type][] = $message;
 	}
 	
-	public function delete_messages() {
-		$this->messages = array();
-		$_SESSION['request_messages'] = array();
+	public static function delete_messages() {
+		Request::$messages = array();
 	}
 	
-	public function get_messages() {
-		return $this->messages;
+	public static function get_messages() {
+		return Request::$messages;
 	}
 	
-	public function print_messages() {
-		foreach ($this->messages as $type => $messages) {
+	public static function print_messages() {
+		foreach (Request::$messages as $type => $messages) {
 			print '<div id="tpmessages" class="messages '.$type.'">';
 			foreach ($messages as $message) {
 				print '<div class="message"><p>' . $message . '</p></div>';
@@ -158,9 +163,9 @@ class Request
 		}
 	}
 	
-	public function print_and_delete_messages() {
-		$this->print_messages();
-		$this->delete_messages();
+	public static function print_and_delete_messages() {
+		Request::print_messages();
+		Request::delete_messages();
 	}
 	
 	public function getFullPath() {

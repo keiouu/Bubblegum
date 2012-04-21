@@ -10,15 +10,15 @@ require_once(home_dir . "framework/database.php");
 
 class UpgradeView extends BasicHTMLView
 {
-	public function __construct($url, $title = "Upgrade | Tikapot", $style = "", $script = "", $meta = "") {
-		parent::__construct($url, $title, $style, $script, $meta);
+	public function __construct($url, $title = null, $style = "", $script = "", $meta = "") {
+		parent::__construct($url, ($title == null ? $GLOBALS['i18n']['framework']['upgrade'] . " | Tikapot" : $title), $style, $script, $meta);
 	}
 	
 	public function render($request) {
 		$db = Database::create();
 		$objects = ContentType::objects()->all();
 		print "<p>Found ".count($objects)." models.<br />";
-		print "Upgrading...</p><ul>";
+		print $GLOBALS['i18n']['framework']['upgrading'] . "...</p><ul>";
 	
 		// Check Content Type
 		$object = new ContentType();
@@ -51,7 +51,7 @@ class UpgradeView extends BasicHTMLView
 				} catch (Exception $e) {}
 			}
 			
-			print "<li>Upgraded ContentType</li>";
+			print "<li>" . $GLOBALS['i18n']['framework']['upgraded'] . " ContentType</li>";
 		}
 		
 		// Check Models
@@ -61,11 +61,11 @@ class UpgradeView extends BasicHTMLView
 				$version = $model->get_version();
 				if ($object->version != $version) {
 					$model->upgrade($db, "".$object->version, "".$version);
-					print "<li>Upgraded ".get_class($model)."</li>";
+					print "<li>" . $GLOBALS['i18n']['framework']['upgraded'] . "Upgraded ".get_class($model)."</li>";
 				}
 			}
 		}
-		print "</ul><p>Finished!</p>";
+		print "</ul><p>".$GLOBALS['i18n']['framework']['finished']."!</p>";
 	}
 }
 ?>

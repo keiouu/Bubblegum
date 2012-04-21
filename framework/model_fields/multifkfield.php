@@ -14,11 +14,11 @@ class MultiFKField extends FKField
 	
 	public function __construct() {
 		$arg_list = func_get_args();
-   	foreach ($arg_list as $arg) {
-   		list($app, $model) = explode(".", $arg);
-   		$this->_models[$model] = $app;
-   	}
-   	return parent::__construct();
+		foreach ($arg_list as $arg) {
+			list($app, $model) = explode(".", $arg);
+			$this->_models[$model] = $app;
+		}
+		return parent::__construct();
 	}
 	
 	public function __toString() {
@@ -68,6 +68,13 @@ class MultiFKField extends FKField
 		return parent::get_value();
 	}
 	
+	public function sql_value($db, $val = NULL) {
+		$val = ($val === NULL) ? $this->value : $val;
+		if (is_object($val))
+			$val = $val->pk;
+		return "'" . (($val !== null) ? $db->escape_string($val) : "0") . "'";
+	}
+	
 	protected function grab_object() {
 		if (!$this->is_valid())
 			return null;
@@ -84,11 +91,8 @@ class MultiFKField extends FKField
 		return new $this->_class();
 	}
 	
-	public function sql_value($db, $val = NULL) {
-		$val = ($val === NULL) ? $this->value : $val;
-		if (is_object($val))
-			$val = get_class($val) . "|" . $val->pk;
-		return ($val !== null) ? "'" . $db->escape_string($val) . "'" : "'0'";
+	public function post_model_create($db, $name, $table_name) {
+		return "";
 	}
 	
 	public function db_create_query($db, $name, $table_name) {

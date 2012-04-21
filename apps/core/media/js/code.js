@@ -3,7 +3,7 @@ $(function () {
 	$(".git-commit-file-changes .code p").each(function() {
 		var elem = $(this);
 		elem.find("code").addClass("prettyprint");
-		elem.prepend('<span class="line-numbers"><span class="left-line-number"> </span> <span class="right-line-number"> </span></span>');
+		elem.prepend('<div class="line-numbers"><span class="left-line-number"> </span> <span class="right-line-number"> </span></div>');
 		var classList = $(this).attr('class').split(/\s+/);
 		$.each(classList, function(index, item){
 			item = $.trim(item);

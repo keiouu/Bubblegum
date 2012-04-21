@@ -20,9 +20,9 @@ require_once(home_dir . "contrib/admin/core.php");
 		<link href="{{admin_media_url}}css/bootstrap.min.css" rel="stylesheet">
 		<link href="{{admin_media_url}}css/style.css" rel="stylesheet">
 		<style type="text/css">
-      body {
-        padding-top: 60px;
-      }
+		  body {
+		    padding-top: 60px;
+		  }
     	</style>
 		{% block head %}{% endblock %}
 		<script src="{{admin_media_url}}js/jquery.js"></script>

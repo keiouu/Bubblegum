@@ -26,10 +26,13 @@ class FKField extends ModelField implements ModelInterface
 		$this->_set_model($model);
 	}
 	
-	public function db_create_query($db, $name, $table_name) {
-		$obj = new $this->_class();
-		$ref_str = " REFERENCES " . $obj->get_table_name() . "(" . $obj->_pk() . ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED";
-		return parent::db_create_query($db, $name, $table_name) . ($db->get_type() == "psql" ? $ref_str : "");
+	public function post_model_create($db, $name, $table_name) {
+		// Create valid REFERENCE
+		if ($db->get_type() == "psql") {
+			$constraint = $table_name . "_" . $name . "_fkey";
+			$obj = new $this->_class();
+			return 'ALTER TABLE "'.$table_name.'" ADD CONSTRAINT '.$constraint.' FOREIGN KEY ("'.$name.'") REFERENCES "'.$obj->get_table_name().'" ('.$obj->_pk().') ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;';
+		}
 	}
 	
 	protected function _clean() {

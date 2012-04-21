@@ -13,6 +13,14 @@
 	.debug_panel * {
 		margin: 0;
 	}
+	
+	.debug_panel .console_warning {
+		color: orange;
+	}
+	
+	.debug_panel .console_error {
+		color: red;
+	}
 
 	.debug_pill {
 		/* Adapted from Bootstrap */

@@ -363,7 +363,8 @@ class User extends Model
 	public static function login($request, $username, $password) {
 		try {
 			$request->user = User::auth_encoded($request, $username, User::encode($password), True);
-			$request->message("You are now logged in!", "success");
+			if ($request->user->status >= $request->user->_status['live'])
+				$request->message("You are now logged in!", "success");
 		} catch (AuthException $e) {
 			try {
 				$request->user = User::auth_encoded($request, $username, User::encode_old($password), True);
@@ -371,7 +372,7 @@ class User extends Model
 					$request->user->password = User::encode($password);
 					$request->user->save();
 				} catch (Exception $e) {
-					$request->message("Looks like you need to upgrade your database!", "error");
+					console_error("Auth: Looks like you need to upgrade your database!");
 				}
 			} catch (AuthException $e) {
 				$request->message($e->getMessage(), "error");
@@ -394,7 +395,7 @@ class User extends Model
 			$user->status = $user->_status['live'];
 			$user->save();
 		} else {
-			if (!$prevent_code_email && !ConfigManager::get("disable_auth_emailer", true)) {
+			if (!$prevent_code_email && !ConfigManager::get("disable_auth_emailer", false)) {
 				$code = ConfirmationCode::genCode($user);
 				$code->email();
 				return array($user, $code);

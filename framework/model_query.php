@@ -14,7 +14,8 @@ class ModelQuery implements Iterator, Countable
 {
 	private $_model, $_query, $_objects, $_count, $_has_run, $_built_queries, $_position, $_sanitized, $_using;
 	
-	/* $query should conform to the following structure (each line optional):
+	/**
+	 * $query should conform to the following structure (each line optional):
 	 *  (
 	 *    WHERE => (COL => Val, "op"=>"OR", COL => (Val, OPER), etc),   Default OPER: = Default OP: AND
 	 *    ORDER BY => (COL, (COL, DESC/ASC), etc),          Default: ASC

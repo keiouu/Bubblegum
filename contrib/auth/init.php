@@ -135,8 +135,12 @@ function validate_login($request) {
 		$request->user->logout();
 		if ($request->user->status == $request->user->_status['suspended'])
 			$request->message("Your account has been suspended!", "error");
-		if ($request->user->status == $request->user->_status['registered'])
-			$request->message("You must validate your email address first!", "error");
+		if ($request->user->status == $request->user->_status['registered']) {
+			if (!ConfigManager::get("disable_auth_emailer", false))
+				$request->message("You must validate your email address first!", "error");
+			else
+				$request->message("An administrator must approve your account first!", "error");
+		}
 	}
 }
 

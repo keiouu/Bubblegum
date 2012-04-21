@@ -1,7 +1,9 @@
 <?php
-/*
+/**
  * Tikapot Model System
- *
+ * 
+ * @author James Thompson
+ * @package Tikapot\Framework
  */
 
 require_once(home_dir . "framework/database.php");
@@ -11,110 +13,309 @@ require_once(home_dir . "framework/models.php");
 require_once(home_dir . "framework/forms.php");
 require_once(home_dir . "framework/utils.php");
 
+/**
+ * A Validation Exception
+ * 
+ * @package Tikapot\Framework
+ * @subpackage Exceptions
+ */
 class ValidationException extends Exception { }
-class TableValidationException extends ValidationException { }
-class ModelExistsException extends Exception {}
-class FieldException extends Exception {}
-class InclusionException extends FieldException {}
 
+/**
+ * A Table Validation Exception
+ * 
+ * @package Tikapot\Framework
+ * @subpackage Exceptions
+ */
+class TableValidationException extends ValidationException { }
+
+/**
+ * Thrown when a Model Exists
+ * 
+ * @package Tikapot\Framework
+ * @subpackage Exceptions
+ */
+class ModelExistsException extends Exception {}
+
+/**
+ * Thrown when there is an error related to a field
+ * 
+ * @package Tikapot\Framework
+ * @subpackage Exceptions
+ */
+class FieldException extends Exception {}
+
+/**
+ * This should be used by any object attempting to mimic a Model
+ * 
+ * @package Tikapot\Framework
+ * @subpackage Interfaces
+ */
 interface ModelInterface
 {
+	/**
+	 * Returns true if this object has a field of the given name
+	 *
+	 * @param string $name The name of the field to test
+	 */
 	public function has_field($name);
-	/* Returns the value of the field */
+	
+	/**
+	 * Returns the value of the field
+	 *
+	 * @param string $name The name of the field to get
+	 */
 	public function get_field($name);
-	/* Sets the field */
+	
+	/**
+	 * Sets the field
+	 *
+	 * @param string $name The name of the field to set
+	 * @param string $value The field's new value
+	 */
 	public function set_field($name, $value);
-	/* Reset the field to default */
+	
+	/**
+	 * Reset the field to default
+	 *
+	 * @param string $name The name of the field to reset
+	 */
 	public function reset_field($name);
-	/* Saves the model, unused */
+	
+	/** Saves the model to the database */
 	public function model_save();
 }
 
+/**
+ * Model's are a Database abstraction layer, designed to give you an easy way to
+ * store information without having to write SQL.
+ * 
+ * @package Tikapot\Framework
+ */
 abstract class Model
 {
-	private $from_db = False, $_valid_model = False;
-	protected $fields = array(), $inclusive_fields = array(), $safe_fields = array(), $errors = array(), $_using = "default", $_version = "1.0";
+	/** Is this object from a database? @internal */
+	private $from_db = False;
+	/** Is this object valid? @internal */
+	private $_valid_model = False;
+	/** List of fields. @internal */
+	protected $fields = array();
+	/** List of safe fields. @internal */
+	protected $safe_fields = array();
+	/** Error bucket. @internal */
+	protected $errors = array();
+	/** The database this object uses. @internal */
+	protected $_using = "default";
+	/** This model's version. @internal */
+	protected $_version = "1.0";
 	
+	/**
+	 * A simple constructor
+	 */
 	public function __construct() {
 		$this->_valid_model = True;
 		$this->add_field("id", new PKField(22, 0, True));
 	}
 	
+	/**
+	 * Returns a string representation of this object
+	 */
 	public function __toString() {
 		return "" . $this->pk;
 	}
 	
-	public static function model_display_name($override = "") {
-		$name = $override;
+	/**
+	 * Get a nice display name for this class
+	 *
+	 * @param string $class_override Override the default class name for this class
+	 * @return string A user-friendly name for this class
+	 */
+	public static function _display_name($class_override = "") {
+		$name = $class_override;
 		if ($name === "")
 			$name = get_class(static::get_temp_instance());
 		$lower_name = strtolower($name);
 		return isset($GLOBALS['i18n']['framework']["model_" . $lower_name]) ? $GLOBALS['i18n']['framework']["model_" . $lower_name] : $name;
 	}
 	
-	public static function get_content_type() {
+	/**
+	 * See _display_name(...)
+	 * 
+	 * @param string $override Override the default class name for this class
+	 * @deprecated 1.2 This method will be replaced by "_display_name($class_override)"
+	 */
+	public static function model_display_name($override = "") {
+		return static::_display_name($override);
+	}
+	
+	/**
+	 * Returns the ContentType object for this model
+	 *
+	 * @return ContentType The ContentType object of this model
+	 */
+	public static function _content_type() {
 		return ContentType::of(static::get_temp_instance());
 	}
 	
+	/**
+	 * See _content_type()
+	 * 
+	 * @deprecated 1.2 This method will be replaced by "_content_type()"
+	 */
+	public static function get_content_type() {
+		return static::_content_type();
+	}
+	
+	/**
+	 * Set the database to use with this model.
+	 *
+	 * @param string $db The name of the database, relates to the config.php $databases array entry
+	 */
 	public function set_db($db) {
 		$this->_using = $db;
 	}
 	
-	public function getDB() {
+	/**
+	 * Get the name of the database this model uses
+	 *
+	 * @return string The name of the database this model uses
+	 */
+	public function get_db() {
 		return $this->_using;
 	}
 	
-	public function fromDB() {
+	/**
+	 * See get_db()
+	 * 
+	 * @deprecated 1.2 This method will be replaced by "get_db()"
+	 */
+	public function getDB() {
+		return $this->get_db();
+	}
+	
+	/**
+	 * Is this model from a database?
+	 *
+	 * @return boolean Returns true if this object has been loaded from a database, or false if it has not been saved yet
+	 */
+	public function from_db() {
 		return $this->from_db;
 	}
 	
-	public static function get_temp_instance() {
+	/**
+	 * See from_db()
+	 * 
+	 * @deprecated 1.2 This method will be replaced by "from_db()"
+	 */
+	public function fromDB() {
+		return $this->from_db();
+	}
+	
+	/**
+	 * This method is provided to create temporary models that cannot be saved to a database.
+	 *
+	 * @internal
+	 * @return self Returns a new, "invalid", object of this model.
+	 */
+	public static function _get_temp_object() {
 		$obj = new static();
 		$obj->_valid_model = False;
 		return $obj;
 	}
 	
-	public static function objects() {
-		return new ModelQuery(static::get_temp_instance());
+	/**
+	 * See _get_temp_object()
+	 * 
+	 * @deprecated 1.2 This method will be replaced by "_get_temp_object()"
+	 */
+	public static function get_temp_instance() {
+		return static::_get_temp_object();
 	}
 	
-	/* Allows custom primary keys */
-	public function _pk() {
+	/**
+	 * Example:
+	 * <code>
+	 * $objects = Model::objects();
+	 * foreach ($objects as $object) { ... }
+	 * </code>
+	 * 
+	 * @return ModelQuery A ModelQuery object, with every object available.
+	 */
+	public static function objects() {
+		return new ModelQuery(static::_get_temp_object());
+	}
+	
+	/**
+	 * Allows custom primary keys.
+	 *
+	 * @return string The name of this model's primary key field
+	 */
+	public function get_pk_name() {
 		foreach ($this->fields as $name => $field)
 			if ($field->is_pk_field())
 				return $name;
 	}
 	
-	public function get_pk_name() { return $this->_pk(); }
+	/**
+	 * See get_pk_name()
+	 * 
+	 * @deprecated 1.2 This method will be replaced by "get_pk_name()"
+	 */
+	public function _pk() { return $this->get_pk_name(); }
 	
-	/* Format: array("COL"=>"VAL") */
-	public function load_values($array) {
-		foreach ($this->fields as $name => $field)
+	/**
+	 * Load a list of values into this object's fields.
+	 * This is usually internal but may be useful in some cases
+	 *
+	 * @param array $array Array of values to load, should follow the format: array("field_name" => "value", ...)
+	 * @param boolean $fromDB Are these values from a database?
+	 */
+	public function load_values($array, $fromDB = false) {
+		foreach ($this->fields as $name => $field) {
 			if (array_key_exists($name, $array)) {
 				$val = $array[$name];
 				if (is_array($val))
 					$val = $val[0];
 				$field->set_value($val);
 			}
+		}
+		
+		if ($fromDB) {
+			$this->from_db = True;
+		}
 	}
 	
-	/* Load field values from query result. Sets "from_db" to True */
+	/**
+	 * See load_values(...)
+	 * 
+	 * @param array $result Values to load
+	 * @deprecated 1.2 This method will be replaced by "load_values($array, true)"
+	 */
 	public function load_query_values($result) {
-		$this->load_values($result);
-		$this->from_db = True;
+		$this->load_values($result, true);
 	}
 	
-	// Allows access to stored models
-	// Returns a modelquery object containing the elements
-	// $query should be in the following format: (COL => Val, COL => (val, OPER), etc)
+	/**
+	 * Shortcut for ::objects()->find(...)
+	 *
+	 * @see ModelQuery::find
+	 * @param array $query Array of values to load, should follow the format: array("field_name" => "value", "field_name" => array("value", "=,>,<,etc"), ...)
+	 * @return ModelQuery A ModelQuery object containing the found objects
+	 */
 	public static function find($query) {
 		return static::objects()->find($query);
 	}
 	
-	// Allows access to stored models
-	// Returns a single object
-	// Errors if multiple objects are found or no objects are found
-	// Arg can be an id or an array with multiple parameters
+	/**
+	 * Shortcut for ::objects()->find(...)->get(0)
+	 * 
+	 * @throws ModelExistsException If there are no objects matching the query
+	 * @throws ModelQueryException If there are multiple objects matching the query
+	 * @see ModelQuery::find
+	 * @see ModelQuery::get
+	 * @param mixed $arg Either an Array of values to load, or a primary key value
+	 * @return mixed The found object
+	 */
 	public static function get($arg = 0) {
 		$results = NULL;
     	if (is_array($arg))
@@ -128,6 +329,14 @@ abstract class Model
 		return $results->get(0);
 	}
 	
+	/**
+	 * Creates a new object of this type, loads the given values and saves it to the database
+	 * 
+	 * @throws ModelQueryException If there is an error creating the object
+	 * @see Model::load_values
+	 * @param array $args An array of values to set for the new object
+	 * @return mixed|null The created object
+	 */
 	public static function create($args = array()) {
 		if (count($args) <= 0)
 			return Null;
@@ -143,9 +352,12 @@ abstract class Model
 		return Null;
 	}
 
-	// Allows access to stored models
-	// Arg can be an id or an array with multiple search parameters
-	// Returns an array containing:  (a single object [creates it if needed], a boolean specifying weather or not the object is a new object)
+	/**
+	 * Searches for an object matching the giving arguments, creating one if it cant find one
+	 * 
+	 * @param mixed $args An Array of values to look for, or load into a new object
+	 * @return array Array(object, created (true|false))
+	 */
 	public static function get_or_create($args = 0) {
 		$obj = NULL;
 		$created = False;
@@ -158,7 +370,15 @@ abstract class Model
 		}
 		return array($obj, $created);
 	}
-	
+
+	/**
+	 * Searches for an object matching the giving arguments, similar to ::get but
+	 * this method doesnt throw any Exceptions
+	 * 
+	 * @see Model::get
+	 * @param mixed $args An Array of values to look for
+	 * @return mixed|null The found object, or null
+	 */
 	public static function get_or_ignore($args) {
 		try {
 			$obj = static::get($args);
@@ -169,16 +389,29 @@ abstract class Model
 		}
 	}
 	
+	/**
+	 * Searches for an object matching the giving arguments, then deletes them.
+	 * 
+	 * @see Model::get
+	 * @param mixed $args An Array of values to look for
+	 * @return boolean True if the object was deleted, false if not
+	 */
 	public static function delete_or_ignore($args) {
 		try {
 			$obj = static::get($args);
-			$obj->delete();
+			return $obj->delete();
 		}
 		catch (Exception $e) {
+			return false;
 		}
 	}
 	
-	// Add a new field
+	/**
+	 * Add a new field to this model.
+	 *
+	 * @param string $name The name of the field
+	 * @param ModelField $type The field object
+	 */
 	protected function add_field($name, $type) {
 		if ($type->is_pk_field()) {
 			$new_fields = array();
@@ -193,60 +426,106 @@ abstract class Model
 		$type->setup($this, $name);
 	}
 	
-	// Add a new safe field
+	/**
+	 * Add a new safe field, where a "safe" field ignores any
+	 * validation warnings.
+	 * Warning! This is a significant security risk if the field is user-modifiable.
+	 * 
+	 * @param string $name The name of the field
+	 * @param ModelField $type The field object
+	 */
 	protected function add_safe_field($name, $type) {
 		$this->add_field($name, $type);
 		$this->safe_fields[] = $name;
 	}
 	
-	// Add a new inclusive field
-	protected function add_inclusive_field($name, $type, $direction = 2) {
-		// Check its an FK Field
-		if (!($type instanceof ModelInterface))
-			throw new InclusionException($GLOBALS['i18n']['framework']['fielderr16']);
-		$this->add_field($name, $type);
-		$this->inclusive_fields[$name] = $direction;
-	}
-	
-	protected function add_bidirectional_inclusive_field($name, $type) {
-		$this->add_inclusive_field($name, $type, 2);
-	}
-	
-	protected function add_unidirectional_inclusive_field($name, $type) {
-		$this->add_inclusive_field($name, $type, 1);
-	}
-	
-	public function setValid($val) {
+	/**
+	 * Sets the value of _valid_model
+	 * 
+	 * @internal
+	 * @param boolean $val The new value of Model::_valid_model
+	 */
+	public function set_valid($val) {
 		$this->_valid_model = $val;
 	}
 	
+	/**
+	 * See set_valid(...)
+	 *
+	 * @deprecated 1.2 This method will be replaced by "set_valid($val)"
+	 * @param boolean $val The new value of Model::_valid_model
+	 */
+	public function setValid($val) {
+		$this->set_valid($val);
+	}
+	
+	/**
+	 * Get the table name for this object, allows individual objects to "route" themselves
+	 * to other tables.
+	 *
+	 * @return string The name of the database table this model uses
+	 */
 	public function get_table_name() {
 		return strtolower(get_class($this));
 	}
 	
+	/**
+	 * The model version is useful for database upgrades etc
+	 *
+	 * @return string The version number of this model
+	 */
 	public function get_version() {
 		return $this->_version;
 	}
 	
-	// Get fields
+	/**
+	 * Returns an array of all fields used by this object
+	 *
+	 * @return array An array containing the fields of this object
+	 */
 	public function get_fields() {
 		return $this->fields;
 	}
 	
-	// Get field
+	/**
+	 * A Method for: $object->_$name
+	 *
+	 * @param string $name The name of the field to return
+	 * @return ModelField A ModelField object for the field of the given name
+	 */
 	public function get_field($name) {
 		return $this->__get("_" . $name);
 	}
 	
+	/**
+	 * Does this object have a given field?
+	 *
+	 * @param string $name The name of the field to check
+	 * @return boolean True if this model had a field of the specified name, false if not
+	 */
 	public function has_field($name) {
 		return isset($this->fields[$name]) || (starts_with($name, "_") && isset($this->fields[substr($name, 1)]));
 	}
 	
-	// Set field
+	/**
+	 * A Method for: $object->_$name = $value;
+	 *
+	 * @param string $name The name of the field to set
+	 * @param string $value The new value of the field
+	 * @return mixed Returns $value for convenience
+	 */
 	public function set_field($name, $value) {
-		return $this->__set($name, $value);
+		$this->__set($name, $value);
+		return $value;
 	}
 	
+	/**
+	 * Get a Form object containing appropriate elements for this object,
+	 * as well as values for the fields.
+	 *
+	 * @see Form
+	 * @return Form A pre-built form for this object
+	 */
 	public function get_form() {
 		$fields = array();
 		foreach($this->get_fields() as $name => $field) {
@@ -257,6 +536,19 @@ abstract class Model
 		));
 	}
 	
+	/**
+	 * This allows you to directly access fields of this model.
+	 * Append an underscore to get the field instead of its value.
+	 * 
+	 * For example:
+	 * <code>
+	 * $object = new Model();
+	 * $value = $object->some_field_name;
+	 * $field = $object->_some_field_name;
+	 * </code>
+	 *
+	 * @param string $name The name of the field
+	 */
 	public function __get($name) {
 		$is_safe = in_array($name, $this->safe_fields);
 		if ($name == "pk")
@@ -277,16 +569,21 @@ abstract class Model
 				return $this->fields[$base_name];
 		}
 		
-		// Inclusive fields come after local fields
-		foreach ($this->inclusive_fields as $liname => $direction) {
-			$lifield = $this->fields[$liname];
-			if ($lifield->has_field($name))	
-				return $lifield->get_field($name);
-		}
-		
 		throw new FieldException($GLOBALS['i18n']['framework']["fieldne"] . ' ' . get_class(new static()) . ":$name.");
 	}
 	
+	/**
+	 * This allows you to directly set fields of this model.
+	 * 
+	 * For example:
+	 * <code>
+	 * $object = new Model();
+	 * $object->some_field_name = "hello";
+	 * </code>
+	 *
+	 * @param string $name The name of the field
+	 * @param mixed $value The new value for the field
+	 */
 	public function __set($name, $value) {
 		if (method_exists($this, "__set_" . $name)) {
 			$method = "__set_" . $name;
@@ -296,51 +593,82 @@ abstract class Model
 		if ($name == "pk")
 			$name = $this->_pk();
 		
-		if (isset($this->fields[$name]))
+		if (isset($this->fields[$name])) {
 			$this->fields[$name]->set_value($value);
-		
-		$li_found = false;
-		foreach ($this->inclusive_fields as $liname => $direction) {
-			$lifield = $this->fields[$liname];
-			if ($lifield->has_field($name) && $direction > 1) {
-				$lifield->set_field($name, $value);
-				$li_found = true;
-			}
-		}
-		
-		if (!$li_found && !isset($this->fields[$name]))
+		} else {
 			throw new FieldException($GLOBALS['i18n']['framework']["fieldne"] . " '$name'.");
+		}
 	}
 	
-	// isset checking for fields
+	/**
+	 * This allows you to directly check if a model field exists.
+	 * 
+	 * For example:
+	 * <code>
+	 * $object = new Model();
+	 * if (isset($object->some_field_name)) {}
+	 * </code>
+	 *
+	 * @param string $name The name of the field
+	 */
 	public function __isset($name) {
 		if ($name == "pk")
 			return True;
-		foreach ($this->inclusive_fields as $liname => $direction)
-			if ($this->fields[$liname]->has_field($name))
-				return true;
 		return isset($this->fields[$name]) && $this->fields[$name]->is_set();
 	}
 	
-	// Unsetting a field resets it to default value
+	/**
+	 * This allows you to directly unset a model field.
+	 * 
+	 * For example:
+	 * <code>
+	 * $object = new Model();
+	 * unset($object->some_field_name);
+	 * </code>
+	 *
+	 * @param string $name The name of the field
+	 */
 	public function __unset($name) {
 		if ($name == "pk")
 			return;
 		if ($this->__isset($name))
 			$this->fields[$name]->reset();
-		foreach ($this->inclusive_fields as $liname => $direction)
-			$this->fields[$liname]->reset_field($name);
 	}
 	
-	public function relatesTo($object) {
+	/**
+	 * Does this model relate to the given object?
+	 * A relationship is defined as:
+	 * * Any field having a link to the given object (e.g. FK fields)
+	 *
+	 * @param object $object The object to test
+	 * @return boolean True if the models are related, false of not
+	 */
+	public function relates_to($object) {
 		foreach ($this->fields as $name => $field) {
-			if ($field->relatesTo(get_class($this)))
+			if ($field->relatesTo(get_class($object)))
 				return true;
 		}
 		return false;
 	}
 	
-	public function getRelatedObjects($object) {
+	/**
+	 * See relates_to(...)
+	 *
+	 * @deprecated 1.2 This method will be replaced by "relates_to($object)"
+	 * @param object $object The object to test
+	 */
+	public function relatesTo($object) {
+		return $this->relates_to($object);
+	}
+	
+	/**
+	 * Get any objects this object relates to.
+	 *
+	 * @see Model::relates_to
+	 * @param object $object The object to check against
+	 * @return array An array containing all objects that relate to this object.
+	 */
+	public function get_related_objects($object) {
 		$class = get_class($object);
 		foreach ($this->fields as $name => $field) {
 			if ($field->relatesTo($class)) {
@@ -350,7 +678,22 @@ abstract class Model
 		return array();		
 	}
 	
-	// Returns the query to create the table in the database
+	/**
+	 * See get_related_objects(...)
+	 *
+	 * @deprecated 1.2 This method will be replaced by "get_related_objects($object)"
+	 * @param object $object The object to check against
+	 */
+	public function getRelatedObjects($object) {
+		return $this->get_related_objects($object);
+	}
+	
+	/**
+	 * Returns an SQL query to create this object
+	 *
+	 * @internal
+	 * @param Database $db The database to use
+	 */
 	public function db_create_query($db) {
 		$table_name = $this->get_table_name();
 		$post_scripts = "";
@@ -373,52 +716,84 @@ abstract class Model
 		return $SQL;
 	}
 	
-	public function db_create_extra_queries_pre($db, $table_name) {
+	/**
+	 * Gather extra SQL statements to execute before the main CREATE query.
+	 *
+	 * @internal
+	 * @param Database $db The database to use
+	 */
+	public function db_create_extra_queries_pre($db) {
+		$table_name = $this->get_table_name();
 		$extra_scripts = array();
 		foreach ($this->get_fields() as $name => $field) {
-			$query = $field->db_extra_create_query_pre($db, $name, $table_name);
+			$query = $field->pre_model_create($db, $name, $table_name);
 			if (strlen($query) > 0)
 				array_push($extra_scripts, $query);
 		}
 		return $extra_scripts;
 	}
 	
-	public function db_create_extra_queries_post($db, $table_name) {
+	/**
+	 * Gather extra SQL statements to execute after the main CREATE query.
+	 *
+	 * @internal
+	 * @param Database $db The database to use
+	 */
+	public function db_create_extra_queries_post($db) {
+		$table_name = $this->get_table_name();
 		$extra_scripts = array();
 		foreach ($this->get_fields() as $name => $field) {
-			$query = $field->db_extra_create_query_post($db, $name, $table_name);
+			$query = $field->post_model_create($db, $name, $table_name);
 			if (strlen($query) > 0)
 				array_push($extra_scripts, $query);
 		}
 		return $extra_scripts;
 	}
 	
+	/**
+	 * Returns true if the table for this object exists in the database
+	 *
+	 * @internal
+	 */
 	protected function table_exists() {
 		$db = Database::create($this->_using);
 		if ($db)
 			return in_array($this->get_table_name(), $db->get_tables());
 	}
 	
-	// Creates the table in the database if needed
+	/**
+	 * Creates this model's database table
+	 *
+	 * @internal
+	 */
 	public function create_table() {
 		if (!$this->table_exists()) {
 			$db = Database::create($this->_using);
 			if (!$db)
 				return false;
 			$table_name = $this->get_table_name();
-			foreach($this->db_create_extra_queries_pre($db, $table_name) as $query)
+			
+			// Run pre-create scripts
+			foreach($this->db_create_extra_queries_pre($db) as $query)
 				$db->query($query);
+			// Create the table
 			$res = $db->query($this->db_create_query($db));
-			foreach($this->db_create_extra_queries_post($db, $table_name) as $query)
+			// Run post-create scripts
+			foreach($this->db_create_extra_queries_post($db) as $query)
 				$db->query($query);
+					
 			ContentType::of($this->get_content_type());
 			return $res;
 		}
 		return true;
 	}
 	
-	// Verifies that the table structure in the database is up-to-date
-	// NOTE: Currently only detects field name changes, not type changes
+	/**
+	 * Verifies that the table structure in the database is up-to-date
+	 * NOTE: Currently only detects field name changes, not type changes
+	 *
+	 * @internal
+	 */
 	public function verify_table() {
 		$this->create_table();
 		$db = Database::create($this->_using);
@@ -438,7 +813,12 @@ abstract class Model
 		return True;
 	}
 	
-	// Validates the model
+	/**
+	 * Validates the current object.
+	 * Override this method to provide custom validation mechanisms.
+	 *
+	 * @return boolean True is the validation succeeded, false if not
+	 */
 	public function validate() {
 		$this->errors = array();
 		foreach ($this->get_fields() as $field_name => $field) {
@@ -450,11 +830,20 @@ abstract class Model
 		return True;
 	}
 
-	// Provides validation errors
+	/**
+	 * Provides validation errors
+	 *
+	 * @return array An array containing all errors
+	 */
 	public function get_errors() {
 		return $this->errors;
 	}
-	
+
+	/**
+	 * Provides validation errors
+	 *
+	 * @return string A string containing all errors
+	 */
 	public function get_error_string() {
 		$str = "";
 		foreach ($this->get_errors() as $error) {
@@ -465,7 +854,12 @@ abstract class Model
 		return $str;
 	}
 	
-	// Insert the object to the database
+	/**
+	 * Returns the INSERT query for this object
+	 *
+	 * @internal
+	 * @param Database $db The database to use
+	 */
 	public function insert_query($db) {
 		$keys = "";
 		$values = "";
@@ -490,9 +884,21 @@ abstract class Model
 		return "INSERT INTO \"" . $this->get_table_name() . "\" (" . $keys . ") VALUES (" . $values . ")" . $extra . ";";
 	}
 	
+	/**
+	 * Hook, called for each changed field when save() causes an update.
+	 *
+	 * @param string $var The name of the variable that was changed
+	 * @param string $old The old value
+	 * @param string $new The new value
+	 */
 	public function on_update_changed($var, $old, $new) {}
 	
-	// Update the object in the database
+	/**
+	 * Returns the UPDATE query for this object
+	 *
+	 * @internal
+	 * @param Database $db The database to use
+	 */
 	public function update_query($db) {
 		$old_object = static::get($this->pk);
 		$query = "UPDATE \"" . $this->get_table_name() . "\" SET ";
@@ -518,14 +924,45 @@ abstract class Model
 		return ""; // Nothing to do
 	}
 	
+	/**
+	 * Hook, called before a save()
+	 *
+	 * @return boolean True to allow the save to continue, false to kill the save()
+	 */
 	public function pre_save() { return true; }
+	
+	/**
+	 * Hook, called after a save()
+	 *
+	 * @param string|int $pk The object's primary key
+	 */
 	public function post_save($pk) {}
+	
+	/**
+	 * Hook, called before a save() where the object isnt currently in the database
+	 */
 	public function pre_create() {}
+	
+	/**
+	 * Hook, called after a save() where the object isnt currently in the database
+	 */
 	public function post_create() {}
+	
+	/**
+	 * Hook, called before a save() where the object is currently in the database
+	 */
 	public function pre_update() {}
+	
+	/**
+	 * Hook, called after a save() where the object is currently in the database
+	 */
 	public function post_update() {}
 	
-	// Saves the object to the database, returns ID
+	/**
+	 * Saves the object to the database
+	 *
+	 * @return string|int|boolean The object's new PK, or false if things went wrong and we couldnt save
+	 */
 	public function save() {
 		if (!$this->pre_save())
 			throw new ValidationException($GLOBALS['i18n']['framework']["saveerror1"]);
@@ -572,11 +1009,21 @@ abstract class Model
 		return $this->pk;
 	}
 
+	/**
+	 * Returns the DELETE query for this object
+	 *
+	 * @internal
+	 * @param Database $db The database to use
+	 */
 	public function delete_query($db) {
 		return "DELETE FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->_pk() ."\"='" . $this->pk . "';";
 	}
 
-	/* Returns True on success, False on failure */
+	/**
+	 * Delete this object.
+	 *
+	 * @return boolean True on success, False on failure
+	 */
 	public function delete() {
 		if (!$this->from_db)
 			return false;
@@ -586,8 +1033,17 @@ abstract class Model
 		return $db->query($this->delete_query($db)) == true;
 	}
 	
+	/**
+	 * Upgrade this object.
+	 * Override this object to provide upgrade mechanisms.
+	 *
+	 * @param Database $db The database to use
+	 * @param string $old_version The old version
+	 * @param string $new_version The new version
+	 * @return boolean True on success, False on failure
+	 */
 	public function upgrade($db, $old_version, $new_version) {
-		// Update the database
+		// Update the CT
 		$ct = $this->get_content_type();
 		$ct->version = $new_version;
 		$ct->save();

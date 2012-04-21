@@ -41,12 +41,28 @@ foreach ($apps_list as $app) {
 }
 Profiler::end("load_apps");
 
-/* Load template tags */
-require_once(home_dir . "framework/template_tags/init.php");
-
 /* Create the request */
 require_once(home_dir . "framework/request.php");
 $request = new Request();
+
+/* Check if we are CLI calling a method */
+if (PHP_SAPI === 'cli') {
+	require_once(home_dir . "framework/cli_manager.php");
+	require_once(home_dir . "framework/cli_methods/init.php");
+	$args = $request->cmd_args;
+	if (!isset($args[page_def])) {
+		global $argv;
+		if (isset($argv[1]) && CLI_Manager::has_command($argv[1])) {
+			ob_get_clean();
+			unset($args[$argv[1]]);
+			unset($args[0]);
+			CLI_Manager::parse($argv[1], $args);
+			return;
+		}
+	}
+}
+
+/* Set mimetype, if known */
 if ($request->mimeType !== "unknown")
 	header('Content-type: ' . $request->mimeType);
 

@@ -1,13 +1,30 @@
 <?php
-/*
+/**
  * Tikapot Debug Tools
  *
+ * @author James Thompson
+ * @package Tikapot\Framework
  */
 
 require_once(home_dir . "framework/profiler.php");
 
+/**
+ * DebugTools is used by the Framework to render the console
+ *
+ * @package Tikapot\Framework
+ * @internal
+ */
 class DebugTools
 {
+	/**
+	 * Render the console
+	 *
+	 * @param Request $request The current request
+	 * @param array $args The current page's arguments
+	 * @param string $page The current output of the page
+	 * @param string $debug_info The debug data (collected by catching error output)
+	 * @internal
+	 */
 	public static function render($request, $args, $page, $debug_info) {
 		$tpl = new TemplateView("/debug_info/", home_dir . "framework/templates/debug_panel.php");
 		

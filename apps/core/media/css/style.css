@@ -9,6 +9,16 @@
 	height: 35px;
 }
 
+.messages {
+	display: none;
+	position: absolute;
+	top: 40px;
+	left: 10%;
+	width: 80%;
+	z-index: 1000;
+	padding: 10px;
+}
+
 .progress {position: relative; margin-bottom: 0;}
 .progress .progress-text {position: absolute; text-align: center; width: 100%; font-weight: bold; color: #333;}
 .progress .bar {
@@ -55,19 +65,24 @@
 }
 
 .git-commit-file-changes {
+	overflow: hidden;
+	width: 100%;
 	-webkit-border-radius: 0 4px 0 0;
 	-moz-border-radius: 0 4px 0 0;
 	border-radius: 0 4px 0 0;
+	margin-bottom: 20px;
 }
 
 .git-commit-file-changes .code {
 	background-color: #F7F7F9;
 	border: 1px solid #E1E1E8;
-  -webkit-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
-     -moz-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
-          box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
+   -webkit-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
+      -moz-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
+           box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
 }
 .git-commit-file-changes .code code {
+   overflow: hidden;
+	display: block;
 	color: #333;
 	border: 0;
 	white-space: pre-wrap;
@@ -76,21 +91,27 @@
 	font-family: Menlo, Monaco, "Courier New", monospace;
 }
 
+.git-commit-file-changes .code code:after {
+	content: " ";
+}
+
 .git-commit-file-changes .list p.grey {
 	color: #999;
 }
 
 .git-commit-file-changes .list .line-numbers {
-	display: inline-block;
-	min-width: 60px;
+   float: left;
+	min-width: 65px;
 }
 
-.git-commit-file-changes .code-green {
-	/* background-color: rgba(0, 164, 23, 0.1); */
+.git-commit-file-changes .code-green, .git-commit-file-changes .code-green span {
+	color: #000 !important;
+	background-color: #DFD;
 }
 
-.git-commit-file-changes .code-red {
-	/* background-color: rgba(164, 0, 23, 0.1); */
+.git-commit-file-changes .code-red, .git-commit-file-changes .code-red span {
+	color: #000 !important;
+	background-color: #FDD;
 }
 
 .left-line-number, .right-line-number {

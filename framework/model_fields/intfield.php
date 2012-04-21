@@ -61,7 +61,7 @@ class IntegerField extends ModelField
 		return "\"" . $name . "\" " . $this::$db_type . $extra;
 	}
 	
-	public function db_extra_create_query_pre($db, $name, $table_name) {
+	public function pre_model_create($db, $name, $table_name) {
 		if ($db->get_type() == "psql" && $this->auto_increment)
 			return "CREATE SEQUENCE ".$this->sequence_name($db, $name, $table_name).";";
 		return "";

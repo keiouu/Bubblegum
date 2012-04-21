@@ -87,6 +87,20 @@ $i18n_data = array(
 	"debug_dbqueries" => "Database Queries:",
 	"mfk_err1" => "Error: MultipleFKField received an invalid class: ",
 	"mfk_err2" => "Error: MultipleFKField received an invalid value: ",
+	"cli_help" => "help",
+	"cli_test" => "test",
+	"cli_test_help" => "This function will run some tests on your installation to ensure everything is working properly. It has one optional argument: The set of tests to run, out of the following: [all|framework|contrib|apps|{specific_app}]. You can also string these arguments (for example: ./index.php test contrib apps)",
+	"cli_err1" => "CLI Error: That command has already been registered!",
+	"cli_err2" => "That command was not found!",
+	"cli_err3" => "That command is not an instance of CLI_Method!",
+	"cli_banner" => "Welcome to Tikapot!",
+	"cli_helpintro" => "You may use the following commands:",
+	"cli_helpintro2" => "For command-based help type \"help [command]\".",
+	"tests" => "tests",
+	"upgrade" => "Upgrade",
+	"upgrading" => "Upgrading",
+	"upgraded" => "Upgraded",
+	"finished" => "Finished",
 );
 
 ?>

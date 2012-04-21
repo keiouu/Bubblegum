@@ -1,50 +1,83 @@
 <?php
-/*
+/**
  * Tikapot Session Class
- * v1.0
  *
+ * @author James Thompson
+ * @package Tikapot\Framework
  */
 
+/**
+ * Session contains helper functions for dealing with sessions
+ *
+ * @package Tikapot\Framework
+ */
 class Session
 {
-	/* Store val in session under var, overwrites if necessary. Returns: Previous value if it existed, or the new value if it didnt. */
-	static function store($var, $val) {
+	/**
+	 * Store val in session under var, overwrites if necessary.
+	 *
+	 * @static
+	 * @param string $key The name of the session element
+	 * @param mixed $val The value of the session element
+	 * @return string Previous value if it existed, or the new value if it didnt.
+	 */
+	static function store($key, $val) {
 		$ret = $val;
-		if (array_key_exists($var, $_SESSION))
-			$ret = $_SESSION[$var];
-		$_SESSION[$var] = $val;
+		if (isset($_SESSION[$key]))
+			$ret = $_SESSION[$key];
+		$_SESSION[$key] = $val;
 		return $ret;
 	}
 	
-	/* Put the val into session under var ONLY if there is no var in session already. Returns true if successful or false if not. */
-	static function put($var, $val) {
-		if (array_key_exists($var, $_SESSION))
-			return False;
-		Session::store($var, $val);
-		return True;
+	/**
+	 * Create a new session variable if it doesnt already exist
+	 *
+	 * @static
+	 * @param string $key The name of the session element
+	 * @param mixed $val The value of the session element
+	 * @return boolean True if it added the variable, false if not
+	 */
+	static function put($key, $val) {
+		if (isset($_SESSION[$key]))
+			return false;
+		Session::store($key, $val);
+		return true;
 	}
 	
-	static function get($var) {
-		if (array_key_exists($var, $_SESSION))
-			return $_SESSION[$var];
-		return NULL;
+	/**
+	 * Get a session variable
+	 *
+	 * @static
+	 * @param string $key The name of the session element
+	 * @return mixed|null The value of the session element or null
+	 */
+	static function get($key) {
+		if (isset($_SESSION[$key]))
+			return $_SESSION[$key];
+		return null;
 	}
 	
-	/* removes var from the session. Returns old value (or NULL if it didnt exist) */
-	static function delete($var) {
-		if (array_key_exists($var, $_SESSION)) {
-			$ret = $_SESSION[$var];
-			unset($_SESSION[$var]);
+	/**
+	 * Deletes var from the session. Returns the old value (or null if it didnt exist)
+	 *
+	 * @static
+	 * @param string $key The name of the session element
+	 * @return mixed|null
+	 */
+	static function delete($key) {
+		if (isset($_SESSION[$key])) {
+			$ret = $_SESSION[$key];
+			unset($_SESSION[$key]);
 			
 			// Remove key too
 			$new_session = array();
-			foreach ($_SESSION as $key => $value)
-				if ($key !== $var)
-					$new_session[$key] = $value;
+			foreach ($_SESSION as $_key => $value)
+				if ($_key !== $key)
+					$new_session[$_key] = $value;
 			$_SESSION = $new_session;
 			return $ret;
 		}
-		return NULL;
+		return null;
 	}
 }
 

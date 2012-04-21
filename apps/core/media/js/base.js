@@ -12,6 +12,20 @@ function init_support() {
 	});
 }
 
+function show_messages() {
+	$('.messages').show();
+	$('.alert').show();
+}
+
+function hide_messages() {
+	$('.alert').alert('close');
+}
+
 $(function () {
 	init_support();
+	
+	// Messages
+	if ($('.alert').length > 0)
+		show_messages();
+	setTimeout("hide_messages();", 2000 * $('.alert').length);
 });

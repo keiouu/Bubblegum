@@ -35,6 +35,16 @@ require_once(home_dir . "apps/core/models.php");
   </head>
 
   <body>
+	<div class="messages">
+		<?php
+			$array = $request->get_messages();
+			foreach ($array as $type => $messages) {
+				foreach ($messages as $message) {
+					print '<div class="alert fade in alert-'.$type.'"><a class="close" data-dismiss="alert">×</a>' . $message . '</div>';
+				}
+			}
+		?>
+	</div>
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid top-row">
@@ -130,7 +140,6 @@ require_once(home_dir . "apps/core/models.php");
     <script src="{{home_url}}apps/core/media/js/bootstrap.min.js"></script>
     <script src="{{home_url}}apps/core/media/js/base.js"></script>
     <script src="{{home_url}}apps/core/media/js/activity.feed.js"></script>
-    <script src="{{home_url}}apps/core/media/js/code.js"></script>
     {% block endbody %}
     {% endblock endbody %}
   </body>

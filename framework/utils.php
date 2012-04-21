@@ -3,18 +3,18 @@
  * Tikapot Utilities
  *
  */
- 
+
 function starts_with($haystack, $needle) {
-	return substr($haystack, 0, strlen($needle)) === $needle;
+	return ($needle != "") && substr($haystack, 0, strlen($needle)) === $needle;
 }
- 
+
 function partition($haystack, $needle) {
 	$pos = strpos($haystack, $needle);
-	if ($pos > 0)
+	if ($pos !== false)
 		return array(substr($haystack, 0, $pos), $needle, substr($haystack, $pos + strlen($needle), strlen($haystack)));
 	return array($haystack, $needle, "");
 }
- 
+
 function ends_with($haystack, $needle) {
 	return strrpos($haystack, $needle) === strlen($haystack)-strlen($needle);
 }
@@ -48,6 +48,14 @@ function get_file_extension($filename, $delimiter = ".") {
 	return substr(strrchr($filename, $delimiter), 1);
 }
 
+function get_file_name($filename, $delimiter = ".") {
+	$filename = basename($filename, "." . get_file_extension($filename, $delimiter));
+	$pos = strpos($filename, $delimiter);
+	if ($pos === 0 && strrpos($filename, $delimiter) == $pos)
+		return "";
+	return $filename;
+}
+
 function email_sanitize($str) {
 	$injections = array(
 		'/(\n+)/i',
@@ -62,9 +70,9 @@ function email_sanitize($str) {
 }
 
 function prettify($string) {
-	// Add underscores before capitol words. Turns "AnExample" into "An Example"
+	// Add underscores before capitol letters. Turns "AnExample" into "An_Example"
 	// An underscore is more reliable than a space
-	$string = preg_replace('/\B([A-Z])([a-z])/', '_$1$2', $string);
+	$string = preg_replace('/([a-z])([A-Z])/', '$1_$2', $string);
 	// Turn underscores from above, and before that, into spaces
 	$string = str_replace("_", " ", $string);
 	// Upperwords!
@@ -81,7 +89,13 @@ function urlCheck($url) {
 function ellipsize($string, $length) {
 	if (strlen($string) <= $length)
 		return $string;
-	return substr($string, 0, $length - 3) . "..."; // TODO - break at words
+	$new_string = "";
+	foreach (explode(" ", $string) as $word) {
+		$result = $new_string . ($new_string == "" ? "" : " ") . $word;
+		if ($new_string == "" || strlen($result) <= $length - 3)
+			$new_string = $result;
+	}
+	return substr($new_string, 0, $length - 3) . "...";
 }
 
 function rmrf($dir) {
@@ -113,8 +127,16 @@ function console_log($val) {
 	$GLOBALS['console'][] = $val;
 }
 
+function console_print($val) {
+	console_log($val);
+}
+
 function console_warn($val) {
-	console_log($val); // TODO
+	console_log('<span class="console_warning">'.$val.'</span>');
+}
+
+function console_error($val) {
+	console_log('<span class="console_error">'.$val.'</span>');
 }
 ?>
  
