@@ -20,7 +20,6 @@
 .add-links {margin-left: 25px;}
 .add-links a {display: block;}
 .modal {display: none;}
-#activity_feed li {margin-bottom: 5px; margin-left: 10px;}
 
 .progress .bar {
    box-shadow: 0 2px 6px rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -15px 20px rgba(255,255,255,0.1);
@@ -61,12 +60,20 @@
 	border-radius: 0 4px 0 0;
 }
 
-.git-commit-file-changes pre {
+.git-commit-file-changes .code {
 	background-color: #F7F7F9;
 	border: 1px solid #E1E1E8;
   -webkit-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
      -moz-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
           box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
+}
+.git-commit-file-changes .code code {
+	color: #333;
+	border: 0;
+	white-space: pre-wrap;
+	word-break: break-all;
+	word-wrap: break-word;
+	font-family: Menlo, Monaco, "Courier New", monospace;
 }
 
 .git-commit-file-changes .list p.grey {

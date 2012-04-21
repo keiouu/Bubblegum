@@ -1,6 +1,6 @@
 $(function () {
 	// Track line numbers properly for GIT
-	$(".git-commit-file-changes pre .list p").each(function() {
+	$(".git-commit-file-changes .code p").each(function() {
 		var elem = $(this);
 		elem.find("code").addClass("prettyprint");
 		elem.prepend('<span class="line-numbers"><span class="left-line-number"> </span> <span class="right-line-number"> </span></span>');

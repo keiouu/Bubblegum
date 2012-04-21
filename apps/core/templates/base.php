@@ -95,9 +95,9 @@ require_once(home_dir . "apps/core/models.php");
         <div class="span2">
 			 {% block sidebar %}
           <div class="well sidebar-nav">
-            <ul class="nav nav-list">
+            <ul class="nav nav-list" id="activity_feed">
               <li class="nav-header"><i class="icon-fire"></i> Activity Feed</li>
-              <span id="activity_feed"><li>Loading...</li></span>
+              <li>Loading...</li>
             </ul>
           </div><!--/.well -->
 			 {% endblock sidebar %}
@@ -108,7 +108,7 @@ require_once(home_dir . "apps/core/models.php");
 					<?php
 					print '<li '.(isset($request->project) ? '' : 'class="active"').'><a href="'.home_url.'">Home</a></li>';
 					if (isset($request->project))
-						print ' <span class="divider">/</span><li class="active">'.$request->project->name.'</li>';
+						print ' <li class="divider">/</li><li class="active">'.$request->project->name.'</li>';
 					?>
 				{% endblock %}
 			 </ul>

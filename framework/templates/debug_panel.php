@@ -82,10 +82,12 @@ function debug_toggleTab(name) {
 			<h3 style="color: #EEE;">{% local_i18n "debug_profiler" %}</h3>
 			<table>
 				<thead>
-					<th>Function</th>
-					<th>Call Count</th>
-					<th>Average Cost</th>
-					<th>Total Cost</th>
+					<tr>
+						<th>Function</th>
+						<th>Call Count</th>
+						<th>Average Cost</th>
+						<th>Total Cost</th>
+					</tr>
 				</thead>
 				<tbody>
 				<?php

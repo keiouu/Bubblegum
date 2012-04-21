@@ -11,7 +11,7 @@ if (!isset($project) && isset($request->project))
 	$project = $request->project;
 
 print '<table class="table table-bordered table-striped git-commit">';
-print '<thead><tr><th>Files Changed</th></tr></thead>';
+print '<thead><tr><th colspan="2">Files Changed</th></tr></thead>';
 print '<tbody>';
 
 if (isset($git_changes)) {
@@ -38,7 +38,7 @@ if (isset($git_file_changes)) {
 	foreach ($git_file_changes as $name => $changes) {
 		print '<div class="git-commit-file-changes">';
 		print '<h3>'.$name.'</h3>';
-		print '<pre><div class="list">';
+		print '<div class="code list">';
 		$left_line = 0;
 		$right_line = 0;
 		foreach ($changes as $line) {			
@@ -64,7 +64,7 @@ if (isset($git_file_changes)) {
 			}
 			
 		}
-		print '</div></pre>';
+		print '</div>';
 		print '</div>';
 	}
 }

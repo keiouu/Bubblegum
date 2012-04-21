@@ -140,7 +140,7 @@ class AJAX_ActivityFeedView extends View
 		foreach ($activity as $data) {
 			if ($i >= 10)
 				break;
-			print '<li>&raquo; <a href="'.$data[2].'">'.$data[1].'</a></li>';
+			print '<li><a href="'.$data[2].'"><i class="icon-chevron-right"></i> '.$data[1].'</a></li>';
 			$i++;
 		}
 	}

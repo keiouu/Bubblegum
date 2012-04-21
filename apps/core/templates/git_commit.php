@@ -3,12 +3,12 @@
 {% block breadcrumbs %}
 	<?php
 	print '<li '.(isset($request->project) ? '' : 'class="active"').'><a href="'.home_url.'">Home</a></li>';
-	print ' <span class="divider">/</span><li><a href="'.home_url.'projects/'.$request->project->pk.'/">'.$request->project->name.'</a></li>';
+	print ' <li class="divider">/</li><li><a href="'.home_url.'projects/'.$request->project->pk.'/">'.$request->project->name.'</a></li>';
 	if (isset($args['ref'])) {
-		print ' <span class="divider">/</span><li><a href="'.home_url.'projects/'.$request->project->pk.'/git/">git</a></li>';
-		print ' <span class="divider">/</span><li class="active">'.$request->git_info['hash'].'</li>';
+		print ' <li class="divider">/</li><li><a href="'.home_url.'projects/'.$request->project->pk.'/git/">git</a></li>';
+		print ' <li class="divider">/</li><li class="active">'.$request->git_info['hash'].'</li>';
 	} else {
-		print ' <span class="divider">/</span><li class="active">git</li>';
+		print ' <li class="divider">/</li><li class="active">git</li>';
 	}
 	?>
 {% endblock %}
