@@ -22,13 +22,13 @@ class PKField extends BigIntField
 	/* This allows subclasses to provide end-of-statement additions such as constraints */
 	public function db_post_create_query($db, $name, $table_name) {
 		if ($db->get_type() == "psql")
-			return 'CONSTRAINT '.$table_name.'_pkey PRIMARY KEY ("'.$name.'")';
+			return 'CONSTRAINT '.$db->escape_string($table_name).'_pkey PRIMARY KEY ("'.$db->escape_string($name).'")';
 	}
 	
 	public function post_model_create($db, $name, $table_name) {
-		$index = 'index_'.$table_name.'_'.$name;
+		$index = $db->escape_string('index_'.$table_name.'_'.$name);
 		$db->query('DROP INDEX IF EXISTS '.$index.';');
-		return 'CREATE INDEX '.$index.' ON "'.$table_name.'" ("'.$name.'");';
+		return 'CREATE INDEX '.$index.' ON "'.$db->escape_string($table_name).'" ("'.$db->escape_string($name).'");';
 	}
 	
 	/* Is this a pk field?. */

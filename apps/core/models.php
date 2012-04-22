@@ -58,7 +58,7 @@ class Team extends Model
 	}
 	public function __toString() { return $this->name; }
 	
-	public function post_save($pk) {
+	public function post_save($pk) { // We use save in case the leader changes
 		Team_Link::get_or_create(array("team" => $this->pk, "user" => $this->leader->pk));
 	}
 }
@@ -80,6 +80,7 @@ class Project extends Model
 		$this->add_field("name", new CharField(250));
 		$this->add_field("description", new TextField());
 		$this->add_field("owner", new CharField(250));
+		//$this->add_field("owner", new MultiFKField("auth.User", "core.Team", "core.Organisation"));
 		$this->add_field("public", new BooleanField(true));
 		$this->add_field("created", new DateTimeField(true));
 		$this->add_field("updated", new DateTimeField(true, true));

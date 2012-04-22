@@ -54,6 +54,7 @@ class Request
 		$this->page = '/' . $this->page;
 		$this->mimeType = $this->get_mime_type($this->page);
 		$this->visitor_ip = $this->getIP();
+		Request::$messages = isset($_SESSION['request_messages']) ? $_SESSION['request_messages'] : array();
 		$this->safe_vals = array();
 		$this->add_val("home_url", home_url);
 		$this->add_val("media_url", media_url);
@@ -143,10 +144,12 @@ class Request
 		if (!isset(Request::$messages[$type]))
 			Request::$messages[$type] = array();
 		Request::$messages[$type][] = $message;
+		$_SESSION['request_messages'] = Request::$messages;
 	}
 	
 	public static function delete_messages() {
 		Request::$messages = array();
+		$_SESSION['request_messages'] = array();
 	}
 	
 	public static function get_messages() {

@@ -1,7 +1,10 @@
 <?php
-/*
- * Tikapot CLI Test Method
+/**
+ * Tikapot CLI "Test" Method
+ * Run by typing: php index.php test
  *
+ * @author James Thompson
+ * @package Tikapot\Framework\CLI_Methods
  */
 
 
@@ -10,12 +13,29 @@ require_once(home_dir . "framework/cli_manager.php");
 require_once(home_dir . "lib/simpletest/test_case.php");
 require_once(home_dir . "lib/simpletest/unit_tester.php");
 
+/**
+ * CLI_Test class
+ *
+ * @package Tikapot\Framework\CLI_Methods
+ */
 class CLI_Test implements CLI_Method
 {
+	/**
+	 * The override to provide help for this method
+	 *
+	 * @param array $args Any arguments passed to the "help test" command
+	 */
 	public function print_help($args) {
 		print $GLOBALS['i18n']['framework']['cli_test_help'];
 	}
 	
+	/**
+	 * Discover any tests.php files in $dir
+	 *
+	 * @internal
+	 * @param string $dir The directory to search
+	 * @param TestSuite $suite The test suite to add files too
+	 */
 	private function _test_discover($dir, $suite) {
 		$objects = scandir($dir);
 		foreach ($objects as $object) {
@@ -28,6 +48,11 @@ class CLI_Test implements CLI_Method
 		}
 	}
 	
+	/**
+	 * Run override to run this command
+	 *
+	 * @param array $args Any arguments that have been passed to this method
+	 */
 	public function run($args) {
 		if (count($args) == 0)
 			$args = array("all");

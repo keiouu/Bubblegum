@@ -143,6 +143,8 @@ class AJAX_ActivityFeedView extends View
 			print '<li><a href="'.$data[2].'"><i class="icon-chevron-right"></i> '.$data[1].'</a></li>';
 			$i++;
 		}
+		if ($i == 0)
+			print '<li><i class="icon-chevron-right"></i>There has been no activity yet!</li>';
 	}
 }
 
@@ -210,7 +212,7 @@ class AJAX_TasksView extends JSONView
 {
 	public function setup($request, $args) {
 		$request->dataset = array();
-		$request->project = Project::get_or_ignore($args['project']);
+		$request->project = isset($args['project']) ? Project::get_or_ignore($args['project']) : null;
 		if (!$request->project)
 			$tasks = Task::objects()->order_by(array("priority"));
 		else
@@ -221,7 +223,7 @@ class AJAX_TasksView extends JSONView
 				$tasks = $tasks->filter(array("milestone" => $milestone->pk));
 		}
 		if ($tasks->count() == 0)
-			die('{"error":"No Data!"}');
+			die('{"error":"You have no tasks!"}');
 		foreach ($tasks as $task) {
 			if ($task->progress >= 100 || (isset($request->get['own_tasks_only']) && !$task->assigned($request->user)))
 				continue;

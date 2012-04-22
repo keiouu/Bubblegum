@@ -17,7 +17,7 @@
 	</div>
 	<div id="tasksCollapse" class="accordion-body in collapse" style="height: auto; ">
 		<div class="accordion-inner">
-			<?php include_once(home_dir . "apps/core/templates/includes/my-tasks.php"); ?>
+			<?php include_once(home_dir . "apps/core/templates/includes/all-my-tasks.php"); ?>
 		</div>
 	</div>
 </div>

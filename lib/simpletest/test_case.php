@@ -580,7 +580,7 @@ class TestSuite {
                     $count++;
                 }
             } else {
-                $count += $case->getSize();
+               	$count += $case->getSize();
             }
         }
         return $count;

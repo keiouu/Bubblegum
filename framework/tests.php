@@ -144,5 +144,39 @@ class Framework_Tests extends UnitTestCase {
 		$this->assertEqual(Session::get("Test"), NULL);
 		$_SESSION = $old_session;
 	}
+	
+	public function testPostgresql() {
+		require_once(home_dir . "framework/database.php");
+		require_once(home_dir . "framework/model.php");
+		require_once(home_dir . "framework/models.php");
+		$model = new BlankModel();
+		$model->set_table_name("TestPSQL");
+		$model->create_table();
+		$db = Database::create($model->get_db());
+		if ($db->get_type() !== "psql")
+			return;
+		
+		$this->assertTrue($model->table_exists());
+		$this->assertEqual($db->get_columns($model->get_table_name()), array("id" => "int8"));
+		$db->drop_table($model->get_table_name());
+		$this->assertFalse($model->table_exists());
+	}
+	
+	public function testModel() {
+		require_once(home_dir . "framework/database.php");
+		require_once(home_dir . "framework/model.php");
+		require_once(home_dir . "framework/models.php");
+		$model = new BlankModel();
+		$model->set_table_name("TestModels");
+		$this->assertEqual($model->get_table_name(), "TestModels");
+		$model->create_table();
+		$this->assertTrue($model->table_exists());
+		
+		// Tests
+		
+		// Cleanup
+		$db = Database::create($model->get_db());
+		$db->drop_table($model->get_table_name());
+	}
 }
 ?>

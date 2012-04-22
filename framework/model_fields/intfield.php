@@ -39,7 +39,7 @@ class IntegerField extends ModelField
 	}
 	
 	protected function sequence_name($db, $name, $table_name) {
-		return $table_name."_".$name."_seq";
+		return $db->escape_string($table_name."_".$name."_seq");
 	}
 	
 	public function db_create_query($db, $name, $table_name) {
@@ -62,8 +62,11 @@ class IntegerField extends ModelField
 	}
 	
 	public function pre_model_create($db, $name, $table_name) {
-		if ($db->get_type() == "psql" && $this->auto_increment)
-			return "CREATE SEQUENCE ".$this->sequence_name($db, $name, $table_name).";";
+		if ($db->get_type() == "psql" && $this->auto_increment) {
+			$seq = $this->sequence_name($db, $name, $table_name);
+			$db->query('DROP SEQUENCE IF EXISTS '.$seq.';');
+			return "CREATE SEQUENCE ".$seq.";";
+		}
 		return "";
 	}
 }

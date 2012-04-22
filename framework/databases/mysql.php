@@ -1,15 +1,29 @@
 <?php
-/*
+/**
  * Tikapot MySQL Database Extension Class
  *
+ * @author James Thompson
+ * @package Tikapot\Framework\Databases
  */
 
 require_once(home_dir . "framework/database.php");
 
+/**
+ * MySQL Database Layer
+ * Please note: MySQL is currently not supported! THis should be considered "Risky"
+ *
+ * @package Tikapot\Framework\Databases
+ */
 class MySQL extends Database
 {
-	private $_dbname;
+	private /** The name of this database */ $_dbname;
 
+	/**
+	 * Connects to the database using data from the config file
+	 *
+	 * @param string $database The name of the database to connect too
+	 * @return boolean True if we connected, false if not
+	 */
 	protected function connect($database) {
 		global $databases;
 		$settings = $databases[$database];
@@ -27,6 +41,13 @@ class MySQL extends Database
 		return $this->_connected;
 	}
 	
+	/**
+	 * Run a query on this database
+	 *
+	 * @param string $query The query to execute
+	 * @param array $args Any arguments to be fed into the query
+	 * @return resource The result of the mysql_query command
+	 */
 	public function query($query, $args=array()) {
 		$id = Profiler::start("mysql_query");
 		SignalManager::fire("on_db_query", array($query, $args));
@@ -46,6 +67,12 @@ class MySQL extends Database
 		return $res;
 	}
 	
+	/**
+	 * Returns the result of the previous query
+	 *
+	 * @param resource $result The query result to gather data for
+	 * @return array The data for the given result
+	 */
 	public function fetch($result) {
 		if (!$this->_connected) {
 			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr2"]);
@@ -53,12 +80,21 @@ class MySQL extends Database
 		return mysql_fetch_array($result, MYSQL_BOTH);
 	}
 	
+	/**
+	 * Disconnect this database
+	 *
+	 */
 	public function disconnect() {
 		if ($this->_connected) {
 			$this->_connected = !mysql_close($this->_link);
 		}
 	}
 	
+	/**
+	 * Populates the tables array
+	 *
+	 * @internal
+	 */
 	public function populate_tables() {
 		$this->_tables = array();
 		$query = $this->query("SHOW TABLES;");
@@ -66,17 +102,37 @@ class MySQL extends Database
 			array_push($this->_tables, $result[0]);
 	}
 
-	/* Returns a query */
+	/**
+	 * Returns the columns of a table
+	 *
+	 * @param string $table The name of the table
+	 * @return array An array of columns
+	 */
 	public function get_columns($table) {
 		$arr = array();
-		$query = $this->query("SELECT COLUMN_NAME, DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME='" . $table . "' AND TABLE_SCHEMA='" . $this->_dbname . "';");
+		$query = $this->query("SELECT COLUMN_NAME, DATA_TYPE FROM information_schema.COLUMNS WHERE TABLE_NAME='%s' AND TABLE_SCHEMA='%s';", array($table, $this->_dbname));
 		while($col = $this->fetch($query))
 			$arr[$col["COLUMN_NAME"]] = $col["DATA_TYPE"];
 		return $arr;
 	}
 	
+	/**
+	 * Escapes a given value
+	 *
+	 * @param string $value The value to escape
+	 * @return string The escaped string
+	 */
 	public function escape_string($value) {
 		return mysql_real_escape_string($value, $this->_link);
+	}
+	
+	/**
+	 * Drop a table from the database
+	 *
+	 * @param string $table The name of the table to drop
+	 */
+	public function drop_table($table) {
+		$this->query("DROP TABLE %s;", array($table));
 	}
 }
 

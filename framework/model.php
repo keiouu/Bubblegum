@@ -108,6 +108,8 @@ abstract class Model
 	protected $_using = "default";
 	/** This model's version. @internal */
 	protected $_version = "1.0";
+	/** This object's table name override. @internal */
+	protected $_table_override = null;
 	
 	/**
 	 * A simple constructor
@@ -463,10 +465,20 @@ abstract class Model
 	 * Get the table name for this object, allows individual objects to "route" themselves
 	 * to other tables.
 	 *
-	 * @return string The name of the database table this model uses
+	 * @return string The name of the database table this object uses
 	 */
 	public function get_table_name() {
-		return strtolower(get_class($this));
+		return $this->_table_override === null ? strtolower(get_class($this)) : $this->_table_override;
+	}
+	
+	/**
+	 * Set the table name for this object, allows individual objects to "route" themselves
+	 * to other tables.
+	 *
+	 * @param string $name The name of the database table this object should use
+	 */
+	public function set_table_name($name) {
+		$this->_table_override = $name;
 	}
 	
 	/**
@@ -697,7 +709,7 @@ abstract class Model
 	public function db_create_query($db) {
 		$table_name = $this->get_table_name();
 		$post_scripts = "";
-		$SQL = "CREATE TABLE \"" . $table_name . "\" (";
+		$SQL = "CREATE TABLE \"" . $db->escape_string($table_name) . "\" (";
 		$i = 0;
 		foreach ($this->get_fields() as $name => $field) {
 			if ($i > 0) $SQL .= ", ";
@@ -755,7 +767,7 @@ abstract class Model
 	 *
 	 * @internal
 	 */
-	protected function table_exists() {
+	public function table_exists() {
 		$db = Database::create($this->_using);
 		if ($db)
 			return in_array($this->get_table_name(), $db->get_tables());
