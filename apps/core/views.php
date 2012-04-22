@@ -62,6 +62,28 @@ class ProjectView extends BaseView
 	}
 }
 
+class NewProjectView extends BaseView
+{
+	public function setup($request, $args) {
+		if (!parent::setup($request, $args))
+			return false;
+		
+		$project = new Project();
+		$request->project_form = $project->get_form($request->fullPath  . "?new_project=true");
+		if (isset($request->get['new_project'])) {
+			try {
+				$request->project_form->load_post_data($request->post);
+				$model = $request->project_form->save($project, $request);
+				if ($model) {
+					$request->message("Project created successfully.");
+				}
+			} catch (exception $e) {}
+		}
+		
+		return true;
+	}
+}
+
 class Git_CommitView extends ProjectView
 {
 	public function setup($request, $args) {
@@ -228,7 +250,7 @@ class AJAX_TasksView extends JSONView
 			if ($task->progress >= 100 || (isset($request->get['own_tasks_only']) && !$task->assigned($request->user)))
 				continue;
 			
-			$request->dataset[] = array(
+			$dataset_array = array(
 				"milestone" => isset($task->milestone) ? $task->milestone->__toString() : "-",
 				"name" => $task->name,
 				"type" => $task->_type->__toString(),
@@ -241,6 +263,9 @@ class AJAX_TasksView extends JSONView
 					</div>',
 				"assignees" => $task->assignees(),
 			);
+			if (isset($args['project']))
+				$dataset_array["project"] = $task->_project->__toString();
+			$request->dataset[] = $dataset_array;
 		}
 		return $request->user->logged_in();
 	}

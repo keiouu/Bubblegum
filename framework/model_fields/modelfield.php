@@ -42,6 +42,10 @@ abstract class ModelField
 		return $this->value;
 	}
 	
+	public final function raw_value() {
+		return $this->value;
+	}
+	
 	public function get_form_value() {
 		return $this->get_value();
 	}

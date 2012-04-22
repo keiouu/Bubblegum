@@ -62,10 +62,14 @@ class MultiFKField extends FKField
 	}
 	
 	public function get_value() {
+		if (!strpos($this->value, "|"))
+			return null;
 		list($class, $pk) = explode("|", $this->value);
+		$value = $this->value;
 		$this->_clean();
+		$this->value = $value;
 		$this->_set_model($this->_models[$class] . "." . $class);
-		return parent::get_value();
+		return $this->grab_object();
 	}
 	
 	public function sql_value($db, $val = NULL) {

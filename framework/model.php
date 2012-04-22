@@ -536,16 +536,18 @@ abstract class Model
 	 * as well as values for the fields.
 	 *
 	 * @see Form
+	 * @param string $action [Optional] The action for the form
+	 * @param string $method [Optional] The method for the form (GET/POST)
 	 * @return Form A pre-built form for this object
 	 */
-	public function get_form() {
+	public function get_form($action = "", $method = "POST") {
 		$fields = array();
 		foreach($this->get_fields() as $name => $field) {
 			$fields[$name] = $field->get_formfield($name);
 		}
 		return new Form(array(
 			new Fieldset("", $fields),
-		));
+		), $action, $method);
 	}
 	
 	/**

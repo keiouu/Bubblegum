@@ -9,8 +9,7 @@ require_once(home_dir . "framework/utils.php");
 
 class Request
 {
-	private static $messages = array();
-	public $method, $page, $get, $post, $cookies, $mimeType, $safe_vals, $cmd_args;
+	public $method, $page, $get, $post, $cookies, $mimeType, $safe_vals, $cmd_args, $messages;
 	
 	public function __construct() {
 		$this->method = "GET";
@@ -54,7 +53,7 @@ class Request
 		$this->page = '/' . $this->page;
 		$this->mimeType = $this->get_mime_type($this->page);
 		$this->visitor_ip = $this->getIP();
-		Request::$messages = isset($_SESSION['request_messages']) ? $_SESSION['request_messages'] : array();
+		$this->messages = array();
 		$this->safe_vals = array();
 		$this->add_val("home_url", home_url);
 		$this->add_val("media_url", media_url);
@@ -140,24 +139,22 @@ class Request
 	/*
 	 * Messaging framework for requests
 	 */
-	public static function message($message, $type = "info") {
-		if (!isset(Request::$messages[$type]))
-			Request::$messages[$type] = array();
-		Request::$messages[$type][] = $message;
-		$_SESSION['request_messages'] = Request::$messages;
+	public function message($message, $type = "info") {
+		if (!isset($this->messages[$type]))
+			$this->messages[$type] = array();
+		$this->messages[$type][] = $message;
 	}
 	
-	public static function delete_messages() {
-		Request::$messages = array();
-		$_SESSION['request_messages'] = array();
+	public function delete_messages() {
+		$this->messages = array();
 	}
 	
-	public static function get_messages() {
-		return Request::$messages;
+	public function get_messages() {
+		return $this->messages;
 	}
 	
-	public static function print_messages() {
-		foreach (Request::$messages as $type => $messages) {
+	public function print_messages() {
+		foreach ($this->get_messages() as $type => $messages) {
 			print '<div id="tpmessages" class="messages '.$type.'">';
 			foreach ($messages as $message) {
 				print '<div class="message"><p>' . $message . '</p></div>';
@@ -166,9 +163,9 @@ class Request
 		}
 	}
 	
-	public static function print_and_delete_messages() {
-		Request::print_messages();
-		Request::delete_messages();
+	public function print_and_delete_messages() {
+		$this->print_messages();
+		$this->delete_messages();
 	}
 	
 	public function getFullPath() {

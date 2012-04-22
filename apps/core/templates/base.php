@@ -62,7 +62,7 @@ require_once(home_dir . "apps/core/models.php");
 		           	 $projects = Project::mine($request->user);
 		           	 if ($projects !== null) {
 				        	 foreach ($projects->order_by("owner") as $obj) {
-				        	 	$owner = $obj->owner->__toString();
+				        	 	$owner = $obj->_owner->__toString();
 				        	 	if ($org != $owner) {
 				        	 		$org = $owner;
 				        	 		print '<li class="nav-header">'.$org.'</li>';
