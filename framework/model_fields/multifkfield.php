@@ -93,7 +93,7 @@ class MultiFKField extends FKField
 	public function sql_value($db, $val = NULL) {
 		$val = ($val === NULL) ? $this->raw_value() : $val;
 		if (is_object($val))
-			$val = $val->pk;
+			$val = get_class($val) . "|" . $val->pk;
 		return "'" . (($val !== null) ? $db->escape_string($val) : "0") . "'";
 	}
 	

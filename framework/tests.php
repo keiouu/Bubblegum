@@ -303,6 +303,8 @@ class Framework_Tests extends UnitTestCase {
 		$this->assertEqual($model->data->pk, $app_config->pk);
 		$this->assertEqual($model->data->value, "hey!");
 		
+		// TODO - searching
+		
 		// Cleanup
 		$app_config->delete();
 		$config->delete();

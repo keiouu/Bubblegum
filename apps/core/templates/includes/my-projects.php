@@ -19,7 +19,7 @@ if ($projects !== null) {
 				<div class="accordion-inner"><ul>';
 		
 			// Print all projects
-			foreach (Project::mine($request->user)->find(array("owner" => $obj->_owner->get_value())) as $project) {
+			foreach (Project::mine($request->user)->find(array("owner" => $obj->owner)) as $project) {
 				$shown[$project->pk] = true;
 				print '<li><a href="'.home_url.'projects/'.$project->pk.'/">'.$project->name.'</a></li>';
 			}

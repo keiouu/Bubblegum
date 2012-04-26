@@ -121,7 +121,7 @@ class Project extends Model
 		foreach (Project::find(array("owner" => $user)) as $project) {
 			$projects[$project->pk] = $project;
 		}
-		foreach (Project_Link::find(array("user" => $user->pk)) as $plink) {
+		foreach (Project_Link::find(array("user" => $user)) as $plink) {
 			$projects[$plink->project->pk] = $plink->project;
 		}
 		if (count($projects) <= 0)
