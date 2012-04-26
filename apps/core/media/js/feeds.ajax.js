@@ -79,7 +79,6 @@ $(function () {
 			type: "POST",
 			data: data,
 			success: function(data) {
-				alert(data);
 				$("#task-add").modal('hide');
 				update_tasks_feed();
 				update_all_tasks_feed();
