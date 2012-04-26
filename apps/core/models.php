@@ -213,14 +213,14 @@ class Task extends Model
 			"6" => "n/a",
 		), "0"));
 		$this->add_field("project", new FKField("core.Project"));
-		$this->add_field("milestone", new FKField("core.Milestone"));
+		$this->add_field("milestone", new FKField("core.Milestone", false));
 		$this->add_field("progress", new IntegerField(6, 0));
 		$this->add_field("created", new DateTimeField(true));
 		$this->add_field("created_by", new FKField("auth.User"));
 		$this->add_field("due", new DateTimeField(false));
 		$this->add_field("updated", new DateTimeField(true, true));
 		$this->add_field("completed", new DateTimeField(false));
-		$this->add_field("completed_by", new FKField("auth.User"));
+		$this->add_field("completed_by", new FKField("auth.User", false));
 	}
 	public function __toString() { return $this->name; }
 	

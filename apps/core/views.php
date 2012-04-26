@@ -274,11 +274,11 @@ class AJAX_TasksView extends JSONView
 class AJAX_TaskAddView extends View
 {
 	public function setup($request, $args) {
+		print $request->post['csrf'];
 		return $request->user->logged_in() && isset($request->post['csrf']) && $request->validate_csrf_token($request->post['csrf']);
 	}
 	
 	public function render($request, $args) {
-		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
 		$task = Task::create(array(
 			"project" => $project,

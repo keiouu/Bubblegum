@@ -11,11 +11,13 @@ require_once(home_dir . "framework/model.php");
 
 class FKField extends ModelField
 {
-	protected $_name, $_object;
+	protected $_name, $_object, $_enforce;
 	
-	public function __construct($name) {
+	public function __construct($name, $enforce_checking = true) {
 		parent::__construct(null);
 		$this->_name = $name;
+		$this->_object = null;
+		$this->_enforce = $enforce_checking;
 	}
 	
 	public function __toString() {
@@ -159,7 +161,7 @@ class FKField extends ModelField
 	
 	public function post_model_create($db, $name, $table_name) {
 		// Create valid REFERENCE
-		if ($db->get_type() == "psql") {
+		if ($db->get_type() == "psql" && $this->_enforce) {
 			$constraint = $table_name . "_" . $name . "_fkey";
 			$class = $this->_className();
 			$obj = new $class();
