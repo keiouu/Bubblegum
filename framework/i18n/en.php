@@ -22,6 +22,7 @@ $i18n_data = array(
 	"mqerr1" => "Warning: Model is invalid!",
 	"mqerr2" => "Warning: Query argument must be an array!",
 	"mqerr3" => "is not a valid element in this query!",
+	"modelerr1" => "Could not find model to update! ",
 	"sigerr1" => "Signal already registered!",
 	"sigerr2" => "Signal isnt registered!",
 	"sigerr3" => "Method doesnt exist in object!",

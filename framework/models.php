@@ -9,17 +9,8 @@ require_once(home_dir . "framework/model.php");
 require_once(home_dir . "framework/model_fields/init.php");
 require_once(home_dir . "framework/utils.php");
 
-/**
- * BlankModel is essentially a non-abstract version of Model.
- * Used for various dynamic modelling techniques
- *
- */
-class BlankModel extends Model
-{
-}
-
 class Config extends Model
-{	
+{
 	public function __construct() {
 		parent::__construct();
 		$this->add_field("key", new CharField(250, ""));
@@ -28,7 +19,7 @@ class Config extends Model
 }
 
 class App_Config extends Model
-{	
+{
 	public function __construct() {
 		parent::__construct();
 		// TODO - forms

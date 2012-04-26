@@ -209,6 +209,13 @@ class User extends Model
 		return parent::upgrade($db, $old_version, $new_version);
 	}
 	
+	public function add_to_group($group) {
+		if (!is_object($group))
+			list($group, $created) = User_Group::get_or_create(array("name" => $group));
+		list($link, $created) = User_Group_Link::get_or_create(array("group" => $group->pk, "user" => $this->pk));
+		return $created;
+	}
+	
 	public function member_of($group) {
 		if (!is_object($group))
 			$group = User_Group::get(array("name" => $group));

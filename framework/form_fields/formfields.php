@@ -1,10 +1,11 @@
 <?php
 /*
- * Tikapot Char Form Field
+ * Tikapot Form Fields
  *
  */
 
 require_once(home_dir . "framework/form_fields/formfield.php");
+require_once(home_dir . "framework/model_fields/countryfield.php");
 
 class CharFormField extends FormField
 {
@@ -442,6 +443,13 @@ class SearchFormField extends FormField
 	
 	protected function get_field_class() {
 		return "searchfield";
+	}
+}
+
+class CountrySelectFormField extends SelectFormField
+{
+	public function __construct($name, $initial_value = "GB", $options = array()) {
+		parent::__construct($name, CountryChoiceField::get_countries(), $initial_value, $options);
 	}
 }
 ?>

@@ -12,7 +12,7 @@ class ModelQueryException extends Exception { }
 
 class ModelQuery implements Iterator, Countable
 {
-	private $_model, $_query, $_objects, $_count, $_has_run, $_built_queries, $_position, $_sanitized, $_using;
+	private $_model, $_query, $_objects, $_count, $_has_run, $_built_queries, $_position, $_sanitized, $_using, $_table;
 	
 	/**
 	 * $query should conform to the following structure (each line optional):
@@ -25,7 +25,7 @@ class ModelQuery implements Iterator, Countable
 	 *    OFFSET => num,
 	 *  )
 	 */
-	public function __construct($model, $query = array(), $using = "default") {
+	public function __construct($model, $query = array(), $using = "default", $table = "") {
 		if (!$model)
 			throw new ModelQueryException($GLOBALS['i18n']['framework']["mqerr1"]);
 		$this->_count = false;
@@ -36,6 +36,7 @@ class ModelQuery implements Iterator, Countable
 		$this->_built_queries = array();
 		$this->_query = $query;
 		$this->_using = $using;
+		$this->_table = $table;
 	}
 	
 	private function sanitize_column($obj, $col) {
@@ -55,7 +56,7 @@ class ModelQuery implements Iterator, Countable
 		if (!$db)
 			return false;
 		$class = get_class($this->_model);
-		$this->_model->create_table();
+		$this->_model->create_table($this->_table);
 		foreach ($query as $clause => $criterion) {
 			$arr = array();
 			if (is_array($criterion)) {
@@ -195,7 +196,9 @@ class ModelQuery implements Iterator, Countable
 			if ($clause === "ONLY")
 				$selection .= ")";
 		}
-		$this->_built_queries[$selection] = "SELECT $selection FROM \"" . $this->_model->get_table_name() . "\"$query".($limit > 0 ? " LIMIT $limit" : "").($offset > 0 ? " OFFSET $offset" : "").";";
+		
+		$table_name = $this->_table === "" ? $this->_model->get_table_name() : $this->_table;
+		$this->_built_queries[$selection] = "SELECT $selection FROM \"" . $table_name . "\"$query".($limit > 0 ? " LIMIT $limit" : "").($offset > 0 ? " OFFSET $offset" : "").";";
 		return $this->_built_queries[$selection];
 	}
 	
@@ -227,7 +230,14 @@ class ModelQuery implements Iterator, Countable
 	
 	/* Change to a different database */
 	public function using($db) {
-		return $this->_using = $db;
+		$this->_using = $db;
+		return $this;
+	}
+	
+	/* Change to a different database */
+	public function using_table($table) {
+		$this->_table = $table;
+		return $this;
 	}
 	
 	/* Does this query set have any elements? */
@@ -237,7 +247,7 @@ class ModelQuery implements Iterator, Countable
 	
 	/* Find the model matching the query */
 	public function find($query) {
-		return new ModelQuery($this->_model, array_merge_recursive($this->_query, array("WHERE" => $query)));
+		return new static($this->_model, array_merge_recursive($this->_query, array("WHERE" => $query)), $this->_using, $this->_table);
 	}
 	
 	/* Alias for find */
@@ -310,7 +320,7 @@ class ModelQuery implements Iterator, Countable
 			$new_query["ORDER BY"] = $query;
 		else
 			$new_query["ORDER BY"] = array($query);
-		return new static($this->_model, array_merge_recursive($this->_query, $new_query));
+		return new static($this->_model, array_merge_recursive($this->_query, $new_query), $this->_using, $this->_table);
 	}
 	
 	/* Groups elements by (COL, etc) */
@@ -320,21 +330,21 @@ class ModelQuery implements Iterator, Countable
 			$new_query["GROUP BY"] = $query;
 		else
 			$new_query["GROUP BY"] = array($query);
-		return new static($this->_model, array_merge_recursive($this->_query, $new_query));
+		return new static($this->_model, array_merge_recursive($this->_query, $new_query), $this->_using, $this->_table);
 	}
 	
 	/* Limit the number of elements */
 	public function limit($limit) {
 		$new_query = $this->_query;
 		$new_query["LIMIT"] = $limit;
-		return new static($this->_model, $new_query);
+		return new static($this->_model, $new_query, $this->_using, $this->_table);
 	}
 	
 	/* Offset the limit of the number of elements */
 	public function offset($offset) {
 		$new_query = $this->_query;
 		$new_query["OFFSET"] = $offset;
-		return new static($this->_model, $new_query);
+		return new static($this->_model, $new_query, $this->_using, $this->_table);
 	}
 
 	/* Iterator methods */

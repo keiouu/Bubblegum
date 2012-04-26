@@ -75,7 +75,7 @@ abstract class ModelField
 		return (strlen("" . $val)  > 0) ? $db->escape_string($val) : "NULL";
 	}
 
-	public function get_default() {
+	public function get_default() { // TODO - make final?
 		return $this->default_value;
 	}
 	

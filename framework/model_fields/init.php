@@ -9,6 +9,7 @@ require_once(home_dir . "framework/model_fields/modelfield.php");
 include_once(home_dir . "framework/model_fields/charfield.php");
 include_once(home_dir . "framework/model_fields/passwordfield.php");
 include_once(home_dir . "framework/model_fields/choicefield.php");
+include_once(home_dir . "framework/model_fields/countryfield.php");
 include_once(home_dir . "framework/model_fields/textfield.php");
 include_once(home_dir . "framework/model_fields/intfield.php");
 include_once(home_dir . "framework/model_fields/bigintfield.php");

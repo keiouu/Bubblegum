@@ -19,10 +19,12 @@ function ends_with($haystack, $needle) {
 	return strrpos($haystack, $needle) === strlen($haystack)-strlen($needle);
 }
 
-function get_named_class($class) {
+function get_named_class($class, $app_name = null) {
 	if (!class_exists($class)) {
 		global $app_paths;
 		foreach ($app_paths as $app_path) {
+			if ($app_name !== null && $app_name !== $app_path)
+				continue;
 			$path = home_dir . $app_path . '/';
 			if (file_exists($path) && ($handle = opendir($path))) {
 				while (($entry = readdir($handle))  !== false) {
@@ -119,12 +121,16 @@ function analyze($var) {
 	ob_start();
 	print_r($var);
 	console_log(ob_get_clean());
+	if (PHP_SAPI === 'cli')
+		print_r($var);
 }
 
 function console_log($val) {
 	if (!isset($GLOBALS['console']))
 		$GLOBALS['console'] = array();
 	$GLOBALS['console'][] = $val;
+	if (PHP_SAPI === 'cli')
+		print $val;
 }
 
 function console_print($val) {

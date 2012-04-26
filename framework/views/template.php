@@ -50,9 +50,9 @@ class TemplateView extends View
 	protected function _parser_scan_for($request, $args, $template, $regex) {
 		preg_match('/{% extends \"(?P<page>[[:punct:]\w]+)\" %}/', $template, $matches);
 		if (isset($matches['page'])) {
-			ob_start();
-			include(home_dir . $matches['page']);
-			$parent = ob_get_clean();
+			//ob_start();
+			$parent = file_get_contents(home_dir . $matches['page']);
+			//$parent = ob_get_clean();
 			$scan = $this->_parser_scan_for($request, $args, $parent, $regex);
 			if ($scan !== false)
 				return $scan;
@@ -83,7 +83,7 @@ class TemplateView extends View
 			foreach($matches as $val) {
 				$blk_content = $val['content'];
 				if (preg_match('/{% block.parent %}/', $blk_content)) {
-					preg_match('/{% block '.$val['block'].' %}(?P<content>[\S\s]*?)({% endblock '.$val['block'].' %})/', $template, $old_block);
+					preg_match('/{% block '.$val['block'].' %}(?P<content>[\S\s]*?)({% endblock '.$val['block'].' %})/', $parent, $old_block);
 					if (isset($old_block['content']))
 						$blk_content = preg_replace("/{% block.parent %}/", $old_block['content'], $blk_content);
 				}

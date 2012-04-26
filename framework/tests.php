@@ -5,6 +5,43 @@
 
 require_once(home_dir . "lib/simpletest/unit_tester.php");
 
+/**
+ * BlankModel is essentially a non-abstract version of Model.
+ * Used for various dynamic modelling techniques
+ *
+ */
+class BlankModel extends Model
+{
+	/**
+	 * __construct override
+	 *
+	 * @param string $table_name [Optional] The table name to use for this model
+	 * @param array $fields The fields for this model
+	 */
+	public function __construct($table_name = "", $fields = array()) {
+		parent::__construct();
+		
+		foreach ($fields as $name => $obj) {
+			$this->add_field($name, $obj);
+		}
+		
+		if ($table_name !== "") {
+			$this->set_table_name($table_name);
+			$this->create_table();
+		}
+	}
+	
+	/**
+	 * Returns a new, blank instance of this object
+	 *
+	 * @return BlankModel a blank model
+	 */
+	public function new_instance() {
+		$object = new BlankModel($this->get_table_name(), $this->get_fields());
+		return $object;
+	}
+}
+
 class Framework_Tests extends UnitTestCase {
 	public function testUtils() {
 		require_once(home_dir . "framework/utils.php");
@@ -149,9 +186,8 @@ class Framework_Tests extends UnitTestCase {
 		require_once(home_dir . "framework/database.php");
 		require_once(home_dir . "framework/model.php");
 		require_once(home_dir . "framework/models.php");
-		$model = new BlankModel();
-		$model->set_table_name("TestPSQL");
-		$model->create_table();
+		$model = new BlankModel("TestPSQL");
+		
 		$db = Database::create($model->get_db());
 		if ($db->get_type() !== "psql")
 			return;
@@ -166,15 +202,110 @@ class Framework_Tests extends UnitTestCase {
 		require_once(home_dir . "framework/database.php");
 		require_once(home_dir . "framework/model.php");
 		require_once(home_dir . "framework/models.php");
-		$model = new BlankModel();
-		$model->set_table_name("TestModels");
+		$model = new BlankModel("TestModels");
 		$this->assertEqual($model->get_table_name(), "TestModels");
-		$model->create_table();
 		$this->assertTrue($model->table_exists());
 		
-		// Tests
+		// TODO - Tests
 		
 		// Cleanup
+		$db = Database::create($model->get_db());
+		$db->drop_table($model->get_table_name());
+	}
+	
+	/**
+	 * Test FK Fields
+	 */
+	public function testFKFields() {
+		require_once(home_dir . "framework/database.php");
+		require_once(home_dir . "framework/model.php");
+		require_once(home_dir . "framework/models.php");
+		require_once(home_dir . "framework/model_fields/init.php");
+		
+		// Create a fake config for FK tests
+		$config = new Config();
+		$config->load_values(array(
+			"key" => "fk_test_hey",
+			"value" => "hey"
+		));
+		$config->save();
+		
+		// Create a linking model for FK tests
+		$model = new BlankModel("TestFKModels", array(
+			"data" => new FKField("framework.Config"),
+		));
+		
+		// Tests
+		$this->assertEqual($model->_data->_appName(), "framework");
+		$this->assertEqual($model->_data->_className(), "Config");
+		$this->assertFalse(isset($model->_data));
+		$this->assertFalse(isset($model->data));		
+		$this->assertEqual($config->value, "hey");
+		$model->data = $config;
+		$this->assertEqual($model->data->pk, $config->pk);
+		$this->assertEqual($model->data->value, "hey");
+		$model->data = $config;
+		$model->save();
+		$this->assertEqual($model->data->pk, $config->pk);
+		$this->assertEqual($model->data->value, "hey");
+		$model->save();
+		
+		// Cleanup
+		$config->delete();
+		$db = Database::create($model->get_db());
+		$db->drop_table($model->get_table_name());
+	}
+	
+	/**
+	 * Test Multi FK Fields
+	 */
+	public function testMultiFKFields() {
+		require_once(home_dir . "framework/database.php");
+		require_once(home_dir . "framework/model.php");
+		require_once(home_dir . "framework/models.php");
+		require_once(home_dir . "framework/model_fields/init.php");
+		
+		// Create a fake config for Multi FK tests
+		$app_config = new App_Config();
+		$app_config->load_values(array(
+			"app" => "tests",
+			"key" => "fk_test_hey!",
+			"value" => "hey!"
+		));
+		$app_config->save();
+		
+		// Create a fake config for Multi FK tests
+		$config = new Config();
+		$config->load_values(array(
+			"key" => "fk_test_hey",
+			"value" => "hey"
+		));
+		$config->save();
+		
+		// Create a linking model for FK tests
+		$model = new BlankModel("TestMultiFKModels", array(
+			"data" => new MultiFKField("framework.Config", "framework.App_Config"),
+		));
+		$this->assertEqual($model->_data->_appName(), "");
+		$this->assertEqual($model->_data->_className(), "");
+		$this->assertFalse(isset($model->_data));
+		$this->assertFalse(isset($model->data));
+		$model->data = $config;
+		$model->save();
+		$this->assertEqual($model->_data->_appName(), "framework");
+		$this->assertEqual($model->_data->_className(), "Config");
+		$this->assertEqual($model->data->pk, $config->pk);
+		$this->assertEqual($model->data->value, "hey");
+		$model->data = $app_config;
+		$model->save();
+		$this->assertEqual($model->_data->_appName(), "framework");
+		$this->assertEqual($model->_data->_className(), "App_Config");
+		$this->assertEqual($model->data->pk, $app_config->pk);
+		$this->assertEqual($model->data->value, "hey!");
+		
+		// Cleanup
+		$app_config->delete();
+		$config->delete();
 		$db = Database::create($model->get_db());
 		$db->drop_table($model->get_table_name());
 	}

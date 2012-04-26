@@ -113,6 +113,7 @@ abstract class Model
 	
 	/**
 	 * A simple constructor
+	 * 
 	 */
 	public function __construct() {
 		$this->_valid_model = True;
@@ -189,7 +190,7 @@ abstract class Model
 	/**
 	 * See get_db()
 	 * 
-	 * @deprecated 1.2 This method will be replaced by "get_db()"
+	 * @deprecated 1.2 - This method will be removed and replaced by get_db()
 	 */
 	public function getDB() {
 		return $this->get_db();
@@ -207,7 +208,7 @@ abstract class Model
 	/**
 	 * See from_db()
 	 * 
-	 * @deprecated 1.2 This method will be replaced by "from_db()"
+	 * @deprecated 1.2 - This method will be removed and replaced by from_db()
 	 */
 	public function fromDB() {
 		return $this->from_db();
@@ -707,9 +708,10 @@ abstract class Model
 	 *
 	 * @internal
 	 * @param Database $db The database to use
+	 * @param string $override_table Use a different table name from the default one?
 	 */
-	public function db_create_query($db) {
-		$table_name = $this->get_table_name();
+	public function db_create_query($db, $override_table = "") {
+		$table_name = $override_table === "" ? $this->get_table_name() : $override_table;
 		$post_scripts = "";
 		$SQL = "CREATE TABLE \"" . $db->escape_string($table_name) . "\" (";
 		$i = 0;
@@ -768,30 +770,32 @@ abstract class Model
 	 * Returns true if the table for this object exists in the database
 	 *
 	 * @internal
+	 * @param string $override_name Use a different table name from the default one?
 	 */
-	public function table_exists() {
+	public function table_exists($override_name = "") {
 		$db = Database::create($this->_using);
 		if ($db)
-			return in_array($this->get_table_name(), $db->get_tables());
+			return in_array($override_name === "" ? $this->get_table_name() : $override_name, $db->get_tables());
 	}
 	
 	/**
 	 * Creates this model's database table
 	 *
 	 * @internal
+	 * @param string $override_name Use a different table name from the default one?
 	 */
-	public function create_table() {
-		if (!$this->table_exists()) {
+	public function create_table($override_name = "") {
+		$table_name = $override_name === "" ? $this->get_table_name() : $override_name;
+		if (!$this->table_exists($table_name)) {
 			$db = Database::create($this->_using);
 			if (!$db)
 				return false;
-			$table_name = $this->get_table_name();
 			
 			// Run pre-create scripts
 			foreach($this->db_create_extra_queries_pre($db) as $query)
 				$db->query($query);
 			// Create the table
-			$res = $db->query($this->db_create_query($db));
+			$res = $db->query($this->db_create_query($db, $table_name));
 			// Run post-create scripts
 			foreach($this->db_create_extra_queries_post($db) as $query)
 				$db->query($query);
@@ -914,7 +918,13 @@ abstract class Model
 	 * @param Database $db The database to use
 	 */
 	public function update_query($db) {
-		$old_object = static::get($this->pk);
+		$old_object = static::find($this->pk)->using($this->get_db())->using_table($this->get_table_name());
+		if (count($old_object) == 0) {
+			console_error($GLOBALS['i18n']['framework']['modelerr1'] . " " . $this->get_table_name() . " (" . $this->pk . ")");
+			return "";
+		}
+		$old_object = $old_object->get(0);
+		
 		$query = "UPDATE \"" . $this->get_table_name() . "\" SET ";
 		$go = False;
 		foreach ($old_object->get_fields() as $name => $field) {
@@ -996,7 +1006,7 @@ abstract class Model
 		
 		foreach ($this->get_fields() as $name => $field)
 			$field->pre_save($this, $this->from_db);
-			
+		
 		if (!$this->from_db) {
 			$this->pre_create();
 			$query = $db->query($this->insert_query($db));

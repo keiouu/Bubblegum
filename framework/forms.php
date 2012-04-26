@@ -34,14 +34,14 @@ class Form
 			$this->load_fields($overrides);
 	}
 	
-	public function get_header($action = "", $method = "") {
+	public function get_header($action = "", $method = "", $extra = "") {
 		$header = '<form';
 		$header .= ' id="'.$this->get_form_id().'"';
 		$header .= ' action="'.($action === "" ? $this->action : $action).'"';
 		$header .= ' method="'.($method === "" ? $this->method : $method).'"';
 		if ($this->has_file())
 			$header .= ' enctype="multipart/form-data"';
-		$header .= '>';
+		$header .= $extra . '>';
 		return $header;
 	}
 	

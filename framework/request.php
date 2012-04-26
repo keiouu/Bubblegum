@@ -63,7 +63,7 @@ class Request
 		$this->init_i18n();
 	}
 	
-	public function get_csrf_token() {
+	public static function get_csrf_token() {
 		$token = md5(uniqid(rand(), true));
 		if (!isset($_SESSION["tprequesttokens"]))
 			$_SESSION["tprequesttokens"] = array();
@@ -71,7 +71,7 @@ class Request
 		return $token;
 	}
 	
-	public function validate_csrf_token($token) {
+	public static function validate_csrf_token($token) {
 		if (in_array($token, $_SESSION["tprequesttokens"])) {
 			$backup = $_SESSION["tprequesttokens"];
 			$_SESSION["tprequesttokens"] = array();
