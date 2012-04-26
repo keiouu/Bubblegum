@@ -263,8 +263,8 @@ class AJAX_TasksView extends JSONView
 					</div>',
 				"assignees" => $task->assignees(),
 			);
-			if (isset($args['project']))
-				$dataset_array["project"] = $task->_project->__toString();
+			if (isset($request->get['own_tasks_only']))
+				$dataset_array = array_merge(array("project" => '<a href="'.home_url.'projects/'.$task->project->pk.'/">' . $task->_project->__toString() . '</a>'), $dataset_array);
 			$request->dataset[] = $dataset_array;
 		}
 		return $request->user->logged_in();

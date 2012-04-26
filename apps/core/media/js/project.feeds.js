@@ -22,24 +22,31 @@ function update_milestone_feed() {
 function update_tasks_feed() {
 	if ($("#tasks_feed").length > 0) {
 		var table_map = ["milestone", "name", "type", "priority", "status", "progress"];
-		if (typeof project_id != 'undefined')
+		if (typeof project_id != 'undefined') {
 			var url = tp_home_url + "api/project/" + project_id + "/tasks/?own_tasks_only=1";
-		else {
+		} else {
 			var url = tp_home_url + "api/tasks/?own_tasks_only=1";
 			table_map = ["project", "milestone", "name", "type", "priority", "status", "progress"];
 		}
 		if (feed_milestone.length > 0)
 			url += '&milestone=' + feed_milestone;
 		$.getJSON(url, function(data) {
-			$("#tasks_feed").html(json_to_table(data, table_map)).find("tr td:nth-child(2)").each(function() {
-				$(this).wrapInner('<a href="#" />').click(function() {
-					task_view($(this).find("a").html())
-					return false;
+			$("#tasks_feed").html(json_to_table(data, table_map));
+			
+			// Update HREFS
+			if (typeof project_id != 'undefined') {
+				$("#tasks_feed").find("tr td:nth-child(2)").each(function() {
+					$(this).wrapInner('<a href="#" />').click(function() {
+						task_view($(this).find("a").html())
+						return false;
+					});
 				});
-			});
+			}
+			
 			if ($("#tasks_feed tr").length == 0) {
 				$("#tasks_feed").append('<tr><td colspan="6">No tasks!</td></tr>');
 			}
+			
 			update_pagination($(".pagination[data-link=tasks_feed]"));
 		});
 	}
