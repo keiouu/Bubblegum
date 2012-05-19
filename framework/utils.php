@@ -158,8 +158,15 @@ function console_print($val) {
 	console_log($val);
 }
 
+/**
+ * @deprecated Use console_warning instead!
+ */
 function console_warn($val) {
 	console_log('<span class="console_warning">'.$val.'</span>');
+}
+
+function console_warning($val) {
+	console_warn($val);
 }
 
 function console_error($val) {
