@@ -1,9 +1,12 @@
 <?php
-/*
+/**
  * Tikapot Fieldset
  *
+ * A Fieldset is a set of form fields for display on a Form
+ *
+ * @author James Thompson
+ * @package Tikapot\Framework
  */
-
 class Fieldset implements ArrayAccess, Iterator
 {
 	protected $fields = array(), $legend = "", $id_override = "";
@@ -67,11 +70,11 @@ class Fieldset implements ArrayAccess, Iterator
     public function key() {
         return key($this->fields);
     }
-  
+    
     public function next() {
         return next($this->fields);
     }
-  
+    
     public function valid() {
         $key = key($this->fields);
         return ($key !== NULL && $key !== FALSE);

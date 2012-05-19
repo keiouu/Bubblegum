@@ -9,7 +9,7 @@ class FieldValidationException extends Exception { }
 abstract class ModelField
 {
 	protected static $db_type = "unknown";
-	protected $default_value = "", $value = "", $model = NULL, $name = "", $set = False;
+	protected $default_value = "", $value = "", $model = NULL, $name = "", $set = False, /** Is this field hidden from forms? */ $hidden = False;
 	public $errors = array(), $_extra = "", $hide_from_query = False;
 
 	public function __construct($default = "", $_extra = "") {
@@ -18,6 +18,11 @@ abstract class ModelField
 		$this->_extra = $_extra;
 	}
 	
+	/**
+	 * __toString returns this field's value as a string
+	 *
+	 * @return string
+	 */
 	public function __toString() {
 		return "" . $this->value;
 	}
@@ -56,6 +61,14 @@ abstract class ModelField
 	
 	public function get_name() {
 		return $this->name;
+	}
+	
+	public function set_hidden($hidden) {
+		$this->hidden = $hidden;
+	}
+	
+	public function get_hidden() {
+		return $this->hidden;
 	}
 	
 	public function set_model($model) {

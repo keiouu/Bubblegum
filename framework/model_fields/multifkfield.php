@@ -37,7 +37,7 @@ class MultiFKField extends FKField
 	public function _appName() {
 		if (strpos($this->raw_value(), "|") === false)
 			return "";
-   	list($class, $pk) = explode("|", $this->raw_value());
+		list($class, $pk) = explode("|", $this->raw_value());
 		foreach ($this->_names as $_class => $_app) {
 			if ($_class == $class)
 				return $_app;
@@ -48,8 +48,16 @@ class MultiFKField extends FKField
 	public function _className() {
 		if (strpos($this->raw_value(), "|") === false)
 			return "";
-   	list($class, $pk) = explode("|", $this->raw_value());
+		list($class, $pk) = explode("|", $this->raw_value());
 		return $class;
+	}
+	
+	protected function _grabObject($pk = null) {
+		$app = $this->_appName();
+		$class = $this->_className();
+		if ($app == "" || $class == "" || $pk == null)
+			return null;
+		return parent::_grabObject($pk);
 	}
 	
 	public function get_db_type() {

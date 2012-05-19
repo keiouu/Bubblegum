@@ -21,7 +21,7 @@ i18n::Init();
 
 /* Start up the signal manager, register some signals */
 require_once(home_dir . "framework/signal_manager.php");
-SignalManager::register("page_load_start", "page_load_setup", "page_load_render", "page_load_setup_failure", "page_load_end");
+SignalManager::register("page_load_start", "page_load_setup", "page_load_render", "page_load_failure", "page_load_setup_failure", "page_load_end");
 
 /* Start up the view manager */
 require_once(home_dir . "framework/view_manager.php");
@@ -104,6 +104,7 @@ try {
 		print $page;
 	}
 } catch (Exception $e) {
+	SignalManager::fire("page_load_failure", $request);
 	while (ob_get_length() > 0)
 		ob_get_clean();
 	$error = new ErrorView();

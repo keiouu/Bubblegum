@@ -12,7 +12,7 @@ class Admin_Note extends Model
 		parent::__construct();
 		$this->add_field("content", new CharField(650));
 		$this->add_field("created", new DateTimeField(true));
-		$this->add_field("created_by", new FKField("auth.User"));
+		$this->add_field("created_by", new FKField("auth.User", false));
 	}
 	
 	public static function model_display_name() {

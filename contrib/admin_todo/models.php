@@ -22,7 +22,7 @@ class Todo_Item extends Model
 		$this->add_field("due_on", new DateTimeField(false));
 		$this->add_field("completed", new BooleanField(false));
 		$this->add_field("completed_on", new DateTimeField(false));
-		$this->add_field("completed_by", new FKField("auth.User"));
+		$this->add_field("completed_by", new FKField("auth.User", false));
 	}
 	
 	public static function objects() {

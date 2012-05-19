@@ -18,6 +18,5 @@ class DateTag extends TplTag
 	}
 }
 
-DateTag::register();
 ?>
 

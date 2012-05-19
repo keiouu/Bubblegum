@@ -9,6 +9,9 @@ require_once(home_dir . "framework/form_fields/init.php");
 require_once(home_dir . "framework/utils.php");
 require_once(home_dir . "framework/model.php");
 
+/**
+ * @deprecated
+ */
 class OldFKField extends ModelField implements ModelInterface
 {
 	private static $string_cache = array();
@@ -69,7 +72,6 @@ class OldFKField extends ModelField implements ModelInterface
 		 * Class is in the format: appname.modelName
 		 * We must scan app paths for the app, then import models.php.
 		 * Hopefully, $class will then exist
-		 * TODO - autoload?
 		 */
 		global $app_paths;
 		$test_paths = $app_paths;

@@ -69,5 +69,6 @@ $i18n_data = array(
 	"delete1" => "Are you sure?",
 	"delete2" => "You will be deleting the following objects...",
 	"deleteerror" => "Oops! Something went wrong, please try again!",
+	"menu_err1" => "Could not find parent: ",
 );
 ?>

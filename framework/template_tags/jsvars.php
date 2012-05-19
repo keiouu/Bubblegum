@@ -21,6 +21,5 @@ class JSVarTag extends TplTag
 	}
 }
 
-JSVarTag::register();
 ?>
 

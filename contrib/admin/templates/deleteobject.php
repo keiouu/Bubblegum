@@ -21,7 +21,7 @@
 			$obj = $ct->obtain();
 			if ($obj) {
 				$string = '';
-				foreach ($obj->getRelatedObjects($object) as $relation) {
+				foreach ($obj->get_related_objects($object) as $relation) {
 					$string .= auto_discover($relation);
 				}
 				if ($string !== '') {

@@ -40,9 +40,9 @@ function admin_init($request) {
 			$url = $app_url . $app_model->get_modelname() . "/";
 			$appname = prettify($app_model->get_modelname());
 			$request->apps[$safe_name][$appname] = home_url . $url;
-			new AdminModelView("/" . $url, home_dir . "contrib/admin/templates/model.php", $app_model);
-			new AdminAddModelView("/" . $url . "add/", home_dir . "contrib/admin/templates/newmodel.php", $app_model);
-			new AdminEditModelView("/" . $url . "edit/(?P<pk>\d+)/", home_dir . "contrib/admin/templates/editmodel.php", $app_model);
+			new AdminModelView("/" . $url, $app_model->get_model_page(), $app_model);
+			new AdminAddModelView("/" . $url . "add/", $app_model->get_add_page(), $app_model);
+			new AdminEditModelView("/" . $url . "edit/(?P<pk>\d+)/", $app_model->get_edit_page(), $app_model);
 		}
 	}
 	

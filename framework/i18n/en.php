@@ -102,6 +102,7 @@ $i18n_data = array(
 	"upgrading" => "Upgrading",
 	"upgraded" => "Upgraded",
 	"finished" => "Finished",
+	"page_not_found" => "Page not found: ",
 );
 
 ?>

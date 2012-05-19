@@ -8,8 +8,8 @@ require_once(home_dir . "framework/views/template.php");
 
 abstract class TplTag
 {
-	public static function register() {
-		TemplateView::register_tag(new static());
+	public static function register($view) {
+		$view->register_tag(new static());
 	}
 	
 	public function render($request, $args, $page, $local_app) {

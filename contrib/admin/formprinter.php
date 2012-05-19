@@ -10,25 +10,38 @@ require_once(home_dir . "contrib/admin/core.php");
 class AdminFormPrinter extends FormPrinter
 {
 	public function run($form, $edit_mode = false, $buttons = "") {
-		print $form->get_header();
+		print $form->get_header('', '', 'class="form-horizontal"');
 		$formid = $form->get_form_id();
+		
+		// Get all hidden fields out the way
+		foreach ($form->get_fieldsets() as $fieldset_name => $fieldset) {
+			foreach ($fieldset->get_fields() as $name => $field) {
+				if ($field->get_type() == "hidden") {
+					print $field->get_input($fieldset->get_id($formid), $name);
+					continue;
+				}
+			}
+		}
+		
+		// Now the displayed fields
 		foreach ($form->get_fieldsets() as $fieldset_name => $fieldset) {
 			if ($fieldset_name !== "control")
 				print '<fieldset>' . ($fieldset->get_legend() !== "" ? '<legend>' . $fieldset->get_legend() . '</legend>' : '');
 			
 			foreach ($fieldset->get_fields() as $name => $field) {
 				if ($field->get_type() == "hidden") {
-					print $field->get_input($fieldset->get_id($formid), $name);
 					continue;
 				}
 				
-				print '<div class="control-group'.($field->has_error() ? ' error' : '').'"><div class="controls">';
+				print '<div class="control-group'.($field->has_error() ? ' error' : '').'">';
 				
 				// Print our label
 				if (get_class($field) == "CheckedFormField")
 					print '<label class="checkbox" for="'.$fieldset->get_id($formid).'_'.$name.'">';
 				else
-					print $field->get_label($fieldset->get_id($formid), $name);
+					print $field->get_label($fieldset->get_id($formid), $name, ' class="control-label"');
+				
+				print '<div class="controls">';
 				
 				// Print the input
 				$options = $field->get_options();
@@ -41,8 +54,9 @@ class AdminFormPrinter extends FormPrinter
 				if (get_class($field) == "FKFormField") {
 					$model_string = $field->get_model_string();
 					list($m_app, $n, $m_class) = partition($model_string, '.');
-					if (AdminManager::is_registered($m_app, $m_class)) {
-						print '&nbsp; <a href="'.home_url.'admin/'.$m_app.'/'.$m_class.'/add/" target="_blank"><i class="icon-plus"></i></a>';
+					if (AdminManager::is_class_registered($m_class)) {
+						$r_app = AdminManager::get_app_of_class($m_class);
+						print '&nbsp; <a href="'.home_url.'admin/'.$r_app.'/'.$m_class.'/add/" target="_blank"><i class="icon-plus"></i></a>';
 					}
 				}
 				

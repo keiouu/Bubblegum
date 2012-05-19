@@ -156,7 +156,7 @@ class FKField extends ModelField
 	}
 	
 	public function validate($val = NULL) {
-		return $this->_className() !== ""; // TODO - check its a number/object
+		return $this->_className() !== "";
 	}
 	
 	public function post_model_create($db, $name, $table_name) {

@@ -1,0 +1,58 @@
+.graph_tooltip {
+	position: absolute;
+	background-color: #EEE;
+	padding: 5px;
+	border: 1px solid #333;
+	border-radius: 10px;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #D6D6D6));
+	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #D6D6D6 100%);
+	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D6D6D6 100%);
+	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #D6D6D6 100%);
+	background-image: -o-linear-gradient(top, #FFFFFF 0%, #D6D6D6 100%);
+	background-image: linear-gradient(top, #FFFFFF 0%, #D6D6D6 100%);
+}
+
+.pie_chart {
+	width: 400px;
+}
+
+.pie_chart canvas {
+	display: inline-block;
+	width: 200px;
+}
+
+.pie_chart .legend {
+	display: inline-block;
+	width: 150px;
+	vertical-align: top;
+	padding: 10px;
+}
+
+.pie_chart .legend .entry {
+	padding: 5px;
+}
+
+.pie_chart .legend .entry td {
+	display: table-cell;
+	padding: 5px;
+}
+
+.pie_chart .legend .entry td.legend:after {
+	content: ":";
+}
+
+.pie_chart .legend .entry td.value:after {
+	content: "%";
+}
+
+.pie_chart .legend .entry td.colour {
+	display: block;
+	margin: 5px;
+	width: 5px;
+	height: 5px;
+	border: 1px solid #444;
+}
+
+.pie_chart .legend .entry td.stop_colour {
+	display: none;
+}

@@ -59,6 +59,11 @@ class Form
 		return "form_" . $this->form_id;
 	}
 	
+	public function set_fieldsets($fieldsets) {
+		$this->fieldsets = $fieldsets;
+		$this->generate_control_block();
+	}
+	
 	public function get_fieldsets() {
 		return $this->fieldsets;
 	}
@@ -160,8 +165,9 @@ class Form
 			foreach ($fields as $name => $field) {
 				if ($field->get_type() == "file") {
 					$fname = $data['control_formid'] . '_' . $name;
-					if (isset($_FILES[$fname]) && strlen($_FILES[$fname]["tmp_name"]) > 0)
+					if (isset($_FILES[$fname]) && strlen($_FILES[$fname]["tmp_name"]) > 0) {
 						$field->set_value($_FILES[$fname]);
+					}
 				}
 			}
 		}

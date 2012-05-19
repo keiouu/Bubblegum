@@ -23,11 +23,11 @@ function get_named_class($class, $app_name = null) {
 	if (!class_exists($class)) {
 		global $app_paths;
 		foreach ($app_paths as $app_path) {
-			if ($app_name !== null && $app_name !== $app_path)
-				continue;
 			$path = home_dir . $app_path . '/';
 			if (file_exists($path) && ($handle = opendir($path))) {
 				while (($entry = readdir($handle))  !== false) {
+					if ($app_name !== null && $app_name !== $entry)
+						continue;
 					if ($entry !== "." && $entry !== "..") {
 						$file = $path . $entry . "/models.php";
 						if (is_file($file)) {
@@ -125,12 +125,33 @@ function analyze($var) {
 		print_r($var);
 }
 
+/**
+ * Turns console logging on
+ */
+function console_on() {
+	$GLOBALS['enable_console'] = true;
+}
+
+/**
+ * Turns console logging off
+ */
+function console_off() {
+	$GLOBALS['enable_console'] = false;
+}
+
 function console_log($val) {
-	if (!isset($GLOBALS['console']))
+	if (isset($GLOBALS['enable_console']) && !$GLOBALS['enable_console']) {
+		return;
+	}
+	
+	if (!isset($GLOBALS['console'])) {
 		$GLOBALS['console'] = array();
+	}
+	
 	$GLOBALS['console'][] = $val;
-	if (PHP_SAPI === 'cli')
+	if (PHP_SAPI === 'cli') {
 		print $val;
+	}
 }
 
 function console_print($val) {

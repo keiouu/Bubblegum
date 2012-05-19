@@ -164,7 +164,7 @@ class FileUploadFormField extends FormField
 			
 			// Upload the file
 			$filename .= "." . $type;
-			if (@move_uploaded_file($val['tmp_name'], $filename)) {
+			if (move_uploaded_file($val['tmp_name'], $filename)) {
 				return parent::set_value($filename);
 			} else {
 				$this->set_error($GLOBALS['i18n']['framework']["fielderr17"] . " " . (isset($php_errormsg) ? $php_errormsg : $GLOBALS['i18n']['framework']["error2"]));

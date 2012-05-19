@@ -306,7 +306,10 @@ abstract class Model
 	 * @return ModelQuery A ModelQuery object containing the found objects
 	 */
 	public static function find($query) {
-		return static::objects()->find($query);
+    	if (is_array($query))
+			return static::objects()->find($query);
+		else
+			return static::objects()->find(array("pk" => $query));
 	}
 	
 	/**
@@ -320,11 +323,7 @@ abstract class Model
 	 * @return mixed The found object
 	 */
 	public static function get($arg = 0) {
-		$results = NULL;
-    	if (is_array($arg))
-			$results = static::find($arg);
-		else
-			$results = static::find(array("pk" => $arg));
+		$results = static::find($arg);
 		if ($results->count() == 0)
 			throw new ModelExistsException($GLOBALS['i18n']['framework']["noobjexist"]);
 		if ($results->count() > 1)
@@ -414,8 +413,10 @@ abstract class Model
 	 *
 	 * @param string $name The name of the field
 	 * @param ModelField $type The field object
+	 * @param boolean $hidden Should this field be hidden from forms?
 	 */
-	protected function add_field($name, $type) {
+	protected function add_field($name, $type, $hidden = False) {
+		$type->set_hidden($hidden);
 		if ($type->is_pk_field()) {
 			$new_fields = array();
 			$new_fields[$name] = $type;
@@ -436,9 +437,10 @@ abstract class Model
 	 * 
 	 * @param string $name The name of the field
 	 * @param ModelField $type The field object
+	 * @param boolean $hidden Should this field be hidden from forms?
 	 */
-	protected function add_safe_field($name, $type) {
-		$this->add_field($name, $type);
+	protected function add_safe_field($name, $type, $hidden = False) {
+		$this->add_field($name, $type, $hidden);
 		$this->safe_fields[] = $name;
 	}
 	
@@ -544,10 +546,11 @@ abstract class Model
 	public function get_form($action = "", $method = "POST") {
 		$fields = array();
 		foreach($this->get_fields() as $name => $field) {
-			$fields[$name] = $field->get_formfield($name);
+			if (!$field->get_hidden())
+				$fields[$name] = $field->get_formfield($name);
 		}
 		return new Form(array(
-			new Fieldset("", $fields),
+			new Fieldset(prettify($this->model_display_name()), $fields),
 		), $action, $method);
 	}
 	
@@ -684,9 +687,8 @@ abstract class Model
 	 * @return array An array containing all objects that relate to this object.
 	 */
 	public function get_related_objects($object) {
-		$class = get_class($object);
 		foreach ($this->fields as $name => $field) {
-			if ($field->relatesTo($class)) {
+			if ($field->relatesTo($object)) {
 				return $this->find(array($name => $object));
 			}
 		}
@@ -918,12 +920,12 @@ abstract class Model
 	 * @param Database $db The database to use
 	 */
 	public function update_query($db) {
-		$old_object = static::find($this->pk)->using($this->get_db())->using_table($this->get_table_name());
+		$old_object = static::find($this->pk)->using($this->get_db())->using_table($this->get_table_name())->all();
 		if (count($old_object) == 0) {
 			console_error($GLOBALS['i18n']['framework']['modelerr1'] . " " . $this->get_table_name() . " (" . $this->pk . ")");
 			return "";
 		}
-		$old_object = $old_object->get(0);
+		$old_object = $old_object[0];
 		
 		$query = "UPDATE \"" . $this->get_table_name() . "\" SET ";
 		$go = False;

@@ -8,29 +8,36 @@ require_once(home_dir . "framework/view.php");
 
 class TemplateView extends View
 {
-	protected static $custom_tags = array(), $custom_vars = array();
-	protected $title;
+	protected $title, $custom_tags, $custom_vars;
 	
 	public function __construct($url, $page, $title = "") {
 		parent::__construct($url, $page);
+		$this->custom_tags = array();
+		$this->custom_vars = array();
+		$this->set_title($title);
+	}
+	
+	public function set_title($title) {
 		$this->title = $title;
+		$this->register_var("title", $this->title);
 	}
 	
 	// We have the custom tags here so people can override tags
 	// for specific views if they wish
-	public static function register_tag($tag) {
-		TemplateView::$custom_tags[] = $tag;
+	public function register_tag($tag) {
+		$this->custom_tags[] = $tag;
 	}
 	
-	public static function register_var($name, $value) {
-		TemplateView::$custom_vars[$name] = $value;
+	public function register_var($name, $value) {
+		$this->custom_vars[$name] = $value;
 	}
 	
 	public function pre_render($request, $args = array()) {
 		/* Load template tags */
 		require_once(home_dir . "framework/template_tags/init.php");
-
-		$request->add_val("title", $this->title);
+		DateTag::register($this);
+		JSVarTag::register($this);
+		
 		ob_start();
 	}
 	
@@ -39,21 +46,41 @@ class TemplateView extends View
 		
 		// Do we want to set an app (for local i18n etc)
 		$local_app = "";
-		$scan = $this->_parser_scan_for($request, $args, $tpl_output, '/{% set_app \"(?P<app>[[:punct:]\w]+)\" %}/');
+		$scan = $this->_parser_scan_for($request, $args, $tpl_output, '/{% set_app \"(?P<app>[[:punct:]\w]+)\" %}/', $this->page);
 		if ($scan !== false)
 			$local_app = $scan['app'];
 		
-		return $this->parse_page($request, $args, $tpl_output, $local_app);
+		return $this->parse_page($request, $args, $tpl_output, $local_app, $this->page);
+	}
+	
+	/**
+	 * Find the location of a template given it's parent
+	 *
+	 * @param string $parent The location of the file requesting the template
+	 * @param string $name The name of the template we want to find
+	 *
+	 * @returns string|null The location of the template or null if not found
+	 */
+	protected function _find_template($parent, $name) {
+		$parent_location = dirname($parent);
+		if (file_exists($parent_location . "/" . $name))
+			return $parent_location . "/" . $name;
+		if (file_exists($name))
+			return $name;
+		return null;
 	}
 	
 	/* Scan for regex in template tree */
-	protected function _parser_scan_for($request, $args, $template, $regex) {
+	protected function _parser_scan_for($request, $args, $template, $regex, $template_location = "") {
 		preg_match('/{% extends \"(?P<page>[[:punct:]\w]+)\" %}/', $template, $matches);
 		if (isset($matches['page'])) {
-			//ob_start();
-			$parent = file_get_contents(home_dir . $matches['page']);
-			//$parent = ob_get_clean();
-			$scan = $this->_parser_scan_for($request, $args, $parent, $regex);
+			$location = $this->_find_template($template_location, $matches['page']);
+			if ($location == null) {
+				console_warn($GLOBALS['i18n']['framework']['page_not_found'] . $matches['page']);
+				return false;
+			}
+			$parent = file_get_contents($location);
+			$scan = $this->_parser_scan_for($request, $args, $parent, $regex, $location);
 			if ($scan !== false)
 				return $scan;
 		}
@@ -62,18 +89,23 @@ class TemplateView extends View
 		return false;
 	}
 	
-	public function parse_page($request, $args, $template, $local_app) {
+	public function parse_page($request, $args, $template, $local_app, $template_location = "") {
 		// Do we extend anything?
 		preg_match('/{% extends \"(?P<page>[[:punct:]\w]+)\" %}/', $template, $matches);
 		
 		if (isset($matches['page'])) {
-			$parent_name = $matches['page'];
-			ob_start();
-			include(home_dir . $matches['page']);
-			$parent = ob_get_clean();
-			preg_match('/{% extends \"(?P<page>[[:punct:]\w]+)\" %}/', $parent, $matches);
-			if (isset($matches['page']))
-				$recurse_mode = true;
+			$parent_location = $this->_find_template($template_location, $matches['page']);
+			if ($parent_location == null) {
+				console_warn($GLOBALS['i18n']['framework']['page_not_found'] . $matches['page']);
+			} else {
+				$parent_name = $matches['page'];
+				ob_start();
+				include($parent_location);
+				$parent = ob_get_clean();
+				preg_match('/{% extends \"(?P<page>[[:punct:]\w]+)\" %}/', $parent, $matches);
+				if (isset($matches['page']))
+					$recurse_mode = true;
+			}
 		}
 		
 		if (isset($parent)) {
@@ -126,7 +158,7 @@ class TemplateView extends View
 			$template = $parent;
 		
 			if (isset($recurse_mode))
-				return $this->parse_page($request, $args, $template, $local_app);
+				return $this->parse_page($request, $args, $template, $local_app, $parent_location);
 		}
 		
 		// Do we include anything?
@@ -140,7 +172,7 @@ class TemplateView extends View
 		}
 		
 		// Check vars
-		foreach (TemplateView::$custom_vars as $name => $val) {
+		foreach ($this->custom_vars as $name => $val) {
 			$template = str_replace("{{{$name}}}", $val, $template);
 		}
 		foreach ($request->safe_vals as $name => $val) {
@@ -164,7 +196,7 @@ class TemplateView extends View
 		}
 		
 		// Here is a good place to run any custom tags
-		foreach (TemplateView::$custom_tags as $tag) {
+		foreach ($this->custom_tags as $tag) {
 			$template = $tag->render($request, $args, $template, $local_app);
 		}
 		

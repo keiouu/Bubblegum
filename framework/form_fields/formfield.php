@@ -100,10 +100,10 @@ abstract class FormField
 		return false;
 	}
 	
-	public function get_label($base_id, $safe_name) {
+	public function get_label($base_id, $safe_name, $extra = "") {
 		$field_id = $this->get_field_id($base_id, $safe_name);
 		if ($this->get_type() !== "hidden")
-			return '<label for="'.$field_id.'">'.prettify($this->name).'</label>';
+			return '<label for="'.$field_id.'"'.$extra.'>'.prettify($this->name).'</label>';
 		return '';
 	}
 	
