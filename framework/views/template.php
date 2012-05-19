@@ -62,6 +62,7 @@ class TemplateView extends View
 	 * @returns string|null The location of the template or null if not found
 	 */
 	protected function _find_template($parent, $name) {
+		chdir(home_dir);
 		$parent_location = dirname($parent);
 		if (file_exists($parent_location . "/" . $name))
 			return $parent_location . "/" . $name;

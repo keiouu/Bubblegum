@@ -1,6 +1,6 @@
 <?php
 /*
- * TNet Version 1.0_dev
+ * TNet Version 2.0_dev
  * 
  * For installation instructions see README
  * For license information please see LICENSE
