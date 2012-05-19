@@ -103,7 +103,7 @@ require_once(home_dir . "contrib/admin/core.php");
          			</li>
          			<?php
          			}
-         			foreach ($app_configs as $cfg_app => $cfgs) {
+						foreach ($app_configs as $cfg_app => $cfgs) {
 							if (!$request->user->has_permission("admin_site_model_" . $cfg_app . "_config"))
 								continue;
 							print '<li class="dropdown" data-dropdown="dropdown">
@@ -114,19 +114,22 @@ require_once(home_dir . "contrib/admin/core.php");
 	         			</li>';
          			}
 					
-					function print_menu($request, $name, $item) {
-						print '<li class="'.(isset($request->menu_override) && $request->menu_override == $name ? "active" : "").'"><a href="'.$item['link'].'">' . $name . '</a>';
-						foreach ($item['children'] as $child_name => $child) {
-							print '<ul>';
-							print_menu($request, $child_name, $child);
-							print '</ul>';
+						function print_menu($request, $name, $item) {
+							if (!$request->user->has_permission("admin_menu_extras_" . $name))
+								continue;
+						
+							print '<li class="'.(isset($request->menu_override) && $request->menu_override == $name ? "active" : "").'"><a href="'.$item['link'].'">' . $name . '</a>';
+							foreach ($item['children'] as $child_name => $child) {
+								print '<ul>';
+								print_menu($request, $child_name, $child);
+								print '</ul>';
+							}
+							print '</li>';
 						}
-						print '</li>';
-					}
-					
-					foreach (AdminManager::get_extra_menu() as $name => $item) {
-						print_menu($request, $name, $item);
-					}
+						
+						foreach (AdminManager::get_extra_menu() as $name => $item) {
+							print_menu($request, $name, $item);
+						}
          			?>
 					</ul>
 					<?php if($request->user->logged_in()) { ?>
