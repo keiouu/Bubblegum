@@ -107,16 +107,16 @@ require_once(home_dir . "contrib/admin/core.php");
 							if (!$request->user->has_permission("admin_site_model_" . $cfg_app . "_config"))
 								continue;
 							print '<li class="dropdown" data-dropdown="dropdown">
-								<a href="#" class="dropdown-toggle">'.prettify($cfg_app).'</a>
-	         				<ul class="dropdown-menu">
-	         					<li><a href="{{home_url}}admin/core/App_Config/?_app='.$cfg_app.'">{% local_i18n "admin_app_config" %}</a></li>
-	         				</ul>
-	         			</li>';
-         			}
+							<a href="#" class="dropdown-toggle">'.prettify($cfg_app).'</a>
+							<ul class="dropdown-menu">
+								<li><a href="{{home_url}}admin/core/App_Config/?_app='.$cfg_app.'">{% local_i18n "admin_app_config" %}</a></li>
+								</ul>
+							</li>';
+						}
 					
 						function print_menu($request, $name, $item) {
 							if (!$request->user->has_permission("admin_menu_extras_" . $name))
-								continue;
+								return;
 						
 							print '<li class="'.(isset($request->menu_override) && $request->menu_override == $name ? "active" : "").'"><a href="'.$item['link'].'">' . $name . '</a>';
 							foreach ($item['children'] as $child_name => $child) {
