@@ -62,6 +62,8 @@ class Statistics_Visit extends Model
 		$total = 0;
 		foreach ($dataset as $_name => $count)
 			$total += $count;
+		if ($total == 0)
+			return 0;
 		return round(((float)$dataset[$name] / (float)$total) * 100.0, 2);
 	}
 }
