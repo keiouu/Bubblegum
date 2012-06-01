@@ -12,26 +12,21 @@ function tpErrorHandler($errno, $errstr, $errfile, $errline)
     }
 
     switch ($errno) {
-	    case E_ERROR: // TODO: full page error
 	    case E_PARSE:
+	    case E_ERROR:
+	    case E_USER_ERROR:
 	    		console_error("[" . $errfile . ":".$errline."] " . $errstr);
+	    		// TODO: full page error
 	        break;
 	    
+	    case E_DEPRECATED:
 	    case E_WARNING:
 	    case E_NOTICE:
 	    case E_STRICT:
+	    case E_USER_NOTICE:
+	    case E_USER_WARNING:
 	    		console_warning("[" . $errfile . ":".$errline."] " . $errstr);
 	    	break;
-	        
-	    case E_USER_ERROR:
-	        exit(1);
-	        break;
-	
-	    case E_USER_WARNING:
-	        break;
-	
-	    case E_USER_NOTICE:
-	        break;
 	
 	    default:
         	break;
