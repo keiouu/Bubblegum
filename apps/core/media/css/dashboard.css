@@ -1,0 +1,52 @@
+
+  body {
+      padding-top: 60px;
+  }
+  
+  .draggables h3 {
+      font-weight: normal;
+  }
+  
+  .draggables .inner {
+      min-height: 250px;
+      background-color: #efefef;
+      border-radius: 5px;
+      border: 1px solid #333;
+  }
+  
+  .draggables .draggable {
+      position: relative;
+      width: 94%;
+      text-align: center;
+      margin: 1%;
+      padding: 1% 2%;
+      z-index: 99;
+  }
+  
+  .draggables .draggable.in-drag {
+      opacity: 0.5;
+      filter: alpha(opacity=50);
+      z-index: 100;
+  }
+  
+  .draggables .draggable p {
+      padding: 0;
+      margin: 0;
+      line-height: 10px;
+      padding-bottom: 5px;
+  }
+  
+  .draggables .draggable .title {
+      font-size: 1.1em;
+      padding: 2px 5px 20px 5px;
+      line-height: 15px;
+  }
+  
+  .draggables .draggable .author {
+      font-size: 0.8em;
+      position: absolute;
+      bottom: 1px;
+      left: 0;
+      width: 100%;
+      
+  }
