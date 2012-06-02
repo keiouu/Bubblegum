@@ -367,7 +367,10 @@ class AJAX_TaskDetailView extends JSONView
 				"assignees" => $task->assignees(),
 				"assignees_full" => $task->assignees(true),
 			);
+		} else {
+			die('{"error":"Could not find task '.html_entity_decode($request->get['name']).'!"}');
 		}
+		
 		return $request->user->logged_in();
 	}
 }
