@@ -35,7 +35,7 @@ class AdminModel
 		// Setup Linked Headings
 		$this->linked_headings = $linked_headings;
 		if (!is_array($this->linked_headings) || count($this->linked_headings) === 0) {
-			$this->linked_headings = array($this->model->_pk());
+			$this->linked_headings = array($this->model->get_pk_name());
 		}
 		
 		// Setup Filters
@@ -129,7 +129,7 @@ class AdminModel
 	}
 	
 	public function get_modelname() {
-		return $this->model->model_display_name();
+		return $this->model->_display_name();
 	}
 	
 	public function get_headings() {

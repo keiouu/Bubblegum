@@ -15,8 +15,8 @@ class Admin_Note extends Model
 		$this->add_field("created_by", new FKField("auth.User", false));
 	}
 	
-	public static function model_display_name() {
-		return parent::model_display_name("Note");
+	public static function _display_name() {
+		return parent::_display_name("Note");
 	}
 }
 ?>

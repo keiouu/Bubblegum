@@ -34,14 +34,14 @@ class IntermediateModel extends Model
 	
 	public function temp_clone_link() {
 		$class = $this->get_field("link")->get_class();
-		return $class::get_temp_instance();
+		return $class::_get_temp_object();
 	}
 	
 	/*
 	 * Returns a temporary clone of this object for use in model queries
 	 */
 	public function temp_clone() {
-		return static::get_temp_instance($this->get_table_name(), $this->parent, $this->link_model);
+		return static::_get_temp_object($this->get_table_name(), $this->parent, $this->link_model);
 	}
 	
 	public function add($obj) {
@@ -53,14 +53,14 @@ class IntermediateModel extends Model
 	}
 	
 	
-	public static function get_temp_instance($name, $parent, $linkModel) {
+	public static function _get_temp_object($name, $parent, $linkModel) {
 		$obj = new static($name, $parent, $linkModel);
 		$obj->setValid(False);
 		return $obj;
 	}
 	
 	public static function objects($name, $parent, $linkModel) {
-		return new ModelQuery(static::get_temp_instance($name, $parent, $linkModel));
+		return new ModelQuery(static::_get_temp_object($name, $parent, $linkModel));
 	}
 	
 	public static function find($query) 		{ throw new InvalidOperationException(); }

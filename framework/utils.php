@@ -162,7 +162,7 @@ function console_print($val) {
  * @deprecated Use console_warning instead!
  */
 function console_warn($val) {
-	trigger_error("console_warn() deprecated, use console_warning() instead.", E_USER_DEPRECATED); // More for internal tracking
+	console_deprecation("console_warn", "console_warning");
 	console_warning($val);
 }
 
@@ -172,6 +172,19 @@ function console_warning($val) {
 
 function console_error($val) {
 	console_log('<span class="console_error">'.$val.'</span>');
+}
+
+/**
+ * Trigger an E_USER_DEPRECATD error
+ *
+ * @param string $method The name of the deprecated method
+ * @param string $new The new method that replaces it (if any)
+ */
+function console_deprecation($method, $new = "") {
+	if ($new !== "")
+		trigger_error($method . "() deprecated, use ".$new."() instead.", E_USER_DEPRECATED);
+	else
+		trigger_error($method . "() deprecated.", E_USER_DEPRECATED);
 }
 ?>
  

@@ -165,7 +165,7 @@ class FKField extends ModelField
 			$constraint = $table_name . "_" . $name . "_fkey";
 			$class = $this->_className();
 			$obj = new $class();
-			return 'ALTER TABLE "'.$table_name.'" ADD CONSTRAINT '.$constraint.' FOREIGN KEY ("'.$name.'") REFERENCES "'.$obj->get_table_name().'" ('.$obj->_pk().') ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;';
+			return 'ALTER TABLE "'.$table_name.'" ADD CONSTRAINT '.$constraint.' FOREIGN KEY ("'.$name.'") REFERENCES "'.$obj->get_table_name().'" ('.$obj->get_pk_name().') ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;';
 		}
 	}
 	

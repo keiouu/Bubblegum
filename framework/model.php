@@ -136,7 +136,7 @@ abstract class Model
 	public static function _display_name($class_override = "") {
 		$name = $class_override;
 		if ($name === "")
-			$name = get_class(static::get_temp_instance());
+			$name = get_class(static::_get_temp_object());
 		$lower_name = strtolower($name);
 		return isset($GLOBALS['i18n']['framework']["model_" . $lower_name]) ? $GLOBALS['i18n']['framework']["model_" . $lower_name] : $name;
 	}
@@ -148,6 +148,7 @@ abstract class Model
 	 * @deprecated 1.2 This method will be replaced by "_display_name($class_override)"
 	 */
 	public static function model_display_name($override = "") {
+		console_deprecation("model_display_name", "_display_name");
 		return static::_display_name($override);
 	}
 	
@@ -157,7 +158,7 @@ abstract class Model
 	 * @return ContentType The ContentType object of this model
 	 */
 	public static function _content_type() {
-		return ContentType::of(static::get_temp_instance());
+		return ContentType::of(static::_get_temp_object());
 	}
 	
 	/**
@@ -166,6 +167,7 @@ abstract class Model
 	 * @deprecated 1.2 This method will be replaced by "_content_type()"
 	 */
 	public static function get_content_type() {
+		console_deprecation("get_content_type", "_content_type");
 		return static::_content_type();
 	}
 	
@@ -193,6 +195,7 @@ abstract class Model
 	 * @deprecated 1.2 - This method will be removed and replaced by get_db()
 	 */
 	public function getDB() {
+		console_deprecation("getDB", "get_db");
 		return $this->get_db();
 	}
 	
@@ -232,6 +235,7 @@ abstract class Model
 	 * @deprecated 1.2 This method will be replaced by "_get_temp_object()"
 	 */
 	public static function get_temp_instance() {
+		console_deprecation("get_temp_instance", "_get_temp_object");
 		return static::_get_temp_object();
 	}
 	
@@ -264,7 +268,10 @@ abstract class Model
 	 * 
 	 * @deprecated 1.2 This method will be replaced by "get_pk_name()"
 	 */
-	public function _pk() { return $this->get_pk_name(); }
+	public function _pk() {
+		console_deprecation("_pk", "get_pk_name");
+		return $this->get_pk_name();
+	}
 	
 	/**
 	 * Load a list of values into this object's fields.
@@ -295,6 +302,7 @@ abstract class Model
 	 * @deprecated 1.2 This method will be replaced by "load_values($array, true)"
 	 */
 	public function load_query_values($result) {
+		console_deprecation("load_query_values", "load_values");
 		$this->load_values($result, true);
 	}
 	
@@ -461,6 +469,7 @@ abstract class Model
 	 * @param boolean $val The new value of Model::_valid_model
 	 */
 	public function setValid($val) {
+		console_deprecation("setValid", "set_valid");
 		$this->set_valid($val);
 	}
 	
@@ -550,7 +559,7 @@ abstract class Model
 				$fields[$name] = $field->get_formfield($name);
 		}
 		return new Form(array(
-			new Fieldset(prettify($this->model_display_name()), $fields),
+			new Fieldset(prettify($this->_display_name()), $fields),
 		), $action, $method);
 	}
 	
@@ -570,9 +579,9 @@ abstract class Model
 	public function __get($name) {
 		$is_safe = in_array($name, $this->safe_fields);
 		if ($name == "pk")
-			$name = $this->_pk();
+			$name = $this->get_pk_name();
 		if ($name == "_pk")
-			$name = "_" . $this->_pk();
+			$name = "_" . $this->get_pk_name();
 		if (isset($this->fields[$name])) {
 			$val = $this->fields[$name]->get_value();
 			if (method_exists($this, "__get_" . $name)) {
@@ -609,7 +618,7 @@ abstract class Model
 		}
 		
 		if ($name == "pk")
-			$name = $this->_pk();
+			$name = $this->get_pk_name();
 		
 		if (isset($this->fields[$name])) {
 			$this->fields[$name]->set_value($value);
@@ -676,6 +685,7 @@ abstract class Model
 	 * @param object $object The object to test
 	 */
 	public function relatesTo($object) {
+		console_deprecation("relatesTo", "relates_to");
 		return $this->relates_to($object);
 	}
 	
@@ -900,7 +910,7 @@ abstract class Model
 		}
 		$extra = "";
 		if ($db->get_type() == "psql")
-			$extra = " RETURNING \"" . $this->_pk() . "\"";
+			$extra = " RETURNING \"" . $this->get_pk_name() . "\"";
 		return "INSERT INTO \"" . $this->get_table_name() . "\" (" . $keys . ") VALUES (" . $values . ")" . $extra . ";";
 	}
 	
@@ -944,7 +954,7 @@ abstract class Model
 				$go = True;
 			}
 		}
-		$query .= " WHERE " . $this->_pk() . "=" . $db->escape_string($this->pk);
+		$query .= " WHERE " . $this->get_pk_name() . "=" . $db->escape_string($this->pk);
 		if ($go)
 			return $query;
 		return ""; // Nothing to do
@@ -1042,7 +1052,7 @@ abstract class Model
 	 * @param Database $db The database to use
 	 */
 	public function delete_query($db) {
-		return "DELETE FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->_pk() ."\"='" . $this->pk . "';";
+		return "DELETE FROM \"" . $this->get_table_name() . "\" WHERE \"". $this->get_pk_name() ."\"='" . $this->pk . "';";
 	}
 
 	/**

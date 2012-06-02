@@ -51,7 +51,7 @@ abstract class AdminManager
 		$class = get_class($obj);
 		foreach (AdminManager::$models as $app => $ar) {
 			if (AdminManager::is_registered($app, $class)) {
-				return admin_url . $app . '/' . $obj->model_display_name() . '/edit/' . $obj->pk . '/';
+				return admin_url . $app . '/' . $obj->_display_name() . '/edit/' . $obj->pk . '/';
 			}
 		}
 		return '';
@@ -61,7 +61,7 @@ abstract class AdminManager
 		$class = get_class($obj);
 		foreach (AdminManager::$models as $app => $ar) {
 			if (AdminManager::is_registered($app, $class)) {
-				return admin_url . $app . '/' . $obj->model_display_name() . '/add/';
+				return admin_url . $app . '/' . $obj->_display_name() . '/add/';
 			}
 		}
 		return '';
