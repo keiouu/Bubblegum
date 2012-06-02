@@ -1,4 +1,5 @@
-function task_view(task) {	
+function task_view(task) {
+	task = $('<div />').html(task).text();
 	// Show a dialog box with details, and editing capability
 	$("#task-edit .task-title").html(task);
 	$.getJSON(tp_home_url + "api/project/" + project_id + "/task/detail/?name=" + task, function(data) {
