@@ -22,10 +22,9 @@ require_once(home_dir . "apps/core/models.php");
     </style>
     <link href="{{home_url}}apps/core/media/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="{{home_url}}apps/core/media/css/style.css" rel="stylesheet">
-	 {% jsvars %}
-	 
-    {% block head %}
-    {% endblock %}
+    {% block style %}{% endblock %}
+	{% jsvars %}
+    {% block head %}{% endblock %}
     
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
