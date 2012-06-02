@@ -14,7 +14,7 @@ class UpgradeView extends BasicHTMLView
 		parent::__construct($url, ($title == null ? $GLOBALS['i18n']['framework']['upgrade'] . " | Tikapot" : $title), $style, $script, $meta);
 	}
 	
-	public function render($request) {
+	public function render($request, $args) {
 		$db = Database::create();
 		$objects = ContentType::objects()->all();
 		print "<p>Found ".count($objects)." models.<br />";

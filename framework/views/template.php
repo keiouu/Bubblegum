@@ -32,7 +32,7 @@ class TemplateView extends View
 		$this->custom_vars[$name] = $value;
 	}
 	
-	public function pre_render($request, $args = array()) {
+	public function pre_render($request, $args) {
 		/* Load template tags */
 		require_once(home_dir . "framework/template_tags/init.php");
 		DateTag::register($this);
@@ -41,7 +41,7 @@ class TemplateView extends View
 		ob_start();
 	}
 	
-	public function post_render($request, $args = array()) {
+	public function post_render($request, $args) {
 		$tpl_output = ob_get_clean();
 		
 		// Do we want to set an app (for local i18n etc)

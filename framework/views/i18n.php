@@ -8,7 +8,7 @@ require_once(home_dir . "framework/view.php");
 
 class i18nJSView extends View
 {	
-	public function render($request) {
+	public function render($request, $args) {
 		header('Content-type: text/javascript');
 		print( $request->i18n->buildJS() );
 	}

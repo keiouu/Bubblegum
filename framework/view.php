@@ -34,17 +34,17 @@ class View
 		return $this->page;
 	}
 	
-	public function setup($request, $args = array()) {
+	public function setup($request, $args) {
 		return true;
 	}
 	
-	public function on_setup_success($request, $args = array()) {}
-	public function on_setup_failure($request, $args = array()) {}
-	public function pre_render($request, $args = array()) {}
-	public function post_render($request, $args = array()) {}
+	public function on_setup_success($request, $args) {}
+	public function on_setup_failure($request, $args) {}
+	public function pre_render($request, $args) {}
+	public function post_render($request, $args) {}
 	
 	/* Request is a 'Request' object. By default this simply includes $this->page be sure to override for more complex things! */
-	public function render($request, $args = array()) {
+	public function render($request, $args) {
 		include($this->page);
 	}
 }

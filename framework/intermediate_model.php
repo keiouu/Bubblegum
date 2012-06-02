@@ -10,6 +10,7 @@ require_once(home_dir . "framework/model_query.php");
 
 class InvalidOperationException extends Exception {}
 
+// TODO - look at all of this
 class IntermediateModel extends Model
 {
 	protected $db_name = "", $link_model = "", $parent;
@@ -41,7 +42,7 @@ class IntermediateModel extends Model
 	 * Returns a temporary clone of this object for use in model queries
 	 */
 	public function temp_clone() {
-		return static::_get_temp_object($this->get_table_name(), $this->parent, $this->link_model);
+		return static::_get_temp_inter_object($this->get_table_name(), $this->parent, $this->link_model);
 	}
 	
 	public function add($obj) {
@@ -53,14 +54,14 @@ class IntermediateModel extends Model
 	}
 	
 	
-	public static function _get_temp_object($name, $parent, $linkModel) {
+	public static function _get_temp_inter_object($name, $parent, $linkModel) {
 		$obj = new static($name, $parent, $linkModel);
 		$obj->setValid(False);
 		return $obj;
 	}
 	
 	public static function objects($name, $parent, $linkModel) {
-		return new ModelQuery(static::_get_temp_object($name, $parent, $linkModel));
+		return new ModelQuery(static::_get_temp_inter_object($name, $parent, $linkModel));
 	}
 	
 	public static function find($query) 		{ throw new InvalidOperationException(); }

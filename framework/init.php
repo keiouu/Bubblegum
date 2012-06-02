@@ -113,9 +113,9 @@ try {
 	while (ob_get_length() > 0)
 		ob_get_clean();
 	$error = new ErrorView();
-	print $error->pre_render($request);
+	print $error->pre_render($request, $e);
 	print $error->render($request, $e);
-	print $error->post_render($request);
+	print $error->post_render($request, $e);
 	Profiler::end("total");
 }
 ?>

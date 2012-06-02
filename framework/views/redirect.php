@@ -12,7 +12,7 @@ class RedirectView extends View {
 		$this->redirect_url = $redirect_url;
 	}
 	
-	public function setup($request) {
+	public function setup($request, $args) {
 		header("Location: " . $this->redirect_url);
 	}
 }

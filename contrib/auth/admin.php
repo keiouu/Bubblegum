@@ -93,7 +93,7 @@ class AuthEditForm extends AuthForm
 		parent::__construct($this->get_auth_fieldset("Leave blank to ignore"));
 	}
 	
-	public function save($model, $request) {
+	public function save($model = NULL, $request = NULL) {
 		$new = !$model->fromDB();
 		$password = $model->password;
 		

@@ -61,7 +61,7 @@ class CaptchaFormField extends CharFormField
 		return parent::get_input($base_id, $safe_name);
 	}
 	
-	public function get_input($base_id, $safe_name) {
+	public function get_input($base_id, $safe_name, $classes = "") {
 		// Return an image
 		return $this->get_image($base_id, $safe_name) . '<br />' . $this->get_raw_input($base_id, $safe_name) ;
 	}
@@ -99,7 +99,7 @@ class PasswordWithStrengthFormField extends PasswordFormField
 		return "passwordfield password-strength-field";
 	}
 	
-	public function get_input($base_id, $safe_name) {
+	public function get_input($base_id, $safe_name, $classes = "") {
 		$id = $base_id . '_' . $safe_name;
 		return '<span class="password-strength-field-container">' . parent::get_input($base_id, $safe_name) . '<span style="display: none;" id="'.$id.'_message"></span></span>
 		<script type="text/javascript">
