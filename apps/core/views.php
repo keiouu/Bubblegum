@@ -240,7 +240,7 @@ class AJAX_TasksView extends JSONView
 		else
 			$tasks = Task::objects()->filter(array("project" => $request->project->pk))->order_by(array("priority"));
 		if (isset($request->get['milestone'])) {
-			$milestone = Milestone::get_or_ignore(array("name" => $request->get['milestone']));
+			$milestone = Milestone::get_or_ignore(array("name" => html_entity_decode($request->get['milestone'])));
 			if ($milestone)
 				$tasks = $tasks->filter(array("milestone" => $milestone->pk));
 		}
@@ -348,7 +348,7 @@ class AJAX_TaskDetailView extends JSONView
 			$task = Task::get_or_ignore(array("pk" => $request->get['pk']));
 			
 		if (isset($request->get['name']))
-			$task = Task::get_or_ignore(array("name" => $request->get['name']));
+			$task = Task::get_or_ignore(array("name" => html_entity_decode($request->get['name'])));
 			
 		if (isset($task)) {
 			$request->dataset[] = array(
