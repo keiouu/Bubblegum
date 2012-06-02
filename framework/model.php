@@ -588,7 +588,7 @@ abstract class Model
 				$method = "__get_" . $name;
 				$val = $this->$method($val);
 			}
-			return ($is_safe || !is_string($val)) ? $val : strip_tags($val);
+			return ($is_safe || !is_string($val)) ? $val : htmlentities($val);
 		}
 		if (starts_with($name, "_")) {
 			$base_name = substr($name, 1);
