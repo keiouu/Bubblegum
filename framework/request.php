@@ -55,6 +55,8 @@ class Request
 		$this->visitor_ip = $this->getIP();
 		$this->messages = array();
 		$this->safe_vals = array();
+		
+		$this->add_val("tikapot_version", tikapot_version);
 		$this->add_val("home_url", home_url);
 		$this->add_val("media_url", media_url);
 		$this->add_val("project_name", project_name);

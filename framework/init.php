@@ -8,7 +8,6 @@
 require_once(home_dir . "framework/error_handler.php");
 set_error_handler("tpErrorHandler");
 
-
 ob_start();
 @session_start();
 

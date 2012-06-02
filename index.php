@@ -7,6 +7,7 @@
  */
 
 // Probably a good idea to leave the following block alone!
+define("tikapot_version", 'Tikapot 2.0 (dev)');
 define("page_def", 'tpage'); // This must match the .htaccess file's redirect variable
 
 

@@ -11,7 +11,7 @@ class MediaManager
 {
 	private $media_files = array(), $media_key = "", $media_dir = "", $media_url = "";
 	
-	public function __construct($media_key = "", $dir_override = "", $url_override = "") {
+	public function __construct($media_key = "style", $dir_override = "", $url_override = "") {
 		$this->media_key = $media_key;
 		$this->media_dir = strlen($dir_override) > 0 ? $dir_override : media_dir;
 		$this->media_url = strlen($url_override) > 0 ? $url_override : media_url;
@@ -30,6 +30,19 @@ class MediaManager
 	}
 	
 	public function build($ext) {
+		if (!file_exists($this->get_media_dir() . "cache/") || !is_dir($this->get_media_dir() . "cache/")) {
+			if (!mkdir($this->get_media_dir() . "cache/", "0744")) {
+				console_error($GLOBALS['i18n']['framework']['media_error']);
+				return;
+			}
+		}
+		
+		// Doesnt seem to work - TODO
+		//if (!is_writable($this->get_media_dir() . "cache/")) {
+		//	console_error($GLOBALS['i18n']['framework']['media_error_write']);
+		//	return;
+		//}
+		
 		if (strlen($this->media_key) > 0) {
 			$filename = $this->get_media_dir() . "cache/" . $this->media_key . "." . $ext;
 			if (file_exists($filename))

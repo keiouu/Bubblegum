@@ -79,6 +79,7 @@ $i18n_data = array(
 	"password_strength_5" => "Very Strong",
 	"debug_profiler" => "Profiler",
 	"debug_console" => "Console",
+	"debug_version" => "You are running: ",
 	"profiler_unclosed" => "Unclosed",
 	"profiler_seconds" => "seconds",
 	"profiler_title" => "Profiling Information",
@@ -103,6 +104,8 @@ $i18n_data = array(
 	"upgraded" => "Upgraded",
 	"finished" => "Finished",
 	"page_not_found" => "Page not found: ",
+	"media_error" => "Error! Could not create cache directory in media folder. Please create one!",
+	"media_error_write" => "Error! Could not write to cache directory in media folder.",
 );
 
 ?>

@@ -116,6 +116,7 @@ function debug_toggleTab(name) {
 	</div>
 	<div id="console-tab" class="debug_tab">
 		<div style="padding: 20px 30px;"><h3 style="color: #EEE;">{% local_i18n "debug_console" %}</h3>
+			<p style="padding: 5px 0 10px 0;">{% local_i18n "debug_version" %} {{tikapot_version}}</p>
 			<p>{{debug_info}}</p>
 		</div>
 	</div>
