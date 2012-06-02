@@ -1,3 +1,8 @@
+.form-horizontal .input-append {
+	display: inline-block !important;
+	box-sizing: content-box !important;
+}
+
 .navbar .brand {
 	padding-left: 35px;
 }

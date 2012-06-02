@@ -24,7 +24,7 @@
 					<label class="control-label" for="task-progress">Task Progress</label>
 			  		<div class="controls">
 				  		<div class="input-append">
-					  		<input name="progress" id="task-progress" class="span1" />
+					  		<input name="progress" id="task-progress" class="span3" />
 					  		<span class="add-on">%</span>
 					  	</div>
 					  	<label class="checkbox"><input type="checkbox" name="complete" id="task-complete" /> Complete</label>
