@@ -124,11 +124,11 @@ class Form
 	
 	public function load_post_data($data) {
 		if (!isset($data["control_formid"]) || !isset($data["control_csrf"])) {
-			console_warn($GLOBALS['i18n']['framework']["formerrctrl"]);
+			console_warning($GLOBALS['i18n']['framework']["formerrctrl"]);
 			return false;
 		}
 		if (!$this->check_csrf($data["control_formid"], $data["control_csrf"])) {
-			console_warn($GLOBALS['i18n']['framework']["formerrcsrf"]);
+			console_warning($GLOBALS['i18n']['framework']["formerrcsrf"]);
 			return false;
 		}
 	
@@ -152,7 +152,7 @@ class Form
 					foreach ($tfields as $tname => $tfield)
 						$owned = $owned || $tfield->claim_own($tname, $field, $value);
 				if (!$owned) {
-					console_warn($GLOBALS['i18n']['framework']["formerrdata"] . $name);
+					console_warning($GLOBALS['i18n']['framework']["formerrdata"] . $name);
 					return false;
 				}
 			} else {

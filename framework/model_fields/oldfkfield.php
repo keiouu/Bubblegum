@@ -91,7 +91,7 @@ class OldFKField extends ModelField implements ModelInterface
 		if (class_exists($class))
 			return $class;
 		
-		console_warn($GLOBALS['i18n']['framework']["error1"] . " '" . $model_str . "' " . $GLOBALS['i18n']['framework']["fielderr5"]);
+		console_warning($GLOBALS['i18n']['framework']["error1"] . " '" . $model_str . "' " . $GLOBALS['i18n']['framework']["fielderr5"]);
 		return false;
 	}
 	

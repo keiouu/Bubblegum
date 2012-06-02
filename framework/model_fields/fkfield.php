@@ -89,7 +89,7 @@ class FKField extends ModelField
 		
 		$default = get_named_class($class, $app); // Make sure $class is avaliable
 		if ($default == null) {
-			console_warn($GLOBALS['i18n']['framework']["error1"] . " '" . $app . "." . $class . "' " . $GLOBALS['i18n']['framework']["fielderr5"]);
+			console_warning($GLOBALS['i18n']['framework']["error1"] . " '" . $app . "." . $class . "' " . $GLOBALS['i18n']['framework']["fielderr5"]);
 			return null;
 		}
 		

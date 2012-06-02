@@ -77,7 +77,7 @@ class TemplateView extends View
 		if (isset($matches['page'])) {
 			$location = $this->_find_template($template_location, $matches['page']);
 			if ($location == null) {
-				console_warn($GLOBALS['i18n']['framework']['page_not_found'] . $matches['page']);
+				console_warning($GLOBALS['i18n']['framework']['page_not_found'] . $matches['page']);
 				return false;
 			}
 			$parent = file_get_contents($location);
@@ -97,7 +97,7 @@ class TemplateView extends View
 		if (isset($matches['page'])) {
 			$parent_location = $this->_find_template($template_location, $matches['page']);
 			if ($parent_location == null) {
-				console_warn($GLOBALS['i18n']['framework']['page_not_found'] . $matches['page']);
+				console_warning($GLOBALS['i18n']['framework']['page_not_found'] . $matches['page']);
 			} else {
 				$parent_name = $matches['page'];
 				ob_start();

@@ -8,7 +8,7 @@ require_once(home_dir . "framework/template_tags/tag.php");
 
 class JSVarTag extends TplTag
 {
-	public function render($request, $args, $page) {
+	public function render($request, $args, $page, $local_app = '') {
 		$js = '<script type="text/javascript">
 			var tp_home_url = \''.home_url.'\';
 			var tp_media_url = \''.media_url.'\';

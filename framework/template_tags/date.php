@@ -8,7 +8,7 @@ require_once(home_dir . "framework/template_tags/tag.php");
 
 class DateTag extends TplTag
 {
-	public function render($request, $args, $page) {
+	public function render($request, $args, $page, $local_app = '') {
 		preg_match_all('/{% date "(?P<var>[\s[:punct:]\w]+?)" %}/', $page, $matches, PREG_SET_ORDER);
 		foreach ($matches as $val) {
 			$date = date($val['var']);
