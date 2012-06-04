@@ -22,9 +22,6 @@ $("#track").click(function() {
 	return false;
 });
 </script>
-<script src="{{home_url}}apps/core/media/js/utils.js"></script>
-<script src="{{home_url}}apps/core/media/js/project.feeds.js"></script>
-<script src="{{home_url}}apps/core/media/js/feeds.ajax.js"></script>
 {% endblock endbody %}
     
 {% block body %}

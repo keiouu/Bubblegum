@@ -1,3 +1,13 @@
+
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.sidebar-nav {
+    padding: 9px 0;
+}
+
 .form-horizontal .input-append {
 	display: inline-block !important;
 }
@@ -141,5 +151,16 @@
 .git-commit-file-changes h3 {
 	font-weight: bold;
 	font-size: 13px;
+}
+
+/* Fix images */
+
+[class^="icon-"],
+[class*=" icon-"] {
+  background-image: url("home_urlapps/core/media/img/glyphicons-halflings.png");
+}
+
+.icon-white {
+  background-image: url("home_urlapps/core/media/img/glyphicons-halflings-white.png");
 }
 

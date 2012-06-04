@@ -8,20 +8,8 @@ require_once(home_dir . "apps/core/models.php");
     <title>{{title}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="">
-
-    <link href="{{home_url}}apps/core/media/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="{{home_url}}apps/core/media/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="{{home_url}}apps/core/media/css/style.css" rel="stylesheet">
+    <meta name="author" content="James Thompson">
+    
     {% block style %}{% endblock %}
 	{% jsvars %}
     {% block head %}{% endblock %}
@@ -135,10 +123,6 @@ require_once(home_dir . "apps/core/models.php");
     </div><!--/.fluid-container-->
     {% endblock container %}
     
-    <script src="{{home_url}}apps/core/media/js/jquery.min.js"></script>
-    <script src="{{home_url}}apps/core/media/js/bootstrap.min.js"></script>
-    <script src="{{home_url}}apps/core/media/js/base.js"></script>
-    <script src="{{home_url}}apps/core/media/js/activity.feed.js"></script>
     {% block endbody %}
     {% endblock endbody %}
   </body>

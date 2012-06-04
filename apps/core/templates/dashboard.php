@@ -1,9 +1,5 @@
 {% extends "apps/core/templates/base.php" %}
 
-{% block style %}
-<link href="{{home_url}}apps/core/media/css/dashboard.css" rel="stylesheet">
-{% endblock %}
-
 {% block body %}
 <div class="row-fluid">
 	<div class="page-header">
@@ -64,13 +60,3 @@
     
 </div>
 {% endblock body %}
-
-{% block endbody %}
-<script src="{{home_url}}apps/core/media/js/utils.js"></script>
-<script src="{{home_url}}apps/core/media/js/project.feeds.js"></script>
-<script src="{{home_url}}apps/core/media/js/feeds.ajax.js"></script>
-<script src="{{home_url}}apps/core/media/js/jquery.drag.js"></script>
-<script src="{{home_url}}apps/core/media/js/jquery.utils.js"></script>
-<script src="{{home_url}}apps/core/media/js/dashboard.js"></script>
-{% endblock endbody %}
-

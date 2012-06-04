@@ -58,7 +58,7 @@ class Request
 		$this->visitor_ip = $this->getIP();
 		$this->messages = array();
 		$this->safe_vals = array();
-		$this->media = new MediaManager(md5($this->fullPath . "?vers=" . project_version . "&" . $this->query_string()));
+		$this->media = new MediaManager();
 		
 		$this->add_val("tikapot_version", tikapot_version);
 		$this->add_val("home_url", home_url);

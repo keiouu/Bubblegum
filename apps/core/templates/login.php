@@ -1,9 +1,5 @@
 {% extends "apps/core/templates/base.php" %}
 
-{% block head %}
-<link href="{{admin_media_url}}css/auth.css" rel="stylesheet">
-{% endblock %}
-
 {% block container %}
 <div class="container">
 	<div class="content">

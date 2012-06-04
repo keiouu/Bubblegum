@@ -9,18 +9,53 @@ require_once(dirname(__FILE__) . "/models.php");
 require_once(dirname(__FILE__) . "/forms.php");
 require_once(dirname(__FILE__) . "/support_handler.php");
 
-class BaseView extends TemplateView
+class BubblegumView extends TemplateView
 {
 	public function setup($request, $args) {
+		$request->media->enable_processor();
+		
+		$request->media->add_file(home_dir . "apps/core/media/css/bootstrap.css");
+		$request->media->add_file(home_dir . "apps/core/media/css/bootstrap-responsive.css");
+		$request->media->add_file(home_dir . "apps/core/media/css/style.css");
+		
+		$request->media->add_file(home_dir . "apps/core/media/js/jquery.min.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/bootstrap.min.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/utils.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/base.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/activity.feed.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/project.feeds.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/feeds.ajax.js");
+		
+		return parent::setup($request, $args);
+	}
+}
+
+class BaseView extends BubblegumView
+{
+	public function setup($request, $args) {
+		$setup = parent::setup($request, $args);
 		if (!$request->user->logged_in()) {
 			header("Location: " . home_url . "login/");
 			return false;
 		}
-		return true;
+		return $setup;
 	}
 }
 
-class SupportView extends TemplateView
+class DashboardView extends BaseView
+{
+	public function setup($request, $args) {
+		$setup = parent::setup($request, $args);
+		$request->media->add_file(home_dir . "apps/core/media/css/dashboard.css");
+
+		$request->media->add_file(home_dir . "apps/core/media/js/jquery.drag.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/jquery.utils.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/dashboard.js");
+		return $setup;
+	}
+}
+
+class SupportView extends BubblegumView
 {
 	public function setup($request, $args) {
 		$this->page = SupportHandler::get_page($request->get['referrer']);
@@ -28,13 +63,14 @@ class SupportView extends TemplateView
 	}
 }
 
-class LoginView extends TemplateView
+class LoginView extends BubblegumView
 {
 	public function setup($request, $args) {
 		if ($request->user->logged_in()) {
 			header("Location: " . home_url);
 			return false;
 		}
+		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
 		return true;
 	}
 }

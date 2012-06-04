@@ -40,7 +40,10 @@ class MediaManager
 	}
 	
 	public function add_file($file) {
-		$this->media_files[] = $file;
+		$ext = get_file_extension($file);
+		if (!isset($this->media_files[$ext]))
+			$this->media_files[$ext] = array();
+		$this->media_files[$ext][] = $file;
 	}
 	
 	public function count_files() {
@@ -55,23 +58,30 @@ class MediaManager
 			}
 		}
 		
-		$filename = $this->get_media_dir() . "cache/" . $this->media_key . "." . $ext;
-		$fileurl  = $this->get_media_url() . "cache/" . $this->media_key . "." . $ext;
+		if (!isset($this->media_files[$ext])) {
+			// Nothing to do!
+			return;
+		}
+		
+		$hash = md5(serialize($this->media_files[$ext]));
+		
+		$filename = $this->get_media_dir() . "cache/" . $this->media_key . "_" . $hash . "." . $ext;
+		$fileurl  = $this->get_media_url() . "cache/" . $this->media_key . "_" . $hash . "." . $ext;
 		if (file_exists($filename) && !ConfigManager::get("dev_mode", false)) { // Disable caching in dev mode
 			return $fileurl;
 		}
 		
 		// Gather all data
 		$data = "";
-		foreach($this->media_files as $key => $file) {
-			if (ends_with($file, $ext)) {
-				$data .= "\n" . file_get_contents($file);
-			}
+		foreach($this->media_files[$ext] as $file) {
+			$data .= "\n" . file_get_contents($file);
 		}
 		
 		// Minify
 		switch ($ext) {
 			case "css":
+				$data = preg_replace('/home_url/', home_url, $data);
+				$data = preg_replace('/media_url/', media_url, $data);
 				$data = preg_replace('/\n\s*\n/',"\n", $data);
 				$data = preg_replace('!/\*.*?\*/!s','', $data);
 				$data = preg_replace('/[\n\t]/',' ', $data);
