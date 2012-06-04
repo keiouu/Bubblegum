@@ -310,22 +310,37 @@ class AJAX_TasksView extends JSONView
 class AJAX_TaskAddView extends View
 {
 	public function setup($request, $args) {
-		print $request->post['csrf'];
 		return $request->user->logged_in() && isset($request->post['csrf']) && $request->validate_csrf_token($request->post['csrf']);
 	}
 	
 	public function render($request, $args) {
+		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
 		$task = Task::create(array(
 			"project" => $project,
 			"name" => $request->post['name'],
 			"description" => $request->post['description'],
 			"type" => $request->post['type'],
+			"milestone" => $request->post['milestone'],
 			"created_by" => $request->user
 		));
-		if ($task && isset($request->post['milestone'])) {
-			$task->milestone = $request->post['milestone'];
-			$task->save();
+		
+		$assignees = explode(",", $request->post['assignees']);
+		foreach ($assignees as $assignee) {
+			list($type, $pk) = explode("|", $assignee);
+			if (class_exists($type)) {
+				$obj = null;
+				if ($type == "Team")
+					$obj = Team::get_or_ignore(array("pk" => $pk));
+				if ($type == "User")
+					$obj = User::get_or_ignore(array("pk" => $pk));
+				if ($obj) {
+					Task_Link::get_or_create(array(
+						"task" => $task->pk,
+						"assignee" => $type . "|" . $obj->pk,
+					));
+				}
+			}
 		}
 	}
 }
@@ -389,7 +404,7 @@ class AJAX_TaskDetailView extends JSONView
 		if (isset($task)) {
 			$request->dataset[] = array(
 				"pk" => $task->pk,
-				"milestone" => isset($task->milestone) ? $task->milestone->__toString() : "-",
+				"milestone" => isset($task->milestone) ? $task->milestone->pk : "-",
 				"name" => $task->name,
 				"description" => $task->description,
 				"type" => $task->type,

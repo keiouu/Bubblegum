@@ -77,20 +77,23 @@ class MediaManager
 			$data .= "\n" . file_get_contents($file);
 		}
 		
-		// Minify
-		switch ($ext) {
-			case "css":
-				$data = preg_replace('/home_url/', home_url, $data);
-				$data = preg_replace('/media_url/', media_url, $data);
-				$data = preg_replace('/\n\s*\n/',"\n", $data);
-				$data = preg_replace('!/\*.*?\*/!s','', $data);
-				$data = preg_replace('/[\n\t]/',' ', $data);
-				$data = preg_replace('/ +/',' ', $data);
-				$data = preg_replace('/ ?([,:;{}]) ?/','$1',$data);
-				break;
-			case "js":
-				$data = JSMin::minify($data);
-				break;
+		$data = str_replace('{{home_url}}', home_url, $data);
+		$data = str_replace('{{media_url}}', media_url, $data);
+		
+		if (!ConfigManager::get("dev_mode", false)) {
+			// Minify
+			switch ($ext) {
+				case "css":
+					$data = preg_replace('/\n\s*\n/',"\n", $data);
+					$data = preg_replace('!/\*.*?\*/!s','', $data);
+					$data = preg_replace('/[\n\t]/',' ', $data);
+					$data = preg_replace('/ +/',' ', $data);
+					$data = preg_replace('/ ?([,:;{}]) ?/','$1',$data);
+					break;
+				case "js":
+					$data = JSMin::minify($data);
+					break;
+			}
 		}
 
 		// Write

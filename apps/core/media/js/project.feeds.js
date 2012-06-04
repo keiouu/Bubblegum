@@ -17,6 +17,20 @@ function update_milestone_feed() {
 			update_pagination($(".pagination[data-link=milestone_feed]"));
 		});
 	}
+    
+    if ($("#add-task-milestone, #task-milestone").length > 0) {
+        // Show milestones
+        $.getJSON(tp_home_url + "api/project/" + project_id + "/detail/", function(data) {
+            var milestones = data[0].milestones;
+            $("#add-task-milestone").html("");
+            $("#task-milestone").html("");
+            $.each(milestones, function(i, v) {
+                var html = '<option value="'+i+'">'+v+'</option>';
+                $("#add-task-milestone").append(html);
+                $("#task-milestone").append(html);
+            });
+        });
+    }
 }
 
 function update_tasks_feed() {

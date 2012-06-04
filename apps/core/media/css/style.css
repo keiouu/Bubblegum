@@ -139,7 +139,7 @@ body {
 
 
 .left-line-number:after, .right-line-number:after {
-	content: "":
+	content: "";
 }
 
 .left-line-number {
@@ -157,10 +157,10 @@ body {
 
 [class^="icon-"],
 [class*=" icon-"] {
-  background-image: url("home_urlapps/core/media/img/glyphicons-halflings.png");
+  background-image: url("{{home_url}}apps/core/media/img/glyphicons-halflings.png");
 }
 
 .icon-white {
-  background-image: url("home_urlapps/core/media/img/glyphicons-halflings-white.png");
+  background-image: url("{{home_url}}apps/core/media/img/glyphicons-halflings-white.png");
 }
 

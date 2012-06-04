@@ -34,6 +34,35 @@
 					  	</select>
 				  	</div>
 			  	</div>
+				<div class="control-group">
+					<label class="control-label" for="task-milestone">MileStone</label>
+			  		<div class="controls">
+					  	<select name="milestone" id="add-task-milestone">
+					  		
+					  	</select>
+				  	</div>
+			  	</div>
+				<div class="control-group">
+					<label class="control-label" for="task-assignees">Assignees</label>
+			  		<div class="controls">
+					  	<select name="assignees" id="add-task-assignees" multiple="multiple">
+					  		<?php
+					  			$choices = get_potential_assignees();
+					  			foreach ($choices as $name => $arr) {
+					  				if ($name !== "All Users")
+					  					print '<option value="Team|'.$name.'">'.$arr.'</option>';
+					  				else
+					  					print '<option disabled="disabled">All Users</option>';
+					  				if (is_array($arr)) {
+						  				foreach ($arr as $obj) {
+						  					print '<option value="'.get_class($obj)."|".$obj->pk.'">&#160;&#160;&#160;&#160;&#160;'.$obj.'</option>';
+						  				}
+					  				}
+					  			}
+					  		?>
+					  	</select>
+				  	</div>
+			  	</div>
 	  		</fieldset>
   		</form>
   </div>

@@ -16,8 +16,18 @@ class Media_Manager_Post_Processor extends Post_Processor
 		if ($data->media->count_files() > 0) {
 			$css = '<link rel="stylesheet" href="' . $data->media->build_css() . '" />';
 			$js = '<script type="text/javascript" src="' . $data->media->build_js() . '"></script>';
-			$data->output = preg_replace('/\<(\s*)\/head(\s*)\>/i', $css . '</head>', $data->output);
-			$data->output = preg_replace('/\<(\s*)\/body(\s*)\>/i', $js . '</body>', $data->output);
+			
+			if (strpos($data->output, '<media_manager type="CSS" />') === FALSE) {
+				$data->output = preg_replace('/\<(\s*)\/head(\s*)\>/i', $css . '</head>', $data->output);
+			} else {
+				$data->output = str_replace('<media_manager type="CSS" />', $css, $data->output);
+			}
+			
+			if (strpos($data->output, '<media_manager type="JS" />') === FALSE) {
+				$data->output = preg_replace('/\<(\s*)\/body(\s*)\>/i', $js . '</body>', $data->output);
+			} else {
+				$data->output = str_replace('<media_manager type="JS" />', $js, $data->output);
+			}
 		}
 	}
 }

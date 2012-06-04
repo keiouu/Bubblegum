@@ -4,12 +4,12 @@ function task_view(task) {
 	$("#task-edit .task-title").html(task);
 	$.getJSON(tp_home_url + "api/project/" + project_id + "/task/detail/?name=" + task, function(data) {
 		var tskpk = data[0].pk;
-		var milestone = data[0].milestone;
 		
 		$("#task-pk").val(data[0].pk);
 		$("#task-name").val(data[0].name);
 		$("#task-description").html(data[0].description);
 		$("#task-progress").val(data[0].progress);
+        $("#task-milestone").val(data[0].milestone);
 		$("#task-complete").attr('checked', false);
 		if (data[0].progress == "100")
 			$("#task-complete").attr('checked', true);
@@ -22,21 +22,8 @@ function task_view(task) {
 		$("#task-status").val(data[0].status);
 		$("#task-assignees").val([]);
 		$("#task-assignees").val(data[0].assignees_full.split(", "));
-		
-		// Show milestones
-		$.getJSON(tp_home_url + "api/project/" + project_id + "/detail/", function(data) {
-			var milestones = data[0].milestones;
-			$("#task-milestone").html("");
-			$.each(milestones, function(i, v) {
-				var html = '<option value="'+i+'" ';
-				if (milestone == v)
-					html += ' selected="selected"';
-				html += '>'+v+'</option>';
-				$("#task-milestone").append(html);
-			});
-			
-			$("#task-edit").modal('show');
-		});
+            
+        $("#task-edit").modal('show');
 	});
 }
 
@@ -68,23 +55,22 @@ $(function () {
 		$("#task-add-form").submit();
 	});
 	$("#task-add-form").submit(function() {
-		var csrf = $('#add-task-csrf-token').val();
-		var name = $('#add-task-name').val();
-		var description = $('#add-task-description').val();
-		var type = $('#add-task-type').val();
-		var data = 'csrf=' + csrf + '&name=' + name + '&description=' + description + '&type=' + type;
-		if (feed_milestone.length > 0)
-			data += '&milestone=' + feed_milstone_fk;
+        var data_string = "";
+        $.each($("#task-add-form input, #task-add-form select, #task-add-form textarea"), function() {
+            data_string += $(this).attr("name") + "=" + $(this).val() + "&";
+        });
+        
 		$.ajax({
 			url: tp_home_url + "api/project/" + project_id + "/task/add/",
 			type: "POST",
-			data: data,
+			data: data + "save=1",
 			success: function(data) {
 				$("#task-add").modal('hide');
 				update_tasks_feed();
 				update_all_tasks_feed();
 				update_milestone_feed();
 				$("input[name=csrf]").val($.trim(data));
+                $.each($("#task-add-form input, #task-add-form select, #task-add-form textarea"), function() { $(this).val(""); });
 			}
 		});
 		return false;
@@ -109,6 +95,7 @@ $(function () {
 				update_all_tasks_feed();
 				update_milestone_feed();
 				$("input[name=csrf]").val($.trim(data));
+                $.each($("#task-edit-form input, #task-edit-form select, #task-edit-form textarea"), function() { $(this).val(""); });
 			},
 		});
 		return false;

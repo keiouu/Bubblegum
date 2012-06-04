@@ -123,6 +123,7 @@ require_once(home_dir . "apps/core/models.php");
     </div><!--/.fluid-container-->
     {% endblock container %}
     
+    <media_manager type="JS" />
     {% block endbody %}
     {% endblock endbody %}
   </body>
