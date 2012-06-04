@@ -314,7 +314,7 @@ class User extends Model
 	
 	public function update_session($usersession = Null) {
 		if ($usersession === Null)
-			$usersession = UserSession::get(array("user" => $this->pk));
+			list($usersession, $created) = UserSession::get_or_create(array("user" => $this->pk));
 		$expiry = time() + ConfigManager::get_app_config('auth', 'session_timeout');
 		$usersession->expires = date(DateTimeField::$FORMAT, $expiry);
 		$usersession->save();

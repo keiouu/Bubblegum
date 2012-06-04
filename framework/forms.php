@@ -298,7 +298,7 @@ class Form
 		
 		$message .= '</body></html>';
 		
-		$headers  = 'From: ' . $from . "\r\n";
+		$headers  = 'From: ' . $from_address . "\r\n";
 		$headers .= 'MIME-Version: 1.0' . "\r\n";
 		
 		// Do we need to add attachments?
@@ -327,7 +327,7 @@ class Form
 			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 		}
 
-		return @mail($to, $subject, $message, $headers);
+		return mail($to_address, $subject, $message, $headers);
 	}
 }
 ?>

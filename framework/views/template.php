@@ -47,9 +47,8 @@ class TemplateView extends View
 		// Do we want to set an app (for local i18n etc)
 		$local_app = "";
 		$scan = $this->_parser_scan_for($request, $args, $tpl_output, '/{% set_app \"(?P<app>[[:punct:]\w]+)\" %}/', $this->page);
-		if ($scan !== false)
+		if (isset($scan['app']))
 			$local_app = $scan['app'];
-		
 		return $this->parse_page($request, $args, $tpl_output, $local_app, $this->page);
 	}
 	
@@ -183,16 +182,16 @@ class TemplateView extends View
 		// Check i18n
 		preg_match_all('/{% (?P<reach>[[:punct:]\w]*?)i18n "(?P<var>[[:punct:]\w\s]+?)" %}/', $template, $matches, PREG_SET_ORDER);
 		foreach($matches as $val) {
-			$replace = $request->i18n[$val['var']];
+			$replace = isset($request->i18n[$val['var']]) ? $request->i18n[$val['var']] : "";
 			if (isset($val['reach'])) {
 				$reach = substr($val['reach'], 0, -1);
 				if ($reach == "local" && $local_app !== "")
-					$replace = $request->i18n[$local_app][$val['var']];
+					$replace = isset($request->i18n[$local_app][$val['var']]) ? $request->i18n[$local_app][$val['var']] : "";
 			}
 			// Ensure any tags in the i18n string are taken care of
 			foreach ($request->safe_vals as $tag_name => $tag_val)
 				$replace = str_replace("{{{$tag_name}}}", $tag_val, $replace);
-			$reach = isset($val['reach']) ? $val['reach']: "";
+			$reach = isset($val['reach']) ? $val['reach'] : "";
 			$template = preg_replace('/{% '.$reach.'i18n "'.$val['var'].'" %}/', $replace, $template);
 		}
 		

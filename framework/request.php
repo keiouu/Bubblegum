@@ -6,10 +6,11 @@
 
 require_once(home_dir . "framework/i18n.php");
 require_once(home_dir . "framework/utils.php");
+require_once(home_dir . "framework/media.php");
 
 class Request
 {
-	public $method, $page, $get, $post, $cookies, $mimeType, $safe_vals, $cmd_args, $messages;
+	public $method, $page, $get, $post, $cookies, $args, $mimeType, $safe_vals, $cmd_args, $messages, $output;
 	
 	public function __construct() {
 		$this->method = "GET";
@@ -19,7 +20,9 @@ class Request
 		$this->post = $_POST;
 		$this->vars = $_REQUEST;
 		$this->cookies = $_COOKIE;
+		$this->args = array();
 		$this->page = "/";
+		$this->output = "";
 		
 		if (isset($this->get[page_def])) {
 			$this->page = trim($this->get[page_def]);
@@ -55,6 +58,7 @@ class Request
 		$this->visitor_ip = $this->getIP();
 		$this->messages = array();
 		$this->safe_vals = array();
+		$this->media = new MediaManager(md5($this->fullPath . "?vers=" . project_version . "&" . $this->query_string()));
 		
 		$this->add_val("tikapot_version", tikapot_version);
 		$this->add_val("home_url", home_url);
@@ -62,6 +66,7 @@ class Request
 		$this->add_val("project_name", project_name);
 		$this->add_val("page_url", $this->fullPath);
 		$this->add_val("csrf_token", $this->get_csrf_token());
+		
 		$this->init_i18n();
 	}
 	

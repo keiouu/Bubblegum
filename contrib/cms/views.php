@@ -20,12 +20,12 @@ class CMSView extends TemplateView
 	}
 	
 	public function render($request, $args) {
-		print $this->cms_page->_content->get_real_value();
+		print $this->cms_page->content;
 	}
 	
 	public function post_render($request, $args = array()) {
 		$content = ob_get_clean();
-		return $this->parse_page($request, $args, $content, $this->cms_page->template->_content->get_real_value());
+		return $this->parse_page($request, $args, $content, $this->cms_page->template->content);
 	}
 }
 ?>

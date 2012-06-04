@@ -16,14 +16,6 @@ require_once(home_dir . "contrib/admin/core.php");
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 
-		<link href="{{admin_media_url}}css/jquery-ui.css" rel="stylesheet">
-		<link href="{{admin_media_url}}css/bootstrap.min.css" rel="stylesheet">
-		<link href="{{admin_media_url}}css/style.css" rel="stylesheet">
-		<style type="text/css">
-		  body {
-		    padding-top: 60px;
-		  }
-    	</style>
 		{% block head %}{% endblock %}
 		<script src="{{admin_media_url}}js/jquery.js"></script>
 		<script src="{{admin_media_url}}js/jquery-ui.js"></script>

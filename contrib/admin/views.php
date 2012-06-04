@@ -22,7 +22,18 @@ class AdminPermissionsView extends View
 
 class BaseAdminView extends TemplateView
 {
-	public function on_setup_failure($request, $args = array()) {
+	public function setup($request, $args) {
+		$request->media->enable_processor();
+		// Setup CSS
+		$request->media->add_file(home_dir . "contrib/admin/media/css/jquery-ui.css");
+		$request->media->add_file(home_dir . "contrib/admin/media/css/bootstrap.min.css");
+		$request->media->add_file(home_dir . "contrib/admin/media/css/bootstrap-responsive.min.css");
+		$request->media->add_file(home_dir . "contrib/admin/media/css/style.css");
+		
+		return parent::setup($request, $args);
+	}
+	
+	public function on_setup_failure($request, $args) {
 		$view = new TemplateView("/admin/failure/", home_dir . "contrib/admin/templates/permission.php");
 		$view->setup($request, $args);
 		print $view->pre_render($request, $args);
@@ -45,17 +56,21 @@ class AdminView extends BaseAdminView
 class AdminLoginView extends BaseAdminView
 {
 	public function setup($request, $args) {
+		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
+		
 		if ($request->user->logged_in() && $request->user->has_permission("admin_site")) {
 			header("Location: " . home_url . "admin/");
 			SignalManager::fire("admin_on_login", $request->user);
 		}
-		return true;
+		return parent::setup($request, $args);
 	}
 }
 
 class AdminRegisterView extends BaseAdminView
 {
 	public function setup($request, $args) {
+		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
+		
 		$request->admin_register_form = new Form(array(
 			new Fieldset("", array(
 				"admin_password" => new PasswordFormField($request->i18n['admin']["auth_apass"], "", array("placeholder"=>$request->i18n['admin']["auth_apass_holder"])),
@@ -80,17 +95,18 @@ class AdminRegisterView extends BaseAdminView
 			try {
 				list($user, $code) = User::create_user($request->admin_register_form->get_value("email"), $request->admin_register_form->get_value("password"), $request->admin_register_form->get_value("email"), $request->user->_status['admin'], true);
 				SignalManager::fire("admin_on_register", $user);
-				$request->admin_register_form->clear_data();
 				$request->message($request->i18n['admin']["auth_success"], "success");
 				if ($code)
 					$code->delete();
-				@User::login($request, $request->admin_register_form->get_value("email"), $request->admin_register_form->get_value("password"));
-				header("Location: " . home_url . "admin/");
-				return false;
+				if (User::login($request, $request->admin_register_form->get_value("email"), $request->admin_register_form->get_value("password"))) {
+					header("Location: " . home_url . "admin/");
+					return false;
+				}
+				$request->admin_register_form->clear_data();
 			} catch(Exception $e) { $request->message($e->getMessage(), "error"); }
 		}
 		
-		return true;
+		return parent::setup($request, $args);
 	}
 }
 

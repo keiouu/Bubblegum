@@ -30,6 +30,7 @@ class ViewManager
 	
 	public function setup($request) {
 		list($view, $args) = $this->get($request->page);
+		$request->args = $args;
 		if ($view->setup($request, $args)) {
 			$view->on_setup_success($request, $args);
 			return true;

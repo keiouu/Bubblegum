@@ -124,7 +124,7 @@ class ModelQuery implements Iterator, Countable
 	protected function _get_object_from_result($result) {
 		$reflector = new ReflectionClass(get_class($this->_model));
 		$obj = $reflector->newInstance();
-		$obj->load_query_values($result);
+		$obj->load_values($result, true);
 		return $obj;
 	}
 	

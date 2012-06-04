@@ -174,6 +174,12 @@ function console_error($val) {
 	console_log('<span class="console_error">'.$val.'</span>');
 }
 
+function console_inspect($val) {
+	ob_start();
+	print_r($val);
+	console_log(ob_get_clean());
+}
+
 /**
  * Trigger an E_USER_DEPRECATD error
  *

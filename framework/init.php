@@ -27,6 +27,14 @@ i18n::Init();
 require_once(home_dir . "framework/signal_manager.php");
 SignalManager::register("page_load_start", "page_load_setup", "page_load_render", "page_load_failure", "page_load_setup_failure", "page_load_end");
 
+/* Should we load the console post-processor? */
+if (debug) {
+	require_once(home_dir . "framework/processing/processors/console_pre_processor.php");
+	new Console_Pre_Processor();
+	require_once(home_dir . "framework/processing/processors/console_post_processor.php");
+	new Console_Post_Processor();
+}
+
 /* Start up the view manager */
 require_once(home_dir . "framework/view_manager.php");
 $view_manager = new ViewManager();
@@ -75,7 +83,7 @@ try {
 	SignalManager::fire("page_load_setup", $request);
 	SignalManager::fire("page_load_start", $request);
 
-	$page = "";
+	$request->output = "";
 	/* Setup the page */
 	Profiler::start("page_setup");
 	$setup_result = $view_manager->setup($request);
@@ -87,26 +95,23 @@ try {
 		Profiler::start("page_render");
 		$view_manager->render($request);
 		Profiler::end("page_render");
-		$page = ob_get_clean();
+		$request->output = ob_get_clean();
 	} else {
 		SignalManager::fire("page_load_setup_failure", $request);
 		ob_start();
 		$view_manager->render_setup_fail($request);
-		$page = ob_get_clean();
+		$request->output = ob_get_clean();
 	}
-	SignalManager::fire("page_load_end", $request);
-	$script_output = ob_get_clean();
-
+	
 	Profiler::end("render_page");
 	Profiler::end("total");
 	
-	if (debug) {
-		require_once(home_dir . "framework/debug_tools.php");
-		list($_view, $args) = $view_manager->get($request->page);
-		DebugTools::render($request, $args, $page, $script_output);
-	} else {
-		print $page;
-	}
+	SignalManager::fire("page_load_end", $request);
+
+	while (ob_get_length() > 0)
+		ob_get_clean();
+
+	print $request->output;
 } catch (Exception $e) {
 	SignalManager::fire("page_load_failure", $request);
 	while (ob_get_length() > 0)

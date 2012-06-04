@@ -21,11 +21,6 @@ $pie_colour_stops = array(
 );
 ?>
 
-{% block head %}
-<link href="{{home_url}}contrib/statistics/media/graph.css" rel="stylesheet">
-<script type="text/javascript" src="{{home_url}}contrib/statistics/media/graph.js"></script>
-{% endblock %}
-
 {% block body %}
 <h1>Statistics</h1><br />
 <div class="well span4">
