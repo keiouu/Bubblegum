@@ -70,8 +70,9 @@ class LoginView extends BubblegumView
 			header("Location: " . home_url);
 			return false;
 		}
+		$setup = parent::setup($request, $args);
 		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
-		return true;
+		return $setup;
 	}
 }
 
