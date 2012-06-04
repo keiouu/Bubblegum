@@ -194,6 +194,8 @@ class Task extends Model
 			"2" => "Enhancement",
 			"3" => "Aesthetic",
 			"5" => "QA",
+			"s" => "Security",
+			"a" => "Administration",
 			"4" => "n/a",
 		), "1"));
 		$this->add_field("priority", new ChoiceField(array(

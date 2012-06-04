@@ -63,14 +63,14 @@ $(function () {
 		$.ajax({
 			url: tp_home_url + "api/project/" + project_id + "/task/add/",
 			type: "POST",
-			data: data + "save=1",
+			data: data_string + "save=1",
 			success: function(data) {
 				$("#task-add").modal('hide');
 				update_tasks_feed();
 				update_all_tasks_feed();
 				update_milestone_feed();
-				$("input[name=csrf]").val($.trim(data));
                 $.each($("#task-add-form input, #task-add-form select, #task-add-form textarea"), function() { $(this).val(""); });
+                $("input[name=csrf]").val($.trim(data));
 			}
 		});
 		return false;
@@ -94,8 +94,8 @@ $(function () {
 				update_tasks_feed();
 				update_all_tasks_feed();
 				update_milestone_feed();
-				$("input[name=csrf]").val($.trim(data));
                 $.each($("#task-edit-form input, #task-edit-form select, #task-edit-form textarea"), function() { $(this).val(""); });
+                $("input[name=csrf]").val($.trim(data));
 			},
 		});
 		return false;
