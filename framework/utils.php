@@ -123,6 +123,13 @@ function rmrf($dir) {
 	rmdir($dir);
 }
 
+function string_encode($str) {
+    $str = mb_convert_encoding($str , 'UTF-32', 'UTF-8');
+    $t = unpack("N*", $str);
+    $t = array_map(function($n) { return "&#$n;"; }, $t);
+    return implode("", $t);
+}
+
 /**
  * Fetch a remote page
  * @todo - Caching?

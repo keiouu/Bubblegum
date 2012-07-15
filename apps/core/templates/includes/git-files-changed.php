@@ -26,7 +26,7 @@ if (isset($git_changes)) {
 		} else { // Is there one for binary?
 			// Flag sysadmin, the world is coming to an end.
 		}
-		print '<tr><td>'.$status.'</td><td>'.$change['file'].'</td></tr>';
+		print '<tr><td>'.$status.'</td><td>'.string_encode($change['file']).'</td></tr>';
 	}
 } else {
 	print '<td>No files were changed!</td>';
@@ -37,11 +37,11 @@ print '</tbody></table>';
 if (isset($git_file_changes)) {
 	foreach ($git_file_changes as $name => $changes) {
 		print '<div class="git-commit-file-changes">';
-		print '<h3>'.$name.'</h3>';
-		print '<div class="code list">';
+		print '<h3>'.string_encode($name).'</h3>';
+		print '<pre class="code list">';
 		$left_line = 0;
 		$right_line = 0;
-		foreach ($changes as $line) {			
+		foreach ($changes as $line) {
 			if (starts_with($line, '@@')) {
 				$parts = explode(" ", $line);
 				list($left_line, $left_length) = explode(",", $parts[1]);
@@ -51,20 +51,20 @@ if (isset($git_file_changes)) {
 				print '<p class="grey R-- L--"><span>' . $line . '</span></p>';
 			} else {
 				if (starts_with($line, '+')) {
-					print '<p class="R'.$right_line.'"><code class="code-green">' . $line . '</code></p>';
+					print '<p class="R'.$right_line.'"><code class="code-green">' . string_encode($line) . '</code></p>';
 					$right_line += 1;
 				} elseif (starts_with($line, '-')) {
-					print '<p class="L'.$left_line.'"><code class="code-red">' . $line . '</code></p>';
+					print '<p class="L'.$left_line.'"><code class="code-red">' . string_encode($line) . '</code></p>';
 					$left_line += 1;
 				} else {
-					print '<p class="L'.$left_line.' R'.$right_line.'"><code>' . $line . '</code></p>';
+					print '<p class="L'.$left_line.' R'.$right_line.'"><code>' . string_encode($line) . '</code></p>';
 					$left_line += 1;
 					$right_line += 1;
 				}
 			}
 			
 		}
-		print '</div>';
+		print '</pre>';
 		print '</div>';
 	}
 }
