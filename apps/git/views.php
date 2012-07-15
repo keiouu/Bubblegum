@@ -35,9 +35,14 @@ class GitAPIView extends View
 
 class GitCommitReceiveView extends GitAPIView
 {
-	//public function render($request, $args) {
-	//	Log::create(array("content" => implode(" and ", $request->cmd_args)));
-	//}
+	public function render($request, $args) {
+		$this->handleDeployments($request, $args);
+		//Log::create(array("content" => implode(" and ", $request->cmd_args)));
+	}
+	
+	protected function handleDeployments($request, $args) {
+		// Handle Deployments
+	}
 }
 
 class GitBranchCreateView extends GitAPIView

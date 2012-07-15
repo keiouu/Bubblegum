@@ -76,7 +76,7 @@ require_once(home_dir . "apps/core/models.php");
 		         <p class="navbar-text">
 		         <?php
 		         if ($request->user->logged_in())  {
-		         	print 'Logged in as <a href="{{home_url}}profile/'.$request->user->pk.'/">'.$request->user.'</a>';
+		         	print '<a class="nav-gravatar" href="{{home_url}}profile/'.$request->user->pk.'/" title="Logged in as '.$request->user->get_short_display_name().'"><img src="'.$request->gravatar . '?s=26" alt="Gravatar Image" class="gravatar" /></a>';
 		         } else {
 		         	print '<a href="{{home_url}}login/">Log in</a>';
 		         }

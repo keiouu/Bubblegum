@@ -8,6 +8,11 @@ body {
     padding: 9px 0;
 }
 
+.nav-gravatar {
+	position: relative;
+	bottom: 2px;
+}
+
 .form-horizontal .input-append {
 	display: inline-block !important;
 }
@@ -60,7 +65,7 @@ body {
 	color: #333;
 }
 
-.git-commit .author img {
+.git-commit .author img, img.gravatar {
   vertical-align: middle;
   margin-right: 4px;
   -webkit-border-radius: 4px;

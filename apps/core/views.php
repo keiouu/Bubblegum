@@ -39,6 +39,7 @@ class BaseView extends BubblegumView
 			header("Location: " . home_url . "login/");
 			return false;
 		}
+		$request->gravatar = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($request->user->email)));
 		return $setup;
 	}
 }
@@ -86,6 +87,7 @@ class ProfileView extends BaseView
 			$request->profile = User::get_or_ignore($args['user']);
 		else
 			$request->profile = $request->user;
+		
 		return true;
 	}
 }
