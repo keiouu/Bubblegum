@@ -5,6 +5,7 @@
  */
 
 require_once(home_dir . "framework/view.php");
+require_once(home_dir . "contrib/bootstrap/FormPrinter.php");
 require_once(dirname(__FILE__) . "/models.php");
 require_once(dirname(__FILE__) . "/forms.php");
 require_once(dirname(__FILE__) . "/support_handler.php");
@@ -106,15 +107,25 @@ class NewProjectView extends BaseView
 			return false;
 		
 		$project = new Project();
-		$request->project_form = $project->get_form($request->fullPath  . "?new_project=true");
+		$request->project_form = new Form2($request->fullPath  . "?new_project=true");
+		$request->project_form->fieldset("Create a project...")
+			->append("name", "Name: ", "char")
+			->append("description", "Description: ", "textarea")
+			->append("public", "Public: ", "checked");
+			
 		if (isset($request->get['new_project'])) {
 			try {
 				$request->project_form->load_post_data($request->post);
+				$project->owner = $request->user;
 				$model = $request->project_form->save($project, $request);
 				if ($model) {
 					$request->message("Project created successfully.");
+					header("Location: " . home_url . "projects/" . $project->pk . "/");
+					return false;
 				}
-			} catch (exception $e) {}
+			} catch (exception $e) {
+					$request->message($e->getMessage());
+			}
 		}
 		
 		return true;

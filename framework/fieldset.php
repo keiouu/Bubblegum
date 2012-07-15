@@ -34,6 +34,7 @@ class Fieldset implements ArrayAccess, Iterator
 	
 	public function add_item($name, $field) {
 		$this->fields[$name] = $field;
+		return $this;
 	}
 	
 	/**

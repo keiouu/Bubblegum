@@ -30,6 +30,7 @@ require_once(home_dir . "apps/core/models.php");
 					print '<div class="alert fade in alert-'.$type.'"><a class="close" data-dismiss="alert">×</a>' . $message . '</div>';
 				}
 			}
+			$request->delete_messages();
 		?>
 	</div>
     <div class="navbar navbar-fixed-top">

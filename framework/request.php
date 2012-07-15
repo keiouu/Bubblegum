@@ -156,6 +156,7 @@ class Request
 	
 	public function delete_messages() {
 		$this->messages = array();
+		$_SESSION['messages'] = array();
 	}
 	
 	public function get_messages() {
