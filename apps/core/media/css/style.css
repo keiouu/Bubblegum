@@ -93,7 +93,11 @@ body {
    -webkit-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
       -moz-box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
            box-shadow: inset 60px 0 0 #fbfbfc, inset 61px 0 0 #ececf0;
+  -webkit-border-radius: 0px;
+     -moz-border-radius: 0px;
+          border-radius: 0px;
 }
+
 .git-commit-file-changes .code code {
    overflow: hidden;
 	display: block;
@@ -103,6 +107,11 @@ body {
 	word-break: break-all;
 	word-wrap: break-word;
 	font-family: Menlo, Monaco, "Courier New", monospace;
+	padding-left: 5px;
+}
+
+.git-commit-file-changes p {
+	margin: 0;
 }
 
 .git-commit-file-changes .code code:after {
@@ -115,7 +124,7 @@ body {
 
 .git-commit-file-changes .list .line-numbers {
    float: left;
-	min-width: 65px;
+	min-width: 53px;
 }
 
 .git-commit-file-changes .code-green, .git-commit-file-changes .code-green span {
@@ -126,6 +135,10 @@ body {
 .git-commit-file-changes .code-red, .git-commit-file-changes .code-red span {
 	color: #000 !important;
 	background-color: #FDD;
+}
+
+.git-commit-file-changes .code code:hover, .git-commit-file-changes code:hover span {
+	background-color: #FCEFA1 !important;
 }
 
 .left-line-number, .right-line-number {
