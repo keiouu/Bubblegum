@@ -115,6 +115,14 @@ class Project extends Model
 		return null;
 	}
 	
+	public function can_view($user) {
+		return Project_Link::find(array("user" => $user))->count() > 0;
+	}
+	
+	public function can_edit($user) {
+		return Project_Link::find(array("user" => $user))->count() > 0;
+	}
+	
 	public static function mine($user) {
 		// All projects a user is a member of
 		$projects = array();

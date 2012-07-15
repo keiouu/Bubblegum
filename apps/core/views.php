@@ -96,6 +96,10 @@ class ProjectView extends BaseView
 		if (!parent::setup($request, $args))
 			return false;
 		$request->project = Project::get_or_ignore($args['project']);
+		// Check we should be able to view the project
+		if ($request->project && !$request->project->public && !$request->project->can_view($request->user)) {
+			return false;
+		}
 		return true;
 	}
 }
@@ -225,6 +229,10 @@ class AJAX_MileStonesView extends JSONView
 		$request->project = Project::get_or_ignore($args['project']);
 		if (!$request->project)
 			die('{"error":"Incorrect Project!"}');
+		// Check we should be able to view the project
+		if (!$request->project->public && !$request->project->can_view($request->user)) {
+			die('{"error":"You cannot view that project!"}');
+		}
 		$milestones = Milestone::objects()->filter(array("project" => $request->project->pk));
 		if ($milestones->count() == 0)
 			die('{"error":"No Data!"}');
@@ -257,6 +265,10 @@ class AJAX_MileStoneAddView extends View
 {
 	public function setup($request, $args) {
 		$request->project = Project::get_or_ignore($args['project']);
+		// Check we should be able to view the project
+		if (!$request->project->public && !$request->project->can_view($request->user)) {
+			return false;
+		}
 		return $request->project && $request->user->logged_in();
 	}
 	
@@ -283,20 +295,32 @@ class AJAX_TasksView extends JSONView
 	public function setup($request, $args) {
 		$request->dataset = array();
 		$request->project = isset($args['project']) ? Project::get_or_ignore($args['project']) : null;
-		if (!$request->project)
+		
+		// Check we should be able to view the project
+		if ($request->project && !$request->project->public && !$request->project->can_view($request->user)) {
+			return false;
+		}
+		
+		if (!$request->project) {
 			$tasks = Task::objects()->order_by(array("priority"));
-		else
+		} else {
 			$tasks = Task::objects()->filter(array("project" => $request->project->pk))->order_by(array("priority"));
+		}
+		
 		if (isset($request->get['milestone'])) {
 			$milestone = Milestone::get_or_ignore(array("name" => html_entity_decode($request->get['milestone'])));
 			if ($milestone)
 				$tasks = $tasks->filter(array("milestone" => $milestone->pk));
 		}
-		if ($tasks->count() == 0)
+		
+		if ($tasks->count() == 0) {
 			die('{"error":"You have no tasks!"}');
+		}
+
 		foreach ($tasks as $task) {
-			if ($task->progress >= 100 || (isset($request->get['own_tasks_only']) && !$task->assigned($request->user)))
+			if ($task->progress >= 100 || (isset($request->get['own_tasks_only']) && !$task->assigned($request->user))) {
 				continue;
+			}
 			
 			$dataset_array = array(
 				"milestone" => isset($task->milestone) ? $task->milestone->__toString() : "-",
@@ -311,8 +335,10 @@ class AJAX_TasksView extends JSONView
 					</div>',
 				"assignees" => $task->assignees(),
 			);
-			if (isset($request->get['own_tasks_only']))
+			
+			if (isset($request->get['own_tasks_only'])) {
 				$dataset_array = array_merge(array("project" => '<a href="'.home_url.'projects/'.$task->project->pk.'/">' . $task->_project->__toString() . '</a>'), $dataset_array);
+			}
 			$request->dataset[] = $dataset_array;
 		}
 		return $request->user->logged_in();
@@ -328,6 +354,12 @@ class AJAX_TaskAddView extends View
 	public function render($request, $args) {
 		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
+		
+		// Check we should be able to view the project
+		if ($project && !$project->public && !$project->can_view($request->user)) {
+			return "";
+		}
+		
 		$task = Task::create(array(
 			"project" => $project,
 			"name" => $request->post['name'],
@@ -366,6 +398,12 @@ class AJAX_TaskEditView extends View
 	public function render($request, $args) {
 		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
+		
+		// Check we should be able to view the project
+		if ($project && !$project->public && !$project->can_view($request->user)) {
+			return "";
+		}
+		
 		$task = Task::get_or_ignore($request->post['pk']);
 		if ($project && $task) {
 			foreach ($request->post as $var => $val) {
@@ -406,6 +444,11 @@ class AJAX_TaskDetailView extends JSONView
 		$request->project = Project::get_or_ignore($args['project']);
 		if (!$request->project)
 			die('{"error":"Incorrect Project!"}');
+		
+		// Check we should be able to view the project
+		if (!$request->project->public && !$request->project->can_view($request->user)) {
+			die('{"error":"You cannot view that project!"}');
+		}
 			
 		if (isset($request->get['pk']))
 			$task = Task::get_or_ignore(array("pk" => $request->get['pk']));
@@ -446,6 +489,11 @@ class AJAX_ProjectDetailView extends JSONView
 		if (!$request->project)
 			die('{"error":"Incorrect Project!"}');
 		
+		// Check we should be able to view the project
+		if (!$request->project->public && !$request->project->can_view($request->user)) {
+			die('{"error":"You cannot view that project!"}');
+		}
+		
 		$milestones = array();
 		foreach (Milestone::find(array("project" => $request->project->pk)) as $milestone) {
 			$milestones[$milestone->pk] = $milestone->__toString();
@@ -466,10 +514,16 @@ class AJAX_ProjectTrackView extends View
 		$request->project = Project::get_or_ignore($args['project']);
 		if (!$request->project)
 			die('Incorrect Project!');
+
 		return $request->user->logged_in();
 	}
 	
 	public function render($request, $args) {
+		// Check we should be able to track the project
+		if (!$request->project->public && !$request->project->can_view($request->user)) {
+			die('You cannot track that project!');
+		}
+		
 		$request->project->track($request->user);
 	}
 }
