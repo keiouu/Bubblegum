@@ -19,7 +19,7 @@ function tpErrorHandler($errno, $errstr, $errfile, $errline)
 	    case E_USER_ERROR:
 	    case E_COMPILE_ERROR:
 	    case E_CORE_ERROR:
-	    		console_error(htmlentities("[" . $errfile . ":".$errline."] " . $errstr));
+	    		die(strip_tags("[" . $errfile . ":".$errline."] " . $errstr));
 	    		// TODO: full page error
 	        break;
 	    
@@ -32,7 +32,7 @@ function tpErrorHandler($errno, $errstr, $errfile, $errline)
 	    case E_USER_NOTICE:
 	    case E_USER_WARNING:
 	    case E_USER_DEPRECATED:
-	    		console_warning(htmlentities("[" . $errfile . ":".$errline."] " . $errstr));
+	    		console_warning(strip_tags("[" . $errfile . ":".$errline."] " . $errstr));
 	    	break;
 	
 	    default:

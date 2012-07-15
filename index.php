@@ -20,7 +20,7 @@ define("home_url", substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_N
 define("media_url", home_url . "media/");
 define("admin_url", home_url . "admin/");
 define("project_name", 'Bubblegum');                    // The name of your project
-define("project_version", '1.0_dev');
+define("project_version", '1.0_beta');
 define("site_logo", media_url . "images/logo.png");   // The URL to a logo for your project
 define("site_url", "http://bubblegum.flamehost.org");
 

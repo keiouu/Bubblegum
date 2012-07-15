@@ -16,9 +16,9 @@ class Form
 {
 	protected $action, $method, $form_id, $fieldsets = array(), $errors = array(), $model = false;
 	
-	/*
-	Data can be a model or an array of form fields
-	*/
+	/**
+	 * Data can be a model or an array of form fields
+	 */
 	public function __construct($data, $action = "", $method = "POST", $overrides = "") {
 		$this->form_id = (isset($_SESSION["current_form_id"]) ? $_SESSION["current_form_id"] + 1 : 1);
 		$_SESSION["current_form_id"] = $this->form_id;
@@ -66,6 +66,28 @@ class Form
 	
 	public function get_fieldsets() {
 		return $this->fieldsets;
+	}
+	
+	/**
+	 * New-Style Forms (Tikapot 2.0)
+	 * Begin a new fieldset
+	 * 
+	 * @param string $name The name of the fieldset to obtain, or begin
+	 * @return Fieldset A Fieldset Object
+	 */
+	public function fieldset($name) {
+		if (isset($this->fieldsets[$name]))
+			return $this->fieldsets[$name];
+		$fieldset = new Fieldset($name, array());
+		$fieldset->set_form($this);
+		$this->fieldsets[$name] = $fieldset;
+		return $fieldset;
+	}
+	
+	public function get_fieldset($name) {
+		if (isset($this->fieldsets[$name]))
+			return $this->fieldsets[$name];
+		return null;
 	}
 	
 	public function get_field($name) {
@@ -328,6 +350,13 @@ class Form
 		}
 
 		return mail($to_address, $subject, $message, $headers);
+	}
+}
+
+class Form2 extends Form
+{
+	public function __construct($action = "", $method = "POST", $overrides = "") {
+		return parent::__construct(array(), $action, $method, $overrides);
 	}
 }
 ?>

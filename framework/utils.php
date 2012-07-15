@@ -50,6 +50,13 @@ function get_file_extension($filename, $delimiter = ".") {
 	return substr(strrchr($filename, $delimiter), 1);
 }
 
+/**
+ * Returns a filename without the extension, e.g. "/home/example.png" would return "example"
+ * 
+ * @param string $filename The filename as we currently know it
+ * @param string $delimiter (optional) The delimiter (e.g. a '.' for a standard filename). Most of the time you should ignore this.
+ * @return string The base filename, without an extension
+ */
 function get_file_name($filename, $delimiter = ".") {
 	$filename = basename($filename, "." . get_file_extension($filename, $delimiter));
 	$pos = strpos($filename, $delimiter);
@@ -114,6 +121,35 @@ function rmrf($dir) {
 			unlink($dir . "/" . $object);
 	}
 	rmdir($dir);
+}
+
+/**
+ * Fetch a remote page
+ * @todo - Caching?
+ * @param string $url The url to fetch
+ * @param int $cache Cache this query? If 0, dont cache. Otherwise, cahce for this number of seconds.
+ * @return string page contents
+ */
+function fetch($url, $cache = 0) {
+	if ($cache !== 0) {
+		require_once(home_dir . "framework/tpcache.php");
+		$cache_val = TPCache::get($url);
+		if ($cache_val !== false)
+			return $cache_val;
+	}
+	
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	$ret = curl_exec($ch);
+	curl_close($ch);
+	
+	if ($cache !== 0) {
+		TPCache::set($url, $ret, $cache);
+	}
+	
+	return $ret;
 }
 
 /* Debugging utilities */
@@ -187,10 +223,10 @@ function console_inspect($val) {
  * @param string $new The new method that replaces it (if any)
  */
 function console_deprecation($method, $new = "") {
+    $backtrace_data = debug_backtrace();
+	$backtrace = " In: " . $backtrace_data[1]["file"] . " (line " . $backtrace_data[1]["line"] . ")";
 	if ($new !== "")
-		trigger_error($method . "() deprecated, use ".$new."() instead.", E_USER_DEPRECATED);
+		trigger_error($method . "() deprecated, use ".$new."() instead." . $backtrace, E_USER_DEPRECATED);
 	else
-		trigger_error($method . "() deprecated.", E_USER_DEPRECATED);
+		trigger_error($method . "() deprecated." . $backtrace, E_USER_DEPRECATED);
 }
-?>
- 

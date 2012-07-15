@@ -8,7 +8,11 @@ require_once(home_dir . "framework/views/template.php");
  * Replace </body> with Console Code
  */
 class Console_Post_Processor extends Post_Processor
-{	
+{
+	public function __construct() {
+		SignalManager::hook("page_load_end", "modify", $this, 0);
+	}
+	
 	/**
 	 * Take $data and modify it to include the TP console
 	 * 
@@ -28,7 +32,9 @@ class Console_Post_Processor extends Post_Processor
 			foreach ($GLOBALS['console'] as $val)
 				$debug_text .= trim($val) . '<br/>';
 		
-		$debug_info = trim(ob_get_clean()); // TODO - dont like this. maybe dont support this? use console_ methods etc.
+		$debug_info = "";
+		while (ob_get_length() > 0)
+			$debug_info .= trim(ob_get_clean());
 		if (strlen($debug_info) > 0)
 			$debug_text .= $GLOBALS['i18n']['framework']["debug_scriptout"] . '<br/>' . $debug_info;
 		

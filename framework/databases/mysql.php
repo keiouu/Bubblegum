@@ -16,7 +16,7 @@ require_once(home_dir . "framework/database.php");
  */
 class MySQL extends Database
 {
-	private /** The name of this database */ $_dbname;
+	private /** The name of this database */ $_dbname, /** Prefix for tables */ $_prefix;
 
 	/**
 	 * Connects to the database using data from the config file
@@ -28,16 +28,23 @@ class MySQL extends Database
 		global $databases;
 		$settings = $databases[$database];
 		$portStr = $settings['port'];
-		if (strlen($portStr) > 0)
+		
+		if (strlen($portStr) > 0) {
 			$portStr = ":" . $portStr;
+		}
+		
 		$this->_dbname = $settings['name'];
 		$this->_link = mysql_connect($settings['host'] . $portStr, $settings['username'], $settings['password'], true);
+		
 		if ($this->_link) {
 			$this->_connected = mysql_select_db($settings['name'], $this->_link);
 		} else {
 			$this->_connected = false;
 			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr1"]);
 		}
+		
+		$this->_prefix = isset($settings["prefix"]) ? $settings["prefix"] : "";
+		
 		return $this->_connected;
 	}
 	
@@ -134,6 +141,15 @@ class MySQL extends Database
 	public function drop_table($table) {
 		$this->query("DROP TABLE %s;", array($table));
 	}
+	
+	/**
+	 * Returns the prefix for tables in this database
+	 * 
+	 * @return string The prefix for table names
+	 */
+	 public function get_prefix() {
+	 	return $this->_prefix;
+	 }
 }
 
 ?>

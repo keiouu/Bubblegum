@@ -60,6 +60,11 @@ class AdminModel
 		// Add me to the admin manager
 		AdminManager::add($app, $this);
 	}
+
+	/* Hooks */
+	public function on_create($request, $obj) {}
+	public function on_update($request, $obj) {}
+	public function on_delete($request, $obj) {}
 	
 	public function get_model_page() {
 		return $this->model_page;

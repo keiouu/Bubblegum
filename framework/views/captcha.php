@@ -5,6 +5,7 @@
  */
 
 require_once(home_dir . "framework/view.php");
+require_once(home_dir . "framework/form_fields/formfields.php");
 
 class CaptchaView extends View
 {
@@ -21,6 +22,10 @@ class CaptchaView extends View
 	}
 	
 	public function render($request, $args) {
+		if (isset($request->get['regen']) && $request->get['regen'] == TRUE) {
+			$_SESSION["captcha"][$request->get['sesid']] = CaptchaFormField::get_token(7);
+		}
+		
 		$font = font_dir . "captcha.ttf";
 		$word = $_SESSION["captcha"][$request->get['sesid']];
 		$dimensions = @imageTTFBbox($this->font_size, 0, $font, $word);

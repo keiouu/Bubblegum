@@ -83,8 +83,8 @@ try {
 	SignalManager::fire("page_load_setup", $request);
 	SignalManager::fire("page_load_start", $request);
 
-	$request->output = "";
 	/* Setup the page */
+	$request->output = "";
 	Profiler::start("page_setup");
 	$setup_result = $view_manager->setup($request);
 	Profiler::end("page_setup");
@@ -111,7 +111,9 @@ try {
 	while (ob_get_length() > 0)
 		ob_get_clean();
 
-	print $request->output;
+	if (strlen(trim($request->output)) !== 0) {
+		print $request->output;
+	}
 } catch (Exception $e) {
 	SignalManager::fire("page_load_failure", $request);
 	while (ob_get_length() > 0)

@@ -477,10 +477,12 @@ abstract class Model
 	 * Get the table name for this object, allows individual objects to "route" themselves
 	 * to other tables.
 	 *
+	 * @param Database $db The new value of Model::_valid_model
 	 * @return string The name of the database table this object uses
 	 */
-	public function get_table_name() {
-		return $this->_table_override === null ? strtolower(get_class($this)) : $this->_table_override;
+	public function get_table_name($db = NULL) {
+		$db = $db === NULL ? Database::create($this->_using) : $db;
+		return $db->get_prefix() . ($this->_table_override === null ? strtolower(get_class($this)) : $this->_table_override);
 	}
 	
 	/**
@@ -812,7 +814,7 @@ abstract class Model
 			foreach($this->db_create_extra_queries_post($db) as $query)
 				$db->query($query);
 					
-			ContentType::of($this->get_content_type());
+			$this->_content_type(); // Spawn content type
 			return $res;
 		}
 		return true;

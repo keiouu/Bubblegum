@@ -33,22 +33,24 @@ require_once(home_dir . "contrib/admin/core.php");
 			});
 		}
 		
-		$(function () {
-			$('#topbar').dropdown();
-			
+		$(function () {			
 			// Messages
 			if ($('.alert').length > 0)
 				show_messages();
 			setTimeout("hide_messages();", 2000 * $('.alert').length);
 			
 			// Forms
-			$(".datetimefield").datetimepicker({
-				dateFormat: 'yy-mm-dd',
-				timeFormat: 'hh:mm:00',
-			});
-			$(".datefield").datepicker({
-				dateFormat: 'yy-mm-dd',
-			});
+			if ($(".datetimefield").length > 0) {
+				$(".datetimefield").datetimepicker({
+					dateFormat: 'yy-mm-dd',
+					timeFormat: 'hh:mm:00',
+				});
+			}
+			if ($(".datefield").length > 0) {
+				$(".datefield").datepicker({
+					dateFormat: 'yy-mm-dd',
+				});
+			}
 		});
 		</script>
 	</head>

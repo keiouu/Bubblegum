@@ -61,7 +61,7 @@ class UpgradeView extends BasicHTMLView
 				$version = $model->get_version();
 				if ($object->version != $version) {
 					$model->upgrade($db, "".$object->version, "".$version);
-					print "<li>" . $GLOBALS['i18n']['framework']['upgraded'] . "Upgraded ".get_class($model)."</li>";
+					print "<li>" . $GLOBALS['i18n']['framework']['upgraded'] . " ".get_class($model)."</li>";
 				}
 			}
 		}

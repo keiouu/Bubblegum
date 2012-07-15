@@ -10,7 +10,7 @@ require_once(home_dir . "contrib/admin_todo/models.php");
 
 class TodoItemForm extends Form
 {
-	protected function get_fieldset() {
+	public function get_fieldset() {
 		$dummy = new Todo_Item();
 		$select_field = SelectFormField::from_model("Assigned To", new User(), array("helptext" => "Who should this task be assigned to?"));
 		return (new Fieldset("Todo", array(
@@ -28,7 +28,7 @@ class TodoItemForm extends Form
 
 class TodoItemEditForm extends TodoItemForm
 {
-	protected function get_fieldset() {
+	public function get_fieldset() {
 		$fieldset = parent::get_fieldset();
 		$fieldset->add_item("completed", new CheckedFormField("Completed?", ""));
 		return $fieldset;

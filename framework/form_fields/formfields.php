@@ -29,7 +29,7 @@ class CaptchaFormField extends CharFormField
 		$this->options['placeholder'] = $GLOBALS['i18n']['framework']["captchaplaceholder"];
 	}
 	
-	private function get_string($length = 7) { 
+	public static function get_token($length = 7) { 
 		$rand_src = array(array(48,57), array(97,122)); 
 		srand((double) microtime() * 245167413); 
 		$random_string = ""; 
@@ -53,8 +53,8 @@ class CaptchaFormField extends CharFormField
 		if(!isset($_SESSION["captcha"]) || !is_array($_SESSION["captcha"]))
 			$_SESSION["captcha"] = array();
 		if (!isset($_SESSION["captcha"][$id]))
-			$_SESSION["captcha"][$id] = $this->get_string(7);
-		return '<br /><img src="'.home_url.'tikapot/api/captcha/?sesid='.$id.'&width='.$this->width.'&height='.$this->height.'" alt="CAPTCHA image" />';
+			$_SESSION["captcha"][$id] = CaptchaFormField::get_token(7);
+		return '<img src="'.home_url.'tikapot/api/captcha/?sesid='.$id.'&width='.$this->width.'&height='.$this->height.'" alt="CAPTCHA image" class="captchaimg" />';
 	}
 	
 	public function get_raw_input($base_id, $safe_name) {
@@ -63,7 +63,7 @@ class CaptchaFormField extends CharFormField
 	
 	public function get_input($base_id, $safe_name, $classes = "") {
 		// Return an image
-		return $this->get_image($base_id, $safe_name) . '<br />' . $this->get_raw_input($base_id, $safe_name) ;
+		return $this->get_image($base_id, $safe_name) . $this->get_raw_input($base_id, $safe_name) ;
 	}
 	
 	protected function get_field_class() {

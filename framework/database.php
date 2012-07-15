@@ -32,10 +32,10 @@ SignalManager::register("on_db_query");
 abstract class Database
 {
 	private static /** A list of databases */ $dbs = array();
-	protected /** This object's link */ $_link, 
-	          /** Are we connected? 	*/ $_connected, 
-	          /** My tables 			*/ $_tables, 
-	          /** My type 				*/ $_type;
+	protected /** This object's link       */ $_link, 
+	          /** Are we connected? 	   */ $_connected, 
+	          /** My tables 			   */ $_tables, 
+	          /** My type 				   */ $_type;
 	
 	/**
 	 * Create a new database connection using the configuration
@@ -164,6 +164,13 @@ abstract class Database
 	 * @return array An array of columns
 	 */
 	public abstract function get_columns($table);
+	
+	/**
+	 * Returns the prefix for tables in this database
+	 * 
+	 * @return string The prefix for table names
+	 */
+	 public abstract function get_prefix();
 	
 	/**
 	 * __destruct disconnects the database

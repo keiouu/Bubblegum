@@ -6,6 +6,7 @@
 
 require_once(home_dir . "framework/model_fields/charfield.php");
 require_once(home_dir . "framework/form_fields/init.php");
+require_once(home_dir . "framework/utils.php");
 
 class FileField extends CharField
 {
@@ -45,6 +46,10 @@ class FileField extends CharField
 	
 	public function get_extensions() {
 		return $this->extensions;
+	}
+	
+	public function get_extension() {
+		return get_file_extension($this->value);
 	}
 	
 	public function get_formfield($name) {

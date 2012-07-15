@@ -6,6 +6,8 @@
  */
 
 $i18n_data = array(
+	"found" => "Found",
+	"set" => "Set",
 	"error1" => "Error: ",
 	"error2" => "Unknown Error",
 	"warn1" => "Warning: ",
@@ -55,6 +57,7 @@ $i18n_data = array(
 	"fielderr17" => "Error: FileUploadFormField::set_value() Could not upload file:",
 	"fielderr18" => "Error: FileUploadFormField::set_value() given file is not a correct type!",
 	"fielderr19" => "You cannot set a choicefield array in that way!",
+	"new-form-class-error" => "Cannot find field: ",
 	"captchaerr" => "Incorrect CAPTCHA entry!",
 	"403" => "Sorry, you arent allowed to see that!",
 	"404" => "Sorry, that page does not exist!",
@@ -77,6 +80,7 @@ $i18n_data = array(
 	"password_strength_3" => "Good",
 	"password_strength_4" => "Strong",
 	"password_strength_5" => "Very Strong",
+	"debug_info" => "General",
 	"debug_profiler" => "Profiler",
 	"debug_console" => "Console",
 	"debug_version" => "You are running: ",
@@ -104,6 +108,7 @@ $i18n_data = array(
 	"upgraded" => "Upgraded",
 	"finished" => "Finished",
 	"page_not_found" => "Page not found: ",
+	"file_not_found" => "File not found: ",
 	"media_error" => "Error! Could not create cache directory in media folder. Please create one!",
 	"media_error_write" => "Error! Could not write to cache directory in media folder.",
 );

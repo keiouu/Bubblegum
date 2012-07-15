@@ -27,7 +27,7 @@ body {
 	position: absolute;
 	top: 1px;
 	left: 5px;
-	height: 35px;
+	max-height: 35px;
 	max-width: 35px;
 }
 

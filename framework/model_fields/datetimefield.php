@@ -41,17 +41,17 @@ class DateTimeField extends DateField
 		$date2 = new DateTime("now");
 		$interval = $date1->diff($date2);
 		
-		$time = $interval->s . " seconds ago";
+		$time = $interval->s . " second".($interval->s > 1 ? "s" : "")." ago";
 		if ($interval->y > 0)
-			$time = $interval->y . " years ago";
+			$time = $interval->y . " year".($interval->y > 1 ? "s" : "")." ago";
 		elseif ($interval->m > 0)
-			$time = $interval->m . " months ago";
+			$time = $interval->m . " month".($interval->m > 1 ? "s" : "")." ago";
 		elseif ($interval->d > 0)
-			$time = $interval->d . " days ago";
+			$time = $interval->d . " day".($interval->d > 1 ? "s" : "")." ago";
 		elseif ($interval->h > 0)
-			$time = $interval->h . " hours ago";
+			$time = $interval->h . " hour".($interval->h > 1 ? "s" : "")." ago";
 		elseif ($interval->i > 0)
-			$time = $interval->i . " minutes ago";			
+			$time = $interval->i . " minute".($interval->i > 1 ? "s" : "")." ago";			
 		return $time;
 	}
 }

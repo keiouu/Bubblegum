@@ -1,6 +1,7 @@
 <?php
 
 require_once(home_dir . "framework/processing/processor.php");
+require_once(home_dir . "framework/signal_manager.php");
 
 /**
  * A pre processor is defined by:
@@ -9,7 +10,7 @@ require_once(home_dir . "framework/processing/processor.php");
  */
 abstract class Pre_Processor extends Processor
 {
-	public final function __construct() {
+	public function __construct() {
 		SignalManager::hook("page_load_start", "modify", $this);
 	}
 }

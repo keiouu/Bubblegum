@@ -1,0 +1,30 @@
+
+.navbar {
+  .logo-pad {
+    position: relative;
+    padding-left: 42px;
+    
+    .logo {
+      position: absolute;
+      top: 7px;
+      left: 0;
+      width: 32px;
+    }
+    
+    &:hover {
+      color: lighten(@navbarBrandColor, 90%);
+      
+      .logo {
+        box-shadow: 0 0 4px #aaf;
+      }
+    }
+  }
+}
+
+.input-append {
+  .hover {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

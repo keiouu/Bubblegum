@@ -56,19 +56,21 @@ class AdminView extends BaseAdminView
 class AdminLoginView extends BaseAdminView
 {
 	public function setup($request, $args) {
+		$result = parent::setup($request, $args);
 		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
 		
 		if ($request->user->logged_in() && $request->user->has_permission("admin_site")) {
 			header("Location: " . home_url . "admin/");
 			SignalManager::fire("admin_on_login", $request->user);
 		}
-		return parent::setup($request, $args);
+		return $result;
 	}
 }
 
 class AdminRegisterView extends BaseAdminView
 {
 	public function setup($request, $args) {
+		$result = parent::setup($request, $args);
 		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
 		
 		$request->admin_register_form = new Form(array(
@@ -106,14 +108,14 @@ class AdminRegisterView extends BaseAdminView
 			} catch(Exception $e) { $request->message($e->getMessage(), "error"); }
 		}
 		
-		return parent::setup($request, $args);
+		return $result;
 	}
 }
 
 class AdminUpdateView extends AdminView
 {
 	public function setup($request, $args) {
-		return $request->user->has_permission("tikapot_update") && parent::setup($request, $args);
+		return parent::setup($request, $args) && $request->user->has_permission("tikapot_update");
 	}
 	
 	public function render($request, $args) {
@@ -125,7 +127,7 @@ class AdminUpdateView extends AdminView
 class AdminConfigView extends AdminView
 {
 	public function setup($request, $args) {
-		return $request->user->has_permission("tikapot_config_view") && parent::setup($request, $args);
+		return parent::setup($request, $args) && $request->user->has_permission("tikapot_config_view");
 	}
 	
 	public function render($request, $args) {
@@ -137,7 +139,7 @@ class AdminConfigView extends AdminView
 class AdminUpgradeView extends AdminView
 {
 	public function setup($request, $args) {
-		return $request->user->has_permission("tikapot_upgrade") && parent::setup($request, $args);
+		return parent::setup($request, $args) && $request->user->has_permission("tikapot_upgrade");
 	}
 	
 	public function render($request, $args) {
@@ -159,7 +161,7 @@ class AdminAppView extends AdminView
 	public function setup($request, $args) {
 		$request->app_name = prettify($this->name);
 		$request->app_apps = $this->apps;
-		return $request->user->has_permission("admin_site_app_" . $this->name) && parent::setup($request, $args);
+		return parent::setup($request, $args) && $request->user->has_permission("admin_site_app_" . $this->name);
 	}
 }
 
@@ -187,7 +189,7 @@ class AdminModelView extends AdminView
 		$request->model = prettify($this->model_name);
 		
 		if (!$request->user->has_permission("admin_site_model_" . $this->model_name))
-			return false;
+			return parent::setup($request, $args) && false;
 		
 		if (isset($request->get['delete'])) {
 			if (isset($request->get['confirm'])) {
@@ -196,7 +198,8 @@ class AdminModelView extends AdminView
 					foreach ($ids as $id) {
 						try {
 							$obj = $this->model->get(array("pk" => $id));
-							SignalManager::fire("admin_on_delete", array($request->user, $obj));
+							$this->admin->on_delete($request, $obj);
+							SignalManager::fire("admin_on_delete", array($request->user, $obj)); // TODO - Evaluate. User?
 							if (!$obj->delete()) {
 								$request->message($GLOBALS['i18n']['admin']['deleteerror'], "error");
 							}
@@ -244,7 +247,8 @@ class AdminAddModelView extends AdminModelView
 			$request->message($request->i18n["admin"]['admin_form_add_error']);
 		}
 		if ($success && $obj !== NULL) {
-			SignalManager::fire("admin_on_create", array($request->user, $obj));
+			$this->admin->on_create($request, $obj);
+			SignalManager::fire("admin_on_create", array($request->user, $obj)); // TODO - Evaluate. User?
 			$request->message($request->i18n["admin"]['admin_model_add'], "success");
 			if (!isset($request->post['submit_stay'])) {
 				header("Location: " . $this->model_url);
@@ -258,7 +262,7 @@ class AdminAddModelView extends AdminModelView
 		$request->admin_add = true;
 		
 		if (!$request->user->has_permission("admin_site_model_add_" . $this->model_name))
-			return false;
+			return parent::setup($request, $args) && false;
 		
 		$request->modelform = $this->admin->get_add_form($request);
 		
@@ -283,7 +287,8 @@ class AdminEditModelView extends AdminModelView
 			$request->message($request->i18n["admin"]['admin_form_add_error']);
 		}
 		if ($success) {
-			SignalManager::fire("admin_on_edit", array($request->user, $request->model_obj));
+			$this->admin->on_update($request, $obj);
+			SignalManager::fire("admin_on_edit", array($request->user, $request->model_obj)); // TODO - Evaluate. User?
 			$request->message($request->i18n["admin"]['admin_model_edit'], "success");
 			if (!isset($request->post['submit_stay'])) {
 				header("Location: " . $this->model_url);
@@ -298,7 +303,7 @@ class AdminEditModelView extends AdminModelView
 		$request->admin_edit = true;
 		
 		if (!$request->user->has_permission("admin_site_model_edit_" . $this->model_name))
-			return false;
+			return parent::setup($request, $args) && false;
 		
 		$request->model_obj = $this->model->get(array("pk" => $args['pk']));
 		$request->modelform = $this->admin->get_edit_form($request);

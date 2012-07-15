@@ -5,16 +5,29 @@
  */
 
 require_once(home_dir . "framework/view.php");
+require_once(home_dir . "framework/tpcache.php");
 
 class TemplateView extends View
 {
-	protected $title, $custom_tags, $custom_vars;
+	protected static $global_tags = array(), $global_vars = array();
+	protected $title, $custom_tags, $custom_vars, $cache_time, $use_cache, $cache_key;
 	
-	public function __construct($url, $page, $title = "") {
+	public function __construct($url, $page, $title = "", $cache_time = -1) {
 		parent::__construct($url, $page);
+		
 		$this->custom_tags = array();
+		foreach (TemplateView::$global_tags as $tag) {
+			$this->custom_tags[] = $tag;
+		}
+		
 		$this->custom_vars = array();
+		foreach (TemplateView::$global_vars as $name => $var) {
+			$this->custom_vars[$name] = $var;
+		}
+		
 		$this->set_title($title);
+		$this->cache_time = $cache_time;
+		$this->use_cache = false;
 	}
 	
 	public function set_title($title) {
@@ -28,20 +41,47 @@ class TemplateView extends View
 		$this->custom_tags[] = $tag;
 	}
 	
+	public static function register_global_tag($tag) {
+		TemplateView::$global_tags[] = $tag;
+	}
+	
 	public function register_var($name, $value) {
 		$this->custom_vars[$name] = $value;
 	}
 	
+	public static function register_global_var($name, $value) {
+		TemplateView::$global_vars[$name] = $value;
+	}
+	
 	public function pre_render($request, $args) {
-		/* Load template tags */
-		require_once(home_dir . "framework/template_tags/init.php");
-		DateTag::register($this);
-		JSVarTag::register($this);
+		/* Check the file exists */
+		if (!file_exists($this->page)) {
+			throw new Exception($GLOBALS['i18n']['framework']['file_not_found'] . $this->page);
+		}
 		
+		/* Can we use the cache? */
+		if ($this->cache_time > -1) {
+			$this->cache_key = "tpl-cache-" . md5($this->page . $request->get_full_path(true));
+			$this->use_cache = TPCache::get($this->cache_key);
+			if ($this->use_cache !== false)
+				return;
+		}
+		
+		/* Capture Input */
 		ob_start();
 	}
 	
+	public function render($request, $args) {
+		if ($this->use_cache === false) {
+			include($this->page);
+		}
+	}
+	
 	public function post_render($request, $args) {
+		if ($this->use_cache !== false) {
+			return $this->use_cache;
+		}
+		
 		$tpl_output = ob_get_clean();
 		
 		// Do we want to set an app (for local i18n etc)
@@ -49,7 +89,11 @@ class TemplateView extends View
 		$scan = $this->_parser_scan_for($request, $args, $tpl_output, '/{% set_app \"(?P<app>[[:punct:]\w]+)\" %}/', $this->page);
 		if (isset($scan['app']))
 			$local_app = $scan['app'];
-		return $this->parse_page($request, $args, $tpl_output, $local_app, $this->page);
+		$result = $this->parse_page($request, $args, $tpl_output, $local_app, $this->page);
+		if ($this->cache_time > -1) {
+			TPCache::set($this->cache_key, $result, $this->cache_time);
+		}
+		return $result;
 	}
 	
 	/**
@@ -211,4 +255,6 @@ class TemplateView extends View
 		return $template;
 	}
 }
+
+require_once(home_dir . "framework/template_tags/init.php");
 ?>

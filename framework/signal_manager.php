@@ -19,7 +19,7 @@ class SignalManager
 		}
 	}
 	
-	public static function hook($signal, $function, $obj = Null, $weighting = 0) {
+	public static function hook($signal, $function, $obj = Null, $weighting = 50) {
 		if (!isset(SignalManager::$signals[$signal]))
 			throw new SignalException($GLOBALS['i18n']['framework']["sigerr2"] . " " . $signal);
 			
@@ -31,7 +31,7 @@ class SignalManager
 			throw new SignalException($GLOBALS['i18n']['framework']["sigerr2"] . " " . $signal);
 		
 		// Sort array by weighting
-		usort(SignalManager::$signals[$signal], create_function('$a,$b', 'return $a[2] > $b[2];'));
+		usort(SignalManager::$signals[$signal], create_function('$a,$b', 'return $a[2] < $b[2];'));
 		
 		foreach (SignalManager::$signals[$signal] as $array) {
 			list($object, $function, $weighting) = $array;

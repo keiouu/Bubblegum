@@ -398,7 +398,7 @@ class User extends Model
 		$user = User::create(array("username" => $username, "password" => $password, "email" => $email, "status" => $status));
 		SignalManager::fire("auth_post_create", array($user));
 		
-		if (ConfigManager::get("auth_dont_verify", false)) {
+		if (ConfigManager::get("auth_dont_verify", false) && $status < 1) {
 			$user->status = $user->_status['live'];
 			$user->save();
 		} else {

@@ -127,7 +127,7 @@ class MultiFKField extends FKField
 	
 	public function relatesTo($model) {
 		foreach ($this->_names as $m => $a) {
-			if ($m == get_class($model))
+			if ($m == $model || (is_object($model) && $m == get_class($model)))
 				return true;
 		}
 		return false;

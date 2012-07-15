@@ -1,13 +1,16 @@
-function debug_hideTabs() {
-	document.getElementById('console-tab').style.display='none';
-	document.getElementById('profile-tab').style.display='none';
-	document.getElementById('db-tab').style.display='none';
-}
-
-function debug_toggleTab(name) {
-	var elem = document.getElementById(name + '-tab');
-	var show = !(elem.style.display == 'block');
-	debug_hideTabs();
-	if (show)
-		elem.style.display='block';
-}
+$(function() {
+    $(".debug_panel .debug_tab").hide();
+    
+    $(".debug_panel .toolbar .debug_pill").click(function() {
+        if ($(this).hasClass("active")) {
+            $(".debug_panel .toolbar .debug_pill").removeClass("active");
+            $(".debug_panel .debug_tab").hide();
+            return;
+        }
+        
+        $(".debug_panel .toolbar .debug_pill").removeClass("active");
+        $(this).addClass("active");
+        $(".debug_panel .debug_tab").hide();
+        $("#" + $(this).attr("data-tab") + "-tab").show();
+    });
+});

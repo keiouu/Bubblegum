@@ -14,6 +14,7 @@ class Console_Pre_Processor extends Pre_Processor
 	 */
 	public function modify($data) {
 		$data->media->add_file(home_dir . "media/css/tp_console.css");
+		$data->media->add_file(home_dir . "media/js/jquery.min.js");
 		$data->media->add_file(home_dir . "media/js/tp_console.js");
 		$data->media->enable_processor();
 	}

@@ -15,7 +15,7 @@ require_once(home_dir . "framework/database.php");
  */
 class PostgreSQL extends Database
 {
-	private /** The name of this database */ $_dbname;
+	private /** The name of this database */ $_dbname, /** Prefix for tables */ $_prefix;
 	
 	/**
 	 * Connects to the database using data from the config file
@@ -27,8 +27,11 @@ class PostgreSQL extends Database
 		global $databases;
 		$settings = $databases[$database];
 		$portStr = $settings['port'];
-		if (strlen($portStr) > 0)
+		
+		if (strlen($portStr) > 0) {
 			$portStr = " port=" . $portStr;
+		}
+		
 		$this->_dbname = $settings['name'];
 		$connect_str = "host=" . $settings['host'].$portStr;
 		$connect_str .= " user=" . $settings['username'];
@@ -37,8 +40,12 @@ class PostgreSQL extends Database
 		$connect_str .= " connect_timeout=" . $settings['timeout'];
 		$this->_link = pg_connect($connect_str);
 		$this->_connected = $this->_link ? true : false;
-		if (!$this->_connected)
+		
+		if (!$this->_connected) {
 			throw new NotConnectedException($GLOBALS['i18n']['framework']["dberr1"]);
+		}
+		
+		$this->_prefix = isset($settings["prefix"]) ? $settings["prefix"] : "";
 		
 		return $this->_connected;
 	}
@@ -136,6 +143,15 @@ class PostgreSQL extends Database
 	public function drop_table($table) {
 		$this->query('DROP TABLE "' . $this->escape_string($table) . '" CASCADE;');
 	}
+	
+	/**
+	 * Returns the prefix for tables in this database
+	 * 
+	 * @return string The prefix for table names
+	 */
+	 public function get_prefix() {
+	 	return $this->_prefix;
+	 }
 }
 
 ?>

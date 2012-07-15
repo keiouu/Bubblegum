@@ -10,7 +10,7 @@ require_once(home_dir . "framework/signal_manager.php");
  */
 abstract class Post_Processor extends Processor
 {
-	public final function __construct() {
+	public function __construct() {
 		SignalManager::hook("page_load_end", "modify", $this);
 	}
 }

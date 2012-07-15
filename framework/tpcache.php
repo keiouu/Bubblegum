@@ -13,17 +13,19 @@ abstract class TPCache
 	static private $cache = null;
 	
 	public static function avaliable() {
-		return ConfigManager::get('enable_cache', false) && class_exists("Memcached");
+		return !ConfigManager::get('dev_mode', false) && ConfigManager::get('enable_cache', false) && class_exists("Memcached");
 	}
 	
 	public static function getCache() {
-		if (!ConfigManager::get('enable_cache', false))
+		if (ConfigManager::get('dev_mode', false) || !ConfigManager::get('enable_cache', false))
 			return null;
 		
 		// If it isnt disabled, the user must have enabled it and believe it to be avaliable,
 		// if it isnt.. let them know!
-		if (!class_exists("Memcached"))
-			throw new CacheException($GLOBALS['i18n']['framework']["cacheerr1"]);
+		if (!class_exists("Memcached")) {
+			console_warning($GLOBALS['i18n']['framework']["cacheerr1"]);
+			return null;
+		}
 			
 		if (isset(TPCache::$cache) && TPCache::$cache !== null)
 			return TPCache::$cache;
@@ -40,12 +42,23 @@ abstract class TPCache
 	
 	public static function get($key) {
 		$cache = TPCache::getCache();
-		return $cache->get($key);
+		if ($cache) {
+			$result = $cache->get($key);
+			if ($result) {
+				console_log("TPCache " . $GLOBALS['i18n']['framework']["found"] . ": " . $key);
+			}
+			return $cache->get($key);
+		}
+		return false;
 	}
 	
-	public static function set($key, $value) {
+	public static function set($key, $value, $expire = 0) {
 		$cache = TPCache::getCache();
-		return $cache->set($key, $value);
+		if ($cache) {
+			console_log("TPCache " . $GLOBALS['i18n']['framework']["set"] . ": " . $key);
+			return $cache->set($key, $value, $expire);
+		}
+		return false;
 	}
 }
 

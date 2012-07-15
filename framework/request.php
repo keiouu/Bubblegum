@@ -10,7 +10,7 @@ require_once(home_dir . "framework/media.php");
 
 class Request
 {
-	public $method, $page, $get, $post, $cookies, $args, $mimeType, $safe_vals, $cmd_args, $messages, $output;
+	public $method, $page, $get, $post, $cookies, $args, $mimeType, $safe_vals, $cmd_args, $media, $messages, $output;
 	
 	public function __construct() {
 		$this->method = "GET";
@@ -56,9 +56,9 @@ class Request
 		$this->page = '/' . $this->page;
 		$this->mimeType = $this->get_mime_type($this->page);
 		$this->visitor_ip = $this->getIP();
-		$this->messages = array();
+		$this->messages = isset($_SESSION['messages']) ? $_SESSION['messages'] : array();
 		$this->safe_vals = array();
-		$this->media = new MediaManager();
+		$this->media = new MediaManager("style" . project_version);
 		
 		$this->add_val("tikapot_version", tikapot_version);
 		$this->add_val("home_url", home_url);
@@ -146,10 +146,12 @@ class Request
 	/*
 	 * Messaging framework for requests
 	 */
-	public function message($message, $type = "info") {
+	public function message($message, $type = "info", $save_to_session = true) {
 		if (!isset($this->messages[$type]))
 			$this->messages[$type] = array();
 		$this->messages[$type][] = $message;
+		if ($save_to_session)
+			$_SESSION['messages'] = $this->messages;
 	}
 	
 	public function delete_messages() {
@@ -175,8 +177,14 @@ class Request
 		$this->delete_messages();
 	}
 	
-	public function getFullPath() {
-		return $this->fullPath;
+	public function getFullPath($include_query = false) {
+		console_deprecation("getFullPath", "get_full_path");
+		return $this->get_full_path($include_query);
+	}
+	
+	public function get_full_path($include_query = false) {
+		$query = $this->query_string();
+		return $this->fullPath . ($include_query && $query !== "" ? "?" . $query : "");
 	}
 	
 	public function getIP() {

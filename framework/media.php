@@ -8,6 +8,7 @@ require_once(home_dir . "framework/utils.php");
 require_once(home_dir . "framework/config_manager.php");
 require_once(home_dir . "framework/processing/processors/mediamanager_post_processor.php");
 require_once(home_dir . "lib/jsmin.php");
+require_once(home_dir . "lib/lessphp/lessc.inc.php");
 
 
 class MediaManager
@@ -50,6 +51,10 @@ class MediaManager
 		return count($this->media_files);
 	}
 	
+	/**
+	 * @todo Separate minified files with a header
+	 * @todo Dont re-minify *.min.* files
+	 */
 	public function build($ext) {
 		if (!file_exists($this->get_media_dir() . "cache/") || !is_dir($this->get_media_dir() . "cache/")) {
 			if (!mkdir($this->get_media_dir() . "cache/", "0744")) {
@@ -58,29 +63,42 @@ class MediaManager
 			}
 		}
 		
-		if (!isset($this->media_files[$ext])) {
+		$data = "";
+		
+		if (isset($this->media_files[$ext])) {
+			foreach ($this->media_files[$ext] as $file)
+				$data .= file_get_contents($file) . "\n";
+		}
+		
+		if ($ext === "css" && isset($this->media_files["less"])) {
+			foreach ($this->media_files["less"] as $file) {
+				// Parse it!
+				try {
+					$less = new lessc($file);
+					$data .= $less->parse(). "\n";
+				} catch (exception $e) {
+					console_error("[less parser] " . $e->getMessage());
+				}
+			}
+		}
+		
+		if ($data === "") {
 			// Nothing to do!
 			return;
 		}
 		
-		$hash = md5(serialize($this->media_files[$ext]));
+		$hash = md5($data);
 		
 		$filename = $this->get_media_dir() . "cache/" . $this->media_key . "_" . $hash . "." . $ext;
 		$fileurl  = $this->get_media_url() . "cache/" . $this->media_key . "_" . $hash . "." . $ext;
-		if (file_exists($filename) && !ConfigManager::get("dev_mode", false)) { // Disable caching in dev mode
+		if (file_exists($filename)) {
 			return $fileurl;
-		}
-		
-		// Gather all data
-		$data = "";
-		foreach($this->media_files[$ext] as $file) {
-			$data .= "\n" . file_get_contents($file);
 		}
 		
 		$data = str_replace('{{home_url}}', home_url, $data);
 		$data = str_replace('{{media_url}}', media_url, $data);
 		
-		if (!ConfigManager::get("dev_mode", false)) {
+		if (!ConfigManager::get("dev_mode", false)) { // Dont minify in dev mode
 			// Minify
 			switch ($ext) {
 				case "css":

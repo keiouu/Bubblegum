@@ -26,11 +26,13 @@ class DateField extends ModelField
 		$date1 = new DateTime($this->get_date());
 		$date2 = new DateTime("now");
 		$interval = $date1->diff($date2);
-		$time = $interval->s . " days ago";
+		$time = "Just Now";
 		if ($interval->y > 0)
-			$time = $interval->y . " years ago";
+			$time = $interval->y . " year".($interval->y > 1 ? "s" : "")." ago";
 		elseif ($interval->m > 0)
-			$time = $interval->m . " months ago";
+			$time = $interval->m . " month".($interval->m > 1 ? "s" : "")." ago";
+		elseif ($interval->d > 0)
+			$time = $interval->d . " day".($interval->d > 1 ? "s" : "")." ago";
 		return $time;
 	}
 	

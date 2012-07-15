@@ -12,6 +12,10 @@ abstract class TplTag
 		$view->register_tag(new static());
 	}
 	
+	public static function register_global() {
+		TemplateView::register_global_tag(new static());
+	}
+	
 	public function render($request, $args, $page, $local_app) {
 		return $page;
 	}
