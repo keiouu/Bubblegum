@@ -26,6 +26,7 @@ class BubblegumView extends TemplateView
 		$request->media->add_file(home_dir . "apps/core/media/js/activity.feed.js");
 		$request->media->add_file(home_dir . "apps/core/media/js/project.feeds.js");
 		$request->media->add_file(home_dir . "apps/core/media/js/feeds.ajax.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/git-file-list.js");
 		
 		return parent::setup($request, $args);
 	}

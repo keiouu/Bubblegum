@@ -6,6 +6,7 @@ include_once(home_dir . "framework/utils.php");
 
 function print_listing($listing) {
 	print '<ul>';
+	krsort($listing);
 	foreach ($listing as $key => $val) {
 		if (is_array($val)) {
 			print '<li>' . $key;
@@ -18,4 +19,6 @@ function print_listing($listing) {
 	print '</ul>';
 }
 
+print '<div class="git-file-list">';
 print_listing($git->ls());
+print '</div>';
