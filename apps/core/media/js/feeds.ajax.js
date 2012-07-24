@@ -4,10 +4,9 @@ function task_view(task) {
 	$("#task-edit .task-title").html(task);
 	$.getJSON(tp_home_url + "api/project/" + project_id + "/task/detail/?name=" + task, function(data) {
 		var tskpk = data[0].pk;
-		
 		$("#task-pk").val(data[0].pk);
 		$("#task-name").val(data[0].name);
-		$("#task-description").html(data[0].description);
+		$("#task-description").val(data[0].description);
 		$("#task-progress").val(data[0].progress);
         $("#task-milestone").val(data[0].milestone);
 		$("#task-complete").attr('checked', false);
@@ -84,7 +83,6 @@ $(function () {
 		$.each($("#task-edit-form input, #task-edit-form select, #task-edit-form textarea"), function() {
 			data_string += $(this).attr("name") + "=" + $(this).val() + "&";
 		});
-		
 		$.ajax({
 			url: tp_home_url + "api/project/" + project_id + "/task/edit/",
 			type: "POST",

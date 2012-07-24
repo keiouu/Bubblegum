@@ -11,20 +11,20 @@
 				<div class="control-group">
 					<label class="control-label" for="task-name">Task Name</label>
 			  		<div class="controls">
-				  		<input name="name" id="task-name" />
+				  		<input name="name" id="task-name" autocomplete="off" />
 				  	</div>
 			  	</div>
 				<div class="control-group">
 					<label class="control-label" for="task-description">Task Description</label>
 			  		<div class="controls">
-				  		<textarea name="description" id="task-description"></textarea>
+				  		<textarea name="description" id="task-description" autocomplete="off"></textarea>
 				  	</div>
 			  	</div>
 				<div class="control-group">
 					<label class="control-label" for="task-progress">Task Progress</label>
 			  		<div class="controls">
 				  		<div class="input-append">
-					  		<input name="progress" id="task-progress" class="span3" />
+					  		<input name="progress" id="task-progress" class="span3" autocomplete="off" />
 					  		<span class="add-on">%</span>
 					  	</div>
 					  	<label class="checkbox"><input type="checkbox" name="complete" id="task-complete" /> Complete</label>
@@ -33,7 +33,7 @@
 				<div class="control-group">
 					<label class="control-label" for="task-milestone">MileStone</label>
 			  		<div class="controls">
-					  	<select name="milestone" id="task-milestone">
+					  	<select name="milestone" id="task-milestone" autocomplete="off">
 					  		
 					  	</select>
 				  	</div>
@@ -41,7 +41,7 @@
 				<div class="control-group">
 					<label class="control-label" for="task-type">Type</label>
 			  		<div class="controls">
-					  	<select name="type" id="task-type">
+					  	<select name="type" id="task-type" autocomplete="off">
 					  		<?php
 					  			$dummy = new Task();
 					  			$choices = $dummy->_type->get_choices();
@@ -55,7 +55,7 @@
 				<div class="control-group">
 					<label class="control-label" for="task-priority">Priority</label>
 			  		<div class="controls">
-					  	<select name="priority" id="task-priority">
+					  	<select name="priority" id="task-priority" autocomplete="off">
 					  		<?php
 					  			$choices = $dummy->_priority->get_choices();
 					  			foreach ($choices as $num => $val) {
@@ -68,7 +68,7 @@
 				<div class="control-group">
 					<label class="control-label" for="task-status">Status</label>
 			  		<div class="controls">
-					  	<select name="status" id="task-status">
+					  	<select name="status" id="task-status" autocomplete="off">
 					  		<?php
 					  			$choices = $dummy->_status->get_choices();
 					  			foreach ($choices as $num => $val) {
@@ -81,7 +81,7 @@
 				<div class="control-group">
 					<label class="control-label" for="task-assignees">Assignees</label>
 			  		<div class="controls">
-					  	<select name="assignees" id="task-assignees" multiple="multiple">
+					  	<select name="assignees" id="task-assignees" multiple="multiple" autocomplete="off">
 					  		<?php
 					  			$choices = get_potential_assignees();
 					  			foreach ($choices as $name => $arr) {

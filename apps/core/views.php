@@ -402,8 +402,8 @@ class AJAX_TaskEditView extends View
 		$project = Project::get_or_ignore($args['project']);
 		
 		// Check we should be able to view the project
-		if ($project && !$project->public && !$project->can_view($request->user)) {
-			return "";
+		if (!$project || !$project->can_edit($request->user)) {
+			return "Error: You cannot edit this project!";
 		}
 		
 		$task = Task::get_or_ignore($request->post['pk']);

@@ -116,6 +116,8 @@ class Project extends Model
 	}
 	
 	public function can_view($user) {
+		if ($this->public)
+			return true;
 		return Project_Link::find(array("user" => $user))->count() > 0;
 	}
 	
