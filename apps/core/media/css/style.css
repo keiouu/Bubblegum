@@ -36,6 +36,10 @@ body {
 	vertical-align: middle;
 }
 
+.page-header h1 a {
+	display: inline;
+}
+
 .messages {
 	display: none;
 	position: absolute;

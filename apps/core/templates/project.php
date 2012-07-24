@@ -9,6 +9,7 @@ require_once(home_dir . "apps/core/forms.php");
 var project_id = <?php print $request->project->pk; ?>;
 $(function() {
 	$('a[rel=tooltip]').tooltip();
+	$('a[rel=popover]').popover();
 	
 	$("#track").click(function() {
 		$.ajax({
@@ -30,15 +31,16 @@ $(function() {
 {% block body %}
 <div class="row-fluid">
 	<div class="page-header">
-		<h1><?php print $request->project->name; 
-		 if ($request->project->tracked_by($request->user)) { ?>
-			<a href="#" id="track" rel="tooltip" title="Untrack this project"><i class="icon-eye-close"></i></a>
-		<?php } else { ?>
-			<a href="#" id="track" rel="tooltip" title="Track this project"><i class="icon-eye-open"></i></a>
-		<?php } ?></h1>
+		<h1><?php
+		print $request->project->name; 
+		if ($request->project->tracked_by($request->user)) {
+			print ' <a href="#" id="track" rel="tooltip" title="Untrack this project"><i class="icon-eye-close"></i></a>';
+		} else {
+			print ' <a href="#" id="track" rel="tooltip" title="Track this project"><i class="icon-eye-open"></i></a>';
+		}
+		print ' <a href="#" id="track" rel="popover" title="'.$request->project->name.'" data-content="'.$request->project->description.'"><i class="icon-question-sign"></i></a>';
+		?></h1>
 	</div>
-	<p style="padding-left: 10px;"><?php print $request->project->description; ?></p>
-	<hr />
 	
 	<ul class="nav nav-pills">
 		<?php
@@ -60,7 +62,7 @@ $(function() {
 		?>
 					<div class="accordion-heading">
 						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#gitCollapse">
-							<h4><i class="icon-gift"></i> Git</h4>
+							<h4><i class="icon-gift"></i> Latest Commit</h4>
 						</a>
 					</div>
 					<div id="gitCollapse" class="accordion-body in collapse" style="height: auto; ">
@@ -110,8 +112,10 @@ $(function() {
 		}
 		?>
 	</div>
-	<?php include_once(home_dir . "apps/core/templates/includes/add-milestone.php"); ?>
-	<?php include_once(home_dir . "apps/core/templates/includes/add-task.php"); ?>
-	<?php include_once(home_dir . "apps/core/templates/includes/edit-task.php"); ?>
+	<?php
+	include_once(home_dir . "apps/core/templates/includes/add-milestone.php");
+	include_once(home_dir . "apps/core/templates/includes/add-task.php");
+	include_once(home_dir . "apps/core/templates/includes/edit-task.php");
+	?>
 </div>
 {% endblock body %}
