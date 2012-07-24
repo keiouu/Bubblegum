@@ -7,19 +7,22 @@ require_once(home_dir . "apps/core/forms.php");
 {% block endbody %}
 <script type="text/javascript">
 var project_id = <?php print $request->project->pk; ?>;
-
-$("#track").click(function() {
-	$.ajax({
-	  <?php if ($request->project->tracked_by($request->user)) { ?>
-	  url: tp_home_url + "api/project/<?php print $request->project->pk; ?>/track/",
-	  <?php } else { ?>
-	  url: tp_home_url + "api/project/<?php print $request->project->pk; ?>/untrack/",
-	  <?php } ?>
-	  success: function(data) {
-       window.location = window.location;
-	  }
+$(function() {
+	$('a[rel=tooltip]').tooltip();
+	
+	$("#track").click(function() {
+		$.ajax({
+		  <?php if ($request->project->tracked_by($request->user)) { ?>
+		  url: tp_home_url + "api/project/<?php print $request->project->pk; ?>/track/",
+		  <?php } else { ?>
+		  url: tp_home_url + "api/project/<?php print $request->project->pk; ?>/untrack/",
+		  <?php } ?>
+		  success: function(data) {
+	       window.location = window.location;
+		  }
+		});
+		return false;
 	});
-	return false;
 });
 </script>
 {% endblock endbody %}
@@ -29,9 +32,9 @@ $("#track").click(function() {
 	<div class="page-header">
 		<h1><?php print $request->project->name; 
 		 if ($request->project->tracked_by($request->user)) { ?>
-			<a href="#" id="track" title="Untrack this project"><i class="icon-eye-close"></i></a>
+			<a href="#" id="track" rel="tooltip" title="Untrack this project"><i class="icon-eye-close"></i></a>
 		<?php } else { ?>
-			<a href="#" id="track" title="Track this project"><i class="icon-eye-open"></i></a>
+			<a href="#" id="track" rel="tooltip" title="Track this project"><i class="icon-eye-open"></i></a>
 		<?php } ?></h1>
 	</div>
 	<p style="padding-left: 10px;"><?php print $request->project->description; ?></p>
@@ -57,7 +60,7 @@ $("#track").click(function() {
 		<?php }
 		} ?>
 		<div class="accordion-heading">
-			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#milestoneCollapse"><i class="icon-gift"></i> Milestones</a> <a data-toggle="modal" href="#milestone-add"><i class="icon-plus" title="New Milestone"></i></a></h4>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#milestoneCollapse"><i class="icon-gift"></i> Milestones</a> <a data-toggle="modal" href="#milestone-add" rel="tooltip" title="New Milestone"><i class="icon-plus"></i></a></h4>
 		</div>
 		<div id="milestoneCollapse" class="accordion-body in collapse" style="height: auto; ">
 			<div class="accordion-inner">
@@ -65,7 +68,7 @@ $("#track").click(function() {
 			</div>
 		</div>
 		<div class="accordion-heading">
-			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-check"></i> Your Tasks</a> <a data-toggle="modal" href="#task-add"><i class="icon-plus" title="New Task"></i></a></h4>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-check"></i> Your Tasks</a> <a data-toggle="modal" href="#task-add" rel="tooltip" title="New Task"><i class="icon-plus"></i></a></h4>
 		</div>
 		<div id="tasksCollapse" class="accordion-body in collapse" style="height: auto; ">
 			<div class="accordion-inner">
@@ -73,7 +76,7 @@ $("#track").click(function() {
 			</div>
 		</div>
 		<div class="accordion-heading">
-			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-th-list"></i> All Tasks</a> <a data-toggle="modal" href="#task-add"><i class="icon-plus" title="New Task"></i></a></h4>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-th-list"></i> All Tasks</a> <a data-toggle="modal" href="#task-add" rel="tooltip" title="New Task"><i class="icon-plus"></i></a></h4>
 		</div>
 		<div id="allTasksCollapse" class="accordion-body in collapse" style="height: auto; ">
 			<div class="accordion-inner">
