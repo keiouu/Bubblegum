@@ -55,6 +55,10 @@ body {
 	padding-right: 6px;
 }
 
+#activity_feed li a {
+	word-wrap: break-word;
+}
+
 .progress {position: relative; margin-bottom: 0;}
 .progress .progress-text {position: absolute; text-align: center; width: 100%; font-weight: bold; color: #333;}
 .progress .bar {
