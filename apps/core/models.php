@@ -163,7 +163,7 @@ class Project extends Model
 		return Project_Link::get_or_ignore(array(
 			"project" => $this->pk,
 			"user" => $user->pk
-		)) === null;
+		)) !== null;
 	}
 }
 

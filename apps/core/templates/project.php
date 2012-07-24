@@ -27,18 +27,14 @@ $("#track").click(function() {
 {% block body %}
 <div class="row-fluid">
 	<div class="page-header">
-		<h1><?php print $request->project->name; ?></h1>
+		<h1><?php print $request->project->name; 
+		 if ($request->project->tracked_by($request->user)) { ?>
+			<a href="#" id="track" title="Untrack this project"><i class="icon-eye-close"></i></a>
+		<?php } else { ?>
+			<a href="#" id="track" title="Track this project"><i class="icon-eye-open"></i></a>
+		<?php } ?></h1>
 	</div>
 	<p style="padding-left: 10px;"><?php print $request->project->description; ?></p>
-	<p class="add-links">
-		<a data-toggle="modal" href="#milestone-add">Add new milestone &raquo;</a>
-		<a data-toggle="modal" href="#task-add">Add new task &raquo;</a>
-		<?php if ($request->project->tracked_by($request->user)) { ?>
-			<a href="#" id="track">Track this project &raquo;</a>
-		<?php } else { ?>
-			<a href="#" id="track">Stop tracking this project &raquo;</a>
-		<?php } ?>
-	</p>
 	<hr />
 	
 	<div class="accordion">
@@ -61,9 +57,7 @@ $("#track").click(function() {
 		<?php }
 		} ?>
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#milestoneCollapse">
-				<h4><i class="icon-gift"></i> Milestones</h4>
-			</a>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#milestoneCollapse"><i class="icon-gift"></i> Milestones</a> <a data-toggle="modal" href="#milestone-add"><i class="icon-plus" title="New Milestone"></i></a></h4>
 		</div>
 		<div id="milestoneCollapse" class="accordion-body in collapse" style="height: auto; ">
 			<div class="accordion-inner">
@@ -71,9 +65,7 @@ $("#track").click(function() {
 			</div>
 		</div>
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse">
-				<h4><i class="icon-check"></i> Your Tasks</h4>
-			</a>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-check"></i> Your Tasks</a> <a data-toggle="modal" href="#task-add"><i class="icon-plus" title="New Task"></i></a></h4>
 		</div>
 		<div id="tasksCollapse" class="accordion-body in collapse" style="height: auto; ">
 			<div class="accordion-inner">
@@ -81,9 +73,7 @@ $("#track").click(function() {
 			</div>
 		</div>
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#allTasksCollapse">
-				<h4><i class="icon-th-list"></i> All Tasks</h4>
-			</a>
+			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-th-list"></i> All Tasks</a> <a data-toggle="modal" href="#task-add"><i class="icon-plus" title="New Task"></i></a></h4>
 		</div>
 		<div id="allTasksCollapse" class="accordion-body in collapse" style="height: auto; ">
 			<div class="accordion-inner">
