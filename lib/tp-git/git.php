@@ -113,6 +113,37 @@ class Git
 	}
 	
 	/**
+	 * Returns a full file listing for a given commit (or HEAD)
+	 * 
+	 * @param string $commit (optional) The ref to use
+	 * @return Array A list of files and folders
+	 */
+	public function ls($commit = "HEAD") {
+		if (!chdir($this->_path))
+			return null;
+		$commit = escapeshellarg($commit);
+		exec('git ls-tree --name-only -r '.$commit, $lines);
+		$listing = array();
+		foreach ($lines as $line) {
+			$parts = explode("/", $line);
+			$section = &$listing;
+			$i = 0;
+			foreach ($parts as $part) {
+				if ($i === count($parts) - 1) {
+					$section[] = $part; // Its the filename!
+				} else {
+					if (!isset($listing[$part])) {
+						$section[$part] = array();
+					}
+					$section = &$section[$part];
+				}
+				$i++;
+			}
+		}
+		return $listing;
+	}
+	
+	/**
 	 * This function provides a safe way to call "exec".
 	 *
 	 * @param string $command The command to run (e.g. ls)

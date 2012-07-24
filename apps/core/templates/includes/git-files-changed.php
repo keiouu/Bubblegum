@@ -1,4 +1,3 @@
-
 <?php
 include_once(home_dir . "framework/utils.php");
 
@@ -24,7 +23,7 @@ if (isset($git_changes)) {
 		} elseif ($status == "D") {
 			$status = '<i class="icon-minus"></i>';
 		} else { // Is there one for binary?
-			// Flag sysadmin, the world is coming to an end.
+			// The world is coming to an end.
 		}
 		print '<tr><td>'.$status.'</td><td>'.string_encode($change['file']).'</td></tr>';
 	}

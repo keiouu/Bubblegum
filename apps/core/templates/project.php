@@ -44,7 +44,7 @@ $(function() {
 	
 	<ul class="nav nav-pills">
 		<?php
-			$tabs = array("dashboard", "code", "tasks");
+			$tabs = array("dashboard", "tasks", "code");
 			foreach ($tabs as $tab) {
 				$class = (!isset($_GET['tab']) && $tab == $tabs[0]) || (isset($_GET['tab']) && $_GET['tab'] == $tab) ? ' class="active"' : '';
 				print '<li'.$class.'><a href="?tab='.$tab.'">'.ucwords($tab).'</a></li>';
@@ -65,13 +65,23 @@ $(function() {
 							<h4><i class="icon-gift"></i> Latest Commit</h4>
 						</a>
 					</div>
-					<div id="gitCollapse" class="accordion-body in collapse" style="height: auto; ">
+					<div id="gitCollapse" class="accordion-body in collapse" style="height: auto;">
 						<div class="accordion-inner">
 							<?php include_once(home_dir . "apps/core/templates/includes/git-view.php"); ?>
 						</div>
 					</div>
+		<?php  } ?>
+				<div class="accordion-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#gitcodeCollapse">
+						<h4><i class="icon-hdd"></i> Code Browser</h4>
+					</a>
+				</div>
+				<div id="gitcodeCollapse" class="accordion-body in collapse" style="height: auto;">
+					<div class="accordion-inner">
+						<?php include_once(home_dir . "apps/core/templates/includes/git-file-list.php"); ?>
+					</div>
+				</div>
 		<?php
-				}
 			}
 		}
 		if (!isset($_GET['tab']) || $_GET['tab'] == "dashboard") {
@@ -79,7 +89,7 @@ $(function() {
 			<div class="accordion-heading">
 				<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#milestoneCollapse"><i class="icon-gift"></i> Milestones</a> <a data-toggle="modal" href="#milestone-add" rel="tooltip" title="New Milestone"><i class="icon-plus"></i></a></h4>
 			</div>
-			<div id="milestoneCollapse" class="accordion-body in collapse" style="height: auto; ">
+			<div id="milestoneCollapse" class="accordion-body in collapse" style="height: auto;">
 				<div class="accordion-inner">
 					<?php include_once(home_dir . "apps/core/templates/includes/project-milestones.php"); ?>
 				</div>
@@ -91,7 +101,7 @@ $(function() {
 		<div class="accordion-heading">
 			<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-check"></i> Your Tasks</a> <a data-toggle="modal" href="#task-add" rel="tooltip" title="New Task"><i class="icon-plus"></i></a></h4>
 		</div>
-		<div id="tasksCollapse" class="accordion-body in collapse" style="height: auto; ">
+		<div id="tasksCollapse" class="accordion-body in collapse" style="height: auto;">
 			<div class="accordion-inner">
 				<?php include_once(home_dir . "apps/core/templates/includes/my-tasks.php"); ?>
 			</div>
@@ -103,7 +113,7 @@ $(function() {
 			<div class="accordion-heading">
 				<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tasksCollapse"><i class="icon-th-list"></i> All Tasks</a> <a data-toggle="modal" href="#task-add" rel="tooltip" title="New Task"><i class="icon-plus"></i></a></h4>
 			</div>
-			<div id="allTasksCollapse" class="accordion-body in collapse" style="height: auto; ">
+			<div id="allTasksCollapse" class="accordion-body in collapse" style="height: auto;">
 				<div class="accordion-inner">
 					<?php include_once(home_dir . "apps/core/templates/includes/task-list.php"); ?>
 				</div>
