@@ -23,21 +23,40 @@
         function initialize() {
             // Clone the original
             _data = $(_elem).clone();
-            
+            showFolder(_data);
+        }
+        
+        function hideFolder(callback) {
+            $(_elem).find("table").animate({ opacity: 0.25 }, 200, callback);
+        }
+        
+        function showFolder(folder) {
             // Print a pretty table
             var tbody = $(_elem).html('<table class="table table-striped table-bordered table-condensed"><thead><tr><th>Filename</th></tr></thead><tbody></tbody></table>').find("tbody");
-            console.log(_data);
-            $(_data).children("ul").children("li").each(function() {
+            
+            $(folder).children("ul").children("li").each(function() {
                 var elem = $(this).clone();
                 var isFolder = elem.find("ul").length > 0;
                 elem.find("ul").remove();
-                elem.data("isFolder", isFolder);
-                
                 if (isFolder) {
-                    tbody.prepend('<tr><td><i class="icon-folder-close"></i> <a href="">'+elem.html()+"</a></td></tr>");
+                    $('<tr><td><i class="icon-folder-close"></i> <a href="" class="folder">'+elem.html()+"</a></td></tr>").data("sub-set", $(this).clone()).prependTo(tbody);
                 } else {
-                    tbody.append('<tr><td><i class="icon-file"></i> <a href="">'+elem.html()+"</a></td></tr>");
+                    tbody.append('<tr><td><i class="icon-file"></i> <a href="" class="file">'+elem.html()+"</a></td></tr>");
                 }
+            });
+            
+            tbody.find("a").click(function() {
+                if ($(this).hasClass("folder")) {
+                    // Show the folder.
+                    var data = $(this).parent().parent().data("sub-set");
+                    hideFolder(function() {
+                        showFolder(data);
+                    });
+                } else {
+                    // Get the file's code from AJAX
+                }
+                
+                return false;
             });
         }
         
