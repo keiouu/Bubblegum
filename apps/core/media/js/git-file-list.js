@@ -56,11 +56,12 @@
                 if ($(this).hasClass("folder")) {
                     // Show the folder.
                     var isBack = $(this).hasClass("folder-back");
+                    var subset = $(this).parent().parent().data("sub-set");
                     hideFolder(function() {
                         if (isBack)
                             showFolder(parent, $(parent).data("parent"));
                         else
-                            showFolder($(this).parent().parent().data("sub-set"), folder);
+                            showFolder(subset, folder);
                     });
                 } else {
                     var path = $(this).attr("data-path");
