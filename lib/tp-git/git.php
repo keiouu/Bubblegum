@@ -132,7 +132,7 @@ class Git
 				if ($i === count($parts) - 1) {
 					$section[] = $part; // Its the filename!
 				} else {
-					if (!isset($listing[$part])) {
+					if (!isset($section[$part])) {
 						$section[$part] = array();
 					}
 					$section = &$section[$part];
@@ -141,6 +141,18 @@ class Git
 			}
 		}
 		return $listing;
+	}
+	
+	/**
+	 * Returns the contents of a specific file
+	 */
+	public function show($filename, $commit = "HEAD") {
+		if (!chdir($this->_path))
+			return null;
+		$filename = escapeshellarg($filename);
+		$commit = escapeshellarg($commit);
+		exec('git show ' . $commit . ":" . $filename, $lines);
+		return $lines;
 	}
 	
 	/**

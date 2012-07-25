@@ -537,5 +537,34 @@ class AJAX_ProjectUnTrackView extends AJAX_ProjectTrackView
 		$request->project->untrack($request->user);
 	}
 }
+
+class AJAX_ProjectGitShowView extends View
+{
+	public function setup($request, $args) {
+		$request->project = Project::get_or_ignore($args['project']);
+		if (!$request->project) {
+			die('Invalid Project!');
+		}
+		if (!$request->project->public && !$request->project->can_view($request->user)) {
+			die('You cannot view that!');
+		}
+		if (!isset($request->get['file'])) {
+			die('No file specified!');
+		}
+		return $request->user->logged_in();
+	}
+	
+	public function render($request, $args) {
+		// Get the file
+		$filename = $request->get['file'];
+		$git = $request->project->getRepository();
+		if ($git !== null) {
+			$lines = $git->show($filename);
+			foreach ($lines as $line) {
+				print htmlentities($line) . "\n";
+			}
+		}
+	}
+}
 ?>
 

@@ -4,16 +4,16 @@
 
 include_once(home_dir . "framework/utils.php");
 
-function print_listing($listing) {
+function print_listing($listing, $fullPath = "") {
 	print '<ul>';
 	krsort($listing);
 	foreach ($listing as $key => $val) {
 		if (is_array($val)) {
 			print '<li>' . $key;
-			print_listing($val);
+			print_listing($val, $fullPath . $key . "/");
 			print '</li>';
 		} else {
-			print '<li>'.$val.'</li>';
+			print '<li data-path="'.$fullPath.$val.'">'.$val.'</li>';
 		}
 	}
 	print '</ul>';

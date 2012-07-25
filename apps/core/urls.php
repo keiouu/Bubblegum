@@ -33,6 +33,7 @@ new AJAX_TaskEditView("/api/project/(?P<project>\d+)/task/edit/");
 new AJAX_TaskAddView("/api/project/(?P<project>\d+)/task/add/");
 new AJAX_ProjectTrackView("/api/project/(?P<project>\d+)/track/");
 new AJAX_ProjectUnTrackView("/api/project/(?P<project>\d+)/untrack/");
+new AJAX_ProjectGitShowView("/api/project/(?P<project>\d+)/git/show_file/");
 
 // New API
 new AJAX_TasksView("/api/tasks/");

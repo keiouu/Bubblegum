@@ -41,7 +41,7 @@
                 if (isFolder) {
                     $('<tr><td><i class="icon-folder-close"></i> <a href="" class="folder">'+elem.html()+"</a></td></tr>").data("sub-set", $(this).clone()).prependTo(tbody);
                 } else {
-                    tbody.append('<tr><td><i class="icon-file"></i> <a href="" class="file">'+elem.html()+"</a></td></tr>");
+                    tbody.append('<tr><td><i class="icon-file"></i> <a href="" class="file" data-path="'+elem.attr("data-path")+'">'+elem.html()+"</a></td></tr>");
                 }
             });
             
@@ -53,7 +53,13 @@
                         showFolder(data);
                     });
                 } else {
+                    var path = $(this).attr("data-path");
                     // Get the file's code from AJAX
+                    $.ajax({
+                        url: tp_home_url + "api/project/" + project_id + "/git/show_file/?file=" + path,
+                    }).done(function(data) {
+                        $(_elem).html('<pre>'+data+'</pre>');
+                    });
                 }
                 
                 return false;
