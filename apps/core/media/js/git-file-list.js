@@ -30,15 +30,11 @@
             $(_elem).find("table").animate({ opacity: 0.25 }, 200, callback);
         }
         
-        function showFolder(folder, parent) {    
-            $(folder).data("is-root", parent == 0);
+        function showFolder(folder, parent) {
+            $(folder).data("parent", parent);
             
             // Print a pretty table
             var tbody = $(_elem).html('<table class="table table-striped table-bordered table-condensed"><thead><tr><th>Filename</th></tr></thead><tbody></tbody></table>').find("tbody");
-            
-            if (parent != 0) {
-                $('<tr><td><i class="icon-folder-close"></i> <a href="" class="folder folder-back">..</a></td></tr>').data("sub-set", parent.clone()).prependTo(tbody);
-            }
             
             $(folder).children("ul").children("li").each(function() {
                 var elem = $(this).clone();
@@ -51,17 +47,19 @@
                 }
             });
             
+            if (parent != 0) {
+                $('<tr><td><i class="icon-folder-close"></i> <a href="" class="folder folder-back">..</a></td></tr>').data("sub-set", parent.clone()).prependTo(tbody);
+            }
+            
             tbody.find("a").click(function(e) {
                 e.preventDefault();
                 if ($(this).hasClass("folder")) {
                     // Show the folder.
-                    var isBack = $(this).hasClass("folder-back");
-                    var subset = $(this).parent().parent().data("sub-set");
                     hideFolder(function() {
-                        if (isBack && parent != 0 && $(parent).data("is-root"))
-                            showFolder(subset, 0);
+                        if (isBack)
+                            showFolder(parent, $(parent).data("parent"));
                         else
-                            showFolder(subset, folder);
+                            showFolder($(this).parent().parent().data("sub-set"), folder);
                     });
                 } else {
                     var path = $(this).attr("data-path");
