@@ -1,9 +1,5 @@
 {% extends "apps/core/templates/base.php" %}
 
-{% block head %}
-<link href="{{home_url}}apps/core/media/css/prettify.css" type="text/css" rel="stylesheet" />
-{% endblock %}
-    
 {% block breadcrumbs %}
 	<?php
 	print '<li '.(isset($request->project) ? '' : 'class="active"').'><a href="'.home_url.'">Home</a></li>';
@@ -31,5 +27,4 @@
 
 {% block endbody %}
 <script src="{{home_url}}apps/core/media/js/code.js"></script>
-<script type="text/javascript" src="{{home_url}}apps/core/media/js/prettify/prettify.js"></script>
 {% endblock endbody %}

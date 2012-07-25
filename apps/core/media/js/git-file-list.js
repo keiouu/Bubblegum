@@ -45,7 +45,8 @@
                 }
             });
             
-            tbody.find("a").click(function() {
+            tbody.find("a").click(function(e) {
+                e.preventDefault();
                 if ($(this).hasClass("folder")) {
                     // Show the folder.
                     var data = $(this).parent().parent().data("sub-set");
@@ -58,7 +59,12 @@
                     $.ajax({
                         url: tp_home_url + "api/project/" + project_id + "/git/show_file/?file=" + path,
                     }).done(function(data) {
-                        $(_elem).html('<pre>'+data+'</pre>');
+                        $(_elem).html('<pre class="prettyprint linenums">'+data+'</pre>');
+                        prettyPrint();
+                        $(_elem).prepend('<a href="">&laquo; Back</a>').click(function() {
+                            showFolder(folder);
+                            return false;
+                        });
                     });
                 }
                 

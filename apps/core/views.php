@@ -15,6 +15,7 @@ class BubblegumView extends TemplateView
 	public function setup($request, $args) {
 		$request->media->enable_processor();
 		
+		$request->media->add_file(home_dir . "apps/core/media/css/prettify.css");
 		$request->media->add_file(home_dir . "apps/core/media/css/bootstrap.css");
 		$request->media->add_file(home_dir . "apps/core/media/css/bootstrap-responsive.css");
 		$request->media->add_file(home_dir . "apps/core/media/css/style.css");
@@ -26,6 +27,7 @@ class BubblegumView extends TemplateView
 		$request->media->add_file(home_dir . "apps/core/media/js/activity.feed.js");
 		$request->media->add_file(home_dir . "apps/core/media/js/project.feeds.js");
 		$request->media->add_file(home_dir . "apps/core/media/js/feeds.ajax.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/prettify/prettify.js");
 		$request->media->add_file(home_dir . "apps/core/media/js/git-file-list.js");
 		
 		return parent::setup($request, $args);
