@@ -23,16 +23,22 @@
         function initialize() {
             // Clone the original
             _data = $(_elem).clone();
-            showFolder(_data);
+            showFolder(_data, 0);
         }
         
         function hideFolder(callback) {
             $(_elem).find("table").animate({ opacity: 0.25 }, 200, callback);
         }
         
-        function showFolder(folder) {
+        function showFolder(folder, parent) {    
+            $(folder).data("is-root", parent == 0);
+            
             // Print a pretty table
             var tbody = $(_elem).html('<table class="table table-striped table-bordered table-condensed"><thead><tr><th>Filename</th></tr></thead><tbody></tbody></table>').find("tbody");
+            
+            if (parent != 0) {
+                $('<tr><td><i class="icon-folder-close"></i> <a href="" class="folder folder-back">..</a></td></tr>').data("sub-set", parent.clone()).prependTo(tbody);
+            }
             
             $(folder).children("ul").children("li").each(function() {
                 var elem = $(this).clone();
@@ -49,9 +55,13 @@
                 e.preventDefault();
                 if ($(this).hasClass("folder")) {
                     // Show the folder.
-                    var data = $(this).parent().parent().data("sub-set");
+                    var isBack = $(this).hasClass("folder-back");
+                    var subset = $(this).parent().parent().data("sub-set");
                     hideFolder(function() {
-                        showFolder(data);
+                        if (isBack && parent != 0 && $(parent).data("is-root"))
+                            showFolder(subset, 0);
+                        else
+                            showFolder(subset, folder);
                     });
                 } else {
                     var path = $(this).attr("data-path");
@@ -62,7 +72,7 @@
                         $(_elem).html('<pre class="prettyprint linenums">'+data+'</pre>');
                         prettyPrint();
                         $(_elem).prepend('<a href="">&laquo; Back</a>').click(function() {
-                            showFolder(folder);
+                            showFolder(folder, parent);
                             return false;
                         });
                     });
