@@ -55,6 +55,7 @@
                 e.preventDefault();
                 if ($(this).hasClass("folder")) {
                     // Show the folder.
+                    var isBack = $(this).hasClass("folder-back");
                     hideFolder(function() {
                         if (isBack)
                             showFolder(parent, $(parent).data("parent"));
