@@ -15,7 +15,7 @@
 	<div class="page-header">
 		<h1><img src="<?php print $request->gravatar . "?s=32"; ?>" alt="Gravatar Image" class="gravatar" /> <?php print $request->profile; ?> <small><a href="{{logout_url}}" rel="popover" title="Logout" data-content="Are you sure?"><i class="icon-off"></i></a></small></h1>
 	</div>
-      
+    <div class="draggables-container">
       <div class="span3 draggables c1 well" data-status="1">
       	<h3><i class="icon-align-left"></i> Backlog</h3>
       	<div class="inner">
@@ -73,6 +73,8 @@
       		?>
       	</div>
       </div>
+      <div class="clearfix"></div>
+    </div>
 </div>
 {% endblock body %}
 

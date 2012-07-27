@@ -1,4 +1,5 @@
 $(function() {
+    $(".draggables").css('height', $(".draggables-container").innerHeight());
     $(".draggables .inner .draggable").each(function() {
         var obj = $(this);
         var inAnim = false;
