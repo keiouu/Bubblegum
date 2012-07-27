@@ -42,8 +42,8 @@ require_once(home_dir . "apps/core/models.php");
               {% block menu %}
               <li <?php print (isset($request->project) ? '' : 'class="active"'); ?>><a href="{{home_url}}">Home</a></li>
               <?php if ($request->user->logged_in()) { ?>
-              <li class="divider-vertical"></li>
-              <li class="dropdown<?php print (isset($request->project) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+              	<li class="divider-vertical"></li>
+              	<li class="dropdown<?php print (isset($request->project) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 		           <ul class="dropdown-menu">
 		           	 <?php
 		           	 $org = "";
@@ -62,7 +62,21 @@ require_once(home_dir . "apps/core/models.php");
 		           	 ?>
 		          	 <li><a href="{{home_url}}projects/new/"><i class="icon-plus"></i> Add New Project</a></li>
 		           </ul>
-		        </li>
+				</li>
+				<li class="divider-vertical"></li>
+				<li class="dropdown<?php print (isset($request->team) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Teams <b class="caret"></b></a>
+				   <ul class="dropdown-menu">
+					 <?php
+					 $teams = Team::mine($request->user);
+			    	 foreach ($teams as $team) {
+			    	 	print '<li><a href="{{home_url}}teams/'.$team->pk.'/">'.$team->name.'</a></li>';
+			    	 }
+					 ?>
+					 <li class="divider"></li>
+					 <li><a href="{{home_url}}teams/new/"><i class="icon-plus"></i> Add New Team</a></li>
+				   </ul>
+				</li>
+				<li class="divider-vertical"></li>
               <?php } ?>
               {% endblock %}
             </ul>

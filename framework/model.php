@@ -1018,8 +1018,10 @@ abstract class Model
 		
 		$query = "";
 		
-		foreach ($this->get_fields() as $name => $field)
+		foreach ($this->get_fields() as $name => $field) {
 			$field->pre_save($this, $this->from_db);
+			$this->on_update_changed($name, "", $field->get_value());
+		}
 		
 		if (!$this->from_db) {
 			$this->pre_create();

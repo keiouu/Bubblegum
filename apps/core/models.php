@@ -64,6 +64,16 @@ class Team extends Model
 	public function post_save($pk) { // We use save in case the leader changes
 		Team_Link::get_or_create(array("team" => $this->pk, "user" => $this->leader->pk));
 	}
+	
+	public static function mine($user) {
+		// All teams a user is a member of
+		$teams = array();
+		$links = Team_Link::find(array("user" => $user));
+		foreach ($links as $link) {
+			$teams[] = $link->team;
+		}
+		return $teams;
+	}
 }
 
 class Team_Link extends Model

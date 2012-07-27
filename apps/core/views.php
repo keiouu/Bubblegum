@@ -129,14 +129,55 @@ class NewProjectView extends BaseView
 				$model = $request->project_form->save($project, $request);
 				if ($model) {
 					$request->message("Project created successfully.");
-					header("Location: " . home_url . "projects/" . $project->pk . "/");
+					header("Location: " . home_url . "projects/" . $model->pk . "/");
 					return false;
 				}
 			} catch (exception $e) {
-					$request->message($e->getMessage());
+				$request->message($e->getMessage());
 			}
 		}
 		
+		return true;
+	}
+}
+
+class NewTeamsView extends BaseView
+{
+	public function setup($request, $args) {
+		if (!parent::setup($request, $args))
+			return false;
+		
+		$request->team_form = new Form2($request->fullPath  . "?new_team=true");
+		$request->team_form->fieldset("Create a team...")
+			->append("name", "Name: ", "char")
+			->append("description", "Description: ", "textarea");
+			
+		if (isset($request->get['new_team'])) {
+			try {
+				$team = new Team();
+				$request->team_form->load_post_data($request->post);
+				$team->leader = $request->user;
+				$model = $request->team_form->save($team, $request);
+				if ($model) {
+					$request->message("Team created successfully.");
+					header("Location: " . home_url . "teams/" . $model->pk . "/");
+					return false;
+				}
+			} catch (exception $e) {
+				$request->message($e->getMessage());
+			}
+		}
+		
+		return true;
+	}
+}
+
+class TeamsView extends BaseView
+{
+	public function setup($request, $args) {
+		if (!parent::setup($request, $args))
+			return false;
+		$request->team = Team::get_or_ignore($args['team']);
 		return true;
 	}
 }

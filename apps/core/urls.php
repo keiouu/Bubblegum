@@ -17,6 +17,8 @@ new SupportView("/support/", home_dir . "apps/core/templates/support/404.php", "
 new NewProjectView("/projects/new/", home_dir . "apps/core/templates/new-project.php", "New Project");
 new ProfileView("/profile/", home_dir . "apps/core/templates/profile.php", "Your Profile");
 new ProfileView("/profile/(?P<user>\d+)/", home_dir . "apps/core/templates/profile.php", "Profile");
+new NewTeamsView("/teams/new/", home_dir . "apps/core/templates/new-team.php", "New Team");
+new TeamsView("/teams/(?P<team>\d+)/", home_dir . "apps/core/templates/team.php", "Team");
 
 // Git
 new Git_CommitView("/projects/(?P<project>\d+)/git/", home_dir . "apps/core/templates/git_commit.php", "Commit");
