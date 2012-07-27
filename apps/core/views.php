@@ -47,19 +47,6 @@ class BaseView extends BubblegumView
 	}
 }
 
-class DashboardView extends BaseView
-{
-	public function setup($request, $args) {
-		$setup = parent::setup($request, $args);
-		$request->media->add_file(home_dir . "apps/core/media/css/dashboard.css");
-
-		$request->media->add_file(home_dir . "apps/core/media/js/jquery.drag.js");
-		$request->media->add_file(home_dir . "apps/core/media/js/jquery.utils.js");
-		$request->media->add_file(home_dir . "apps/core/media/js/dashboard.js");
-		return $setup;
-	}
-}
-
 class SupportView extends BubblegumView
 {
 	public function setup($request, $args) {
@@ -86,6 +73,13 @@ class ProfileView extends BaseView
 	public function setup($request, $args) {
 		if (!parent::setup($request, $args))
 			return false;
+		
+		$request->media->add_file(home_dir . "apps/core/media/css/dashboard.css");
+
+		$request->media->add_file(home_dir . "apps/core/media/js/jquery.drag.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/jquery.utils.js");
+		$request->media->add_file(home_dir . "apps/core/media/js/dashboard.js");
+		
 		if (isset($args['user']))
 			$request->profile = User::get_or_ignore($args['user']);
 		else

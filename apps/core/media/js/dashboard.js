@@ -29,6 +29,9 @@ $(function() {
                 obj.appendTo(container);
                 obj.css("left", "0");
                 obj.css("top", "0");
+                
+                // Save new state
+                
             } else {
                 // Send back to its container if it isnt in one now
                 inAnim = true;

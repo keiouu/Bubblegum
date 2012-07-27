@@ -10,7 +10,6 @@ require_once(dirname(__FILE__) . "/views.php");
 new BaseView("/", home_dir . "apps/core/templates/index.php", "Home Page");
 new LoginView("/login/", home_dir . "apps/core/templates/login.php", "Login Page");
 new LoginView("/register/", home_dir . "apps/core/templates/register.php", "Register Page");
-new DashboardView("/dashboard/", home_dir . "apps/core/templates/dashboard.php", "Dashboard");
 new BaseView("/projects/", home_dir . "apps/core/templates/projects.php", "Projects");
 new ProjectView("/projects/(?P<project>\d+)/", home_dir . "apps/core/templates/project.php", "Project");
 new SupportView("/support/", home_dir . "apps/core/templates/support/404.php", "Support");
