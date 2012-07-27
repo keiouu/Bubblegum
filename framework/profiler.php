@@ -8,37 +8,73 @@ require_once(home_dir . "framework/signal_manager.php");
 require_once(home_dir . "framework/models.php");
 require_once(home_dir . "framework/model_fields/init.php");
 
-// TODO - should use tp 1.3 "historical models" to store data
+/**
+ * A block of ProfileData contains data for the profiler to use
+ *
+ * @internal
+ */
 class ProfileData
 {
 	public static $db_total_queries = 0, $db_queries = array(); // TODO - move out
 	private $name, $start_time = 0, $end_time = 0;
 	
+	/**
+	* Construct
+	*/
 	public function __construct($name) {
 		$this->name = $name;
 	}
 	
+	/**
+	* Returns the start time for this block
+	*
+	* @return float The start time of this block
+	*/
 	public function get_start_time() {
 		return $this->start_time;
 	}
 	
+	/**
+	* Returns the end time for this block
+	*
+	* @return float The end time of this block
+	*/
 	public function get_end_time() {
 		return $this->end_time;
 	}
 	
+	/**
+	* Returns the duration for this block
+	*
+	* @return float The duration of this block
+	*/
 	public function get_duration() {
 		return $this->end_time - $this->start_time;
 	}
 	
+	/**
+	* Causes this block's start time to be set to the current microtime
+	*/
 	public function start() {
 		$this->start_time = microtime(True);
 	}
 	
+	/**
+	* Stop's this block counting, sets the end time
+	*
+	* @return float The duration of this block
+	*/
 	public function stop() {
-		$this->end_time = microtime(True);
+		if ($this->end_time === 0)
+			$this->end_time = microtime(True);
 		return $this->get_duration();
 	}
-	
+	  
+	/**
+	* To String
+	*
+	* @return string The duration of the block followed by 's'
+	*/
 	public function __toString() {
 		$string = $this->name . ": ";
 		if ($this->end_time === 0)
@@ -56,10 +92,26 @@ function profiler_db_query_hook($dbargs) {
 }
 SignalManager::hook("on_db_query", "profiler_db_query_hook");
 
+/**
+* Tikapot Profiler
+*
+* Usage:
+*   $id = Profiler::start("random name");
+*      // code you would like to profile
+*   Profiler::end("same random name", $id);
+*
+*/
 class Profiler
 {
 	private static $blocks = array();
-	
+ 
+	/**
+	* Start a profiler block
+	*
+	* @static
+	* @param string $block The name of the block
+	* @return integer A unique id for your block (to be used with "end")
+	*/
 	public static function start($block) {
 		if (!isset(Profiler::$blocks[$block]))
 			Profiler::$blocks[$block] = array();
@@ -70,19 +122,47 @@ class Profiler
 		return $id;
 	}
 	
+	/**
+	* End a profiler block
+	*
+	* @static
+	* @param string $block The name of the block to end
+	* @param integer $id The id of the block to end (optional)
+	* @return float The duration of this block
+	*/
 	public static function end($block, $id = 0) {
-		$block = Profiler::$blocks[$block][$id];
-		return $block->stop();
+		$block_obj = Profiler::$blocks[$block][$id];
+		return $block_obj->stop();
 	}
 	
+	/**
+	* Get all blocks
+	*
+	* @static
+	* @return array The blocks of the profiler
+	*/
 	public static function get_blocks() {
 		return Profiler::$blocks;
 	}
 	
+	/**
+	* Get the number of times a given block was called
+	*
+	* @static
+	* @param string $block The name of the block
+	* @return integer The number of times a given block was called
+	*/
 	public static function get_call_count($block) {
 		return count(Profiler::$blocks[$block]);
 	}
 	
+	/**
+	* Returns the total time spent in a given block
+	*
+	* @static
+	* @param string $block The name of the block
+	* @return integer The total duration of a block, for all call counts
+	*/
 	public static function get_total($block) {
 		$total = 0;
 		foreach (Profiler::$blocks[$block] as $id => $obj)
@@ -91,6 +171,13 @@ class Profiler
 		return $total;
 	}
 	
+	/**
+	* Returns the average time spent in a given block
+	*
+	* @static
+	* @param string $block The name of the block
+	* @return integer The average duration of a block
+	*/
 	public static function get_average($block) {
 		return Profiler::get_total($block) / Profiler::get_call_count($block);
 	}

@@ -40,9 +40,8 @@ require_once(home_dir . "apps/core/models.php");
           <div class="nav-collapse">
             <ul class="nav">
               {% block menu %}
-              <li <?php print (isset($request->project) ? '' : 'class="active"'); ?>><a href="{{home_url}}">Home</a></li>
+              <li <?php print (isset($request->project) || isset($request->team) ? '' : 'class="active"'); ?>><a href="{{home_url}}">Home</a></li>
               <?php if ($request->user->logged_in()) { ?>
-              	<li class="divider-vertical"></li>
               	<li class="dropdown<?php print (isset($request->project) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
 		           <ul class="dropdown-menu">
 		           	 <?php
@@ -63,7 +62,6 @@ require_once(home_dir . "apps/core/models.php");
 		          	 <li><a href="{{home_url}}projects/new/"><i class="icon-plus"></i> Add New Project</a></li>
 		           </ul>
 				</li>
-				<li class="divider-vertical"></li>
 				<li class="dropdown<?php print (isset($request->team) ? ' active' : ''); ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Teams <b class="caret"></b></a>
 				   <ul class="dropdown-menu">
 					 <?php
@@ -76,7 +74,6 @@ require_once(home_dir . "apps/core/models.php");
 					 <li><a href="{{home_url}}teams/new/"><i class="icon-plus"></i> Add New Team</a></li>
 				   </ul>
 				</li>
-				<li class="divider-vertical"></li>
               <?php } ?>
               {% endblock %}
             </ul>
