@@ -443,13 +443,14 @@ class AJAX_TaskEditView extends View
 	}
 	
 	public function render($request, $args) {
-		print $request->get_csrf_token();
 		$project = Project::get_or_ignore($args['project']);
 		
 		// Check we should be able to view the project
 		if (!$project || !$project->can_edit($request->user)) {
 			return "Error: You cannot edit this project!";
 		}
+		
+		print $request->get_csrf_token();
 		
 		$task = Task::get_or_ignore($request->post['pk']);
 		if ($project && $task) {

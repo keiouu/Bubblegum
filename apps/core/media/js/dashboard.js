@@ -31,7 +31,14 @@ $(function() {
                 obj.css("top", "0");
                 
                 // Save new state
-                
+                var data_string = "csrf=" + csrf_token + "&pk=" + obj.attr("data-tpk") + "&status=" + container.parent().attr("data-status");
+                console.log(tp_home_url + "api/project/" + obj.attr("data-project") + "/task/edit/?" + data_string);
+                $.ajax({
+                    url: tp_home_url + "api/project/" + obj.attr("data-project") + "/task/edit/",
+                    type: "POST",
+                    data: data_string + "&save=1",
+                    success: function(data) { csrf_token = $.trim(data); },
+                });
             } else {
                 // Send back to its container if it isnt in one now
                 inAnim = true;
