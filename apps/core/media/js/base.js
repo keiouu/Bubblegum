@@ -24,6 +24,9 @@ function hide_messages() {
 $(function () {
 	init_support();
 	
+    $('a[rel=tooltip]').tooltip();
+    $('a[rel=popover]').popover();
+    
 	// Messages
 	if ($('.alert').length > 0)
 		show_messages();

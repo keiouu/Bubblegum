@@ -65,6 +65,10 @@ class Team extends Model
 		Team_Link::get_or_create(array("team" => $this->pk, "user" => $this->leader->pk));
 	}
 	
+	public function projects() {
+		return Project::find(array("owner" => $this));
+	}
+	
 	public static function mine($user) {
 		// All teams a user is a member of
 		$teams = array();

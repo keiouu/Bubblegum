@@ -115,9 +115,16 @@ class NewProjectView extends BaseView
 		if (!parent::setup($request, $args))
 			return false;
 		
+		$owners = array();
+		$owners["User|" . $request->user->pk] = $request->user;
+		foreach (Team::mine($request->user) as $team) {
+			$owners["Team|" . $team->pk] = $team;
+		}
+		
 		$project = new Project();
 		$request->project_form = new Form2($request->fullPath  . "?new_project=true");
 		$request->project_form->fieldset("Create a project...")
+			->append("owner", new SelectFormField("Owner: ", $owners))
 			->append("name", "Name: ", "char")
 			->append("description", "Description: ", "textarea")
 			->append("public", "Public: ", "checked");

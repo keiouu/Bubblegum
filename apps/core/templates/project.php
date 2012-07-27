@@ -7,10 +7,7 @@ require_once(home_dir . "apps/core/forms.php");
 {% block endbody %}
 <script type="text/javascript">
 var project_id = <?php print $request->project->pk; ?>;
-$(function() {
-	$('a[rel=tooltip]').tooltip();
-	$('a[rel=popover]').popover();
-	
+$(function() {	
 	$("#track").click(function() {
 		$.ajax({
 		  <?php if ($request->project->tracked_by($request->user)) { ?>
