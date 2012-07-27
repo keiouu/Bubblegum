@@ -80,6 +80,31 @@ require_once(home_dir . "apps/core/models.php");
             <div class="pull-right">
 					<ul class="nav">
 						<li class="divider-vertical"></li>
+				         <?php if ($request->user->logged_in())  { ?>
+				         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i></a>
+				         	<ul class="dropdown-menu">
+				         		<li class="nav-header">Themes</li>
+				         		<?php
+				         		$currentTheme = User_Preference::get_or_ignore(array("user" => $request->user));
+								if (!$currentTheme) {
+				         			$currentTheme = "standard";
+								} else {
+									$currentTheme = $currentTheme->value;
+								}
+								
+				         		$themes = array("Standard", "Borg", "United");
+								foreach($themes as $theme) {
+									$check = "";
+									if ($currentTheme == strtolower($theme)) {
+										$check = '<i class="icon-ok"></i> ';
+									}
+									print '<li><a href="'.$request->fullPath.'?theme='.strtolower($theme).'&csrf='.$request->get_csrf_token().'">'.$check . $theme.'</a></li>';
+								}
+				         		?>
+				         	</ul>
+				         </li>
+						 <?php } ?>
+						<li class="divider-vertical"></li>
 						<li><a href="{{home_url}}support/?referrer=<?php print htmlentities($request->fullPath); ?>" class="supportLink"><i class="icon-question-sign icon-white"></i></a></li>
 		         </ul>
 				</div>
@@ -88,7 +113,7 @@ require_once(home_dir . "apps/core/models.php");
 		         <?php
 		         if ($request->user->logged_in())  {
 		         	print '<a class="nav-gravatar" href="{{home_url}}profile/'.$request->user->pk.'/" title="Logged in as '.$request->user->get_short_display_name().'"><img src="'.$request->gravatar . '?s=26" alt="Gravatar Image" class="gravatar" /></a>';
-		         } else {
+				} else {
 		         	print '<a href="{{home_url}}login/">Log in</a>';
 		         }
 		         ?>

@@ -16,7 +16,32 @@ class BubblegumView extends TemplateView
 		$request->media->enable_processor();
 		
 		$request->media->add_file(home_dir . "apps/core/media/css/prettify.css");
-		$request->media->add_file(home_dir . "apps/core/media/css/bootstrap.css");
+		
+		if (isset($request->get['theme']) && isset($request->get['csrf']) && $request->validate_csrf_token($request->get['csrf'])) {
+			list($theme, $created) = User_Preference::get_or_create(array("user" => $request->user, "key" => "theme"));
+			$theme->value = preg_replace("/[^a-z]+/i", "", $request->get['theme']);
+			$theme->save();
+		}
+		
+		
+		$useTheme = false;
+		if ($request->user->logged_in()) {
+			$theme = User_Preference::get_or_ignore(array("user" => $request->user, "key" => "theme"));
+			if ($theme) {
+				$theme = preg_replace("/[^a-z]+/i", "", $theme->value);
+				if (file_exists(home_dir . "apps/core/media/css/themes/".$theme."/bootstrap.css")) {
+					$useTheme = true;
+					$request->media->add_file(home_dir . "apps/core/media/css/themes/".$theme."/bootstrap.css");
+					$request->media->add_file(home_dir . "apps/core/media/css/themes/".$theme."/theme.css");
+				}
+			}
+		}
+		
+		if (!$useTheme) {
+			$request->media->add_file(home_dir . "apps/core/media/css/themes/standard/bootstrap.css");
+		}
+		
+		
 		$request->media->add_file(home_dir . "apps/core/media/css/bootstrap-responsive.css");
 		$request->media->add_file(home_dir . "apps/core/media/css/style.css");
 		

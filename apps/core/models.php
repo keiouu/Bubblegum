@@ -29,6 +29,16 @@ function get_potential_assignees() {
 	return $assignees;
 }
 
+class User_Preference extends Model
+{
+	public function __construct() {
+		parent::__construct();
+		$this->add_field("user", new FKField("auth.User"));
+		$this->add_field("key", new CharField(250));
+		$this->add_field("value", new TextField());
+	}
+}
+
 class Log extends Model
 {
 	public function __construct() {
