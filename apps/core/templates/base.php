@@ -101,6 +101,8 @@ require_once(home_dir . "apps/core/models.php");
 									print '<li><a href="'.$request->fullPath.'?theme='.strtolower($theme).'&csrf='.$request->get_csrf_token().'">'.$check . $theme.'</a></li>';
 								}
 				         		?>
+				         		<li class="nav-header">Other</li>
+				         		<li><a href="{{logout_url}}">Logout</a></li>
 				         	</ul>
 				         </li>
 						 <?php } ?>

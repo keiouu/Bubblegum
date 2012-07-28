@@ -186,6 +186,24 @@ class Git
 	}
 	
 	/**
+	 * Get the branches for this repo
+	 */
+	public function branches() {
+		$tp_path = getcwd();
+		if (!chdir($this->_path))
+			return null;
+		
+		$list = array();
+		exec('git branch --list', $out);
+		foreach ($out as $branch) {
+			$list[] = htmlentities(trim(substr($branch, 1)));
+		}
+		
+		chdir($tp_path);
+		return $list;
+	}
+	
+	/**
 	 * This function provides a safe way to call "exec".
 	 *
 	 * @param string $command The command to run (e.g. ls)

@@ -132,7 +132,10 @@ $(function() {
 				<div class="accordion-inner">
 				</div>
 			</div>
-		<?php } ?>
+		<?php 
+			include_once(home_dir . "apps/core/templates/includes/new-deployment.php");
+		}
+		?>
 	</div>
 	<?php
 	include_once(home_dir . "apps/core/templates/includes/add-milestone.php");

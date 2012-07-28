@@ -15,7 +15,7 @@ class Deployment extends Model
 		$this->add_field("creator", new FKField("auth.User"), true);
 		$this->add_field("project", new FKField("core.Project"), true);
 		$this->add_field("server_url", new CharField(350, "you@yourserver.com:path/to/git"));
-		$this->add_field("key_file", new CharField(350));
+		$this->add_field("key_file", new CharField(350), true);
 	}
 	
 	public function __toString() { return $this->server_url; }
