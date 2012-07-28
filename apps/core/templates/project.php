@@ -1,6 +1,10 @@
 <?php
 require_once(home_dir . "apps/core/models.php");
 require_once(home_dir . "apps/core/forms.php");
+$git = $request->project->getRepository();
+if ($git !== null) {
+	$git_data = $git->log();
+}
 ?>
 {% extends "apps/core/templates/base.php" %}
 
@@ -41,7 +45,11 @@ $(function() {
 	
 	<ul class="nav nav-pills">
 		<?php
-			$tabs = array("dashboard", "tasks", "code");
+			$tabs = array("dashboard", "tasks");
+			if ($git && $git_data) {
+				$tabs[] = "code";
+				$tabs[] = "deployments";
+			}
 			foreach ($tabs as $tab) {
 				$class = (!isset($_GET['tab']) && $tab == $tabs[0]) || (isset($_GET['tab']) && $_GET['tab'] == $tab) ? ' class="active"' : '';
 				print '<li'.$class.'><a href="?tab='.$tab.'">'.ucwords($tab).'</a></li>';
@@ -52,9 +60,7 @@ $(function() {
 	<div class="accordion">
 		<?php
 		if (isset($_GET['tab']) && $_GET['tab'] == "code") {
-			$git = $request->project->getRepository();
 			if ($git !== null) {
-				$git_data = $git->log();
 				if ($git_data) {
 		?>
 					<div class="accordion-heading">
@@ -117,7 +123,16 @@ $(function() {
 			</div>
 		<?php
 		}
+		if (isset($_GET['tab']) && $_GET['tab'] == "deployments") {
 		?>
+			<div class="accordion-heading">
+				<h4><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#deploymentsCollapse"><i class="icon-th-list"></i> Deployments</a> <a data-toggle="modal" href="#deployments-add" rel="tooltip" title="New Deployment"><i class="icon-plus"></i></a></h4>
+			</div>
+			<div id="deploymentsCollapse" class="accordion-body in collapse" style="height: auto;">
+				<div class="accordion-inner">
+				</div>
+			</div>
+		<?php } ?>
 	</div>
 	<?php
 	include_once(home_dir . "apps/core/templates/includes/add-milestone.php");

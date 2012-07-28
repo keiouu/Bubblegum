@@ -59,6 +59,7 @@ class Git
 	 * @return null|array Null on failure or array(hash, author, email, date, message) on success
 	 */
 	public function files_changed($commit = "-") {
+		$tp_path = getcwd();
 		if (!chdir($this->_path))
 			return null;
 		$commit = escapeshellarg($commit);
@@ -73,6 +74,7 @@ class Git
 				}
 			}
 		}
+		chdir($tp_path);
 		return $array;
 	}
 	
@@ -83,6 +85,7 @@ class Git
 	 * @return null|array Null on failure or array(hash, author, email, date, message) on success
 	 */
 	public function file_changes($commit = "-") {
+		$tp_path = getcwd();
 		if (!chdir($this->_path))
 			return null;
 		$commit = escapeshellarg($commit);
@@ -109,6 +112,7 @@ class Git
 			
 			$array[$current_file][] = $line;
 		}
+		chdir($tp_path);
 		return $array;
 	}
 	
@@ -119,6 +123,7 @@ class Git
 	 * @return Array A list of files and folders
 	 */
 	public function ls($commit = "HEAD") {
+		$tp_path = getcwd();
 		if (!chdir($this->_path))
 			return null;
 		$commit = escapeshellarg($commit);
@@ -140,6 +145,7 @@ class Git
 				$i++;
 			}
 		}
+		chdir($tp_path);
 		return $listing;
 	}
 	
@@ -147,12 +153,36 @@ class Git
 	 * Returns the contents of a specific file
 	 */
 	public function show($filename, $commit = "HEAD") {
+		$tp_path = getcwd();
 		if (!chdir($this->_path))
 			return null;
 		$filename = escapeshellarg($filename);
 		$commit = escapeshellarg($commit);
 		exec('git show ' . $commit . ":" . $filename, $lines);
+		chdir($tp_path);
 		return $lines;
+	}
+	
+	/**
+	 * Generate an SSH key for this project
+	 * 
+	 * @return String Filename for the key
+	 */
+	public function genKey() {
+		$tp_path = getcwd();
+		$path = $this->_path . "keys/";
+		if (!file_exists($path))
+			mkdir($path);
+		if (!chdir($path))
+			return null;
+		
+		// Exec a keygen
+		$filename = realpath($path) . uniqid() . "_key.rsa";
+		exec('ssh-keygen -t rsa -N "" -f ' . escapeshellarg($filename));
+		
+		chdir($tp_path);
+		
+		return $filename;
 	}
 	
 	/**
@@ -183,6 +213,7 @@ class Git
 	 * @param string $description The description of the repo
 	 */
 	public static function Init($dir, $description) {
+		$tp_path = getcwd();
 		if (!ends_with($dir, "/"))
 			$dir = $dir . "/";
 		
@@ -197,6 +228,7 @@ class Git
 		// Setup our hooks
 		rmrf($dir . "hooks");
 		mkdir($dir . "hooks");
+		mkdir($dir . "keys");
 		$objects = scandir(home_dir . "repo/hooks/");
 		foreach ($objects as $object) {
 			if ($object == "." || $object == "..")
@@ -206,6 +238,7 @@ class Git
 		
 		file_put_contents($dir . "description", $description);
 		
+		chdir($tp_path);
 		return $ret;
 	}
 }
