@@ -27,6 +27,10 @@ body {
 	height: 35px;
 }
 
+.navbar-inner {
+	height: 40px;
+}
+
 .page-header {
 	padding-bottom: 10px;
 }

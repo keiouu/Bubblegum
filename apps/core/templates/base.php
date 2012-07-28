@@ -92,7 +92,7 @@ require_once(home_dir . "apps/core/models.php");
 									$currentTheme = $currentTheme->value;
 								}
 								
-				         		$themes = array("Standard", "Borg", "United");
+				         		$themes = array("Standard", "Borg", "United", "Cerulean", "Simplex");
 								foreach($themes as $theme) {
 									$check = "";
 									if ($currentTheme == strtolower($theme)) {
