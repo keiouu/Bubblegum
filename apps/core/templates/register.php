@@ -7,8 +7,7 @@
 			<h1>Register</h1>
 		</div>
 		<?php
-		require_once(home_dir . "contrib/admin/core.php");
-		$printer = new AdminFormPrinter();
+		$printer = new BootstrapFormPrinter();
 		$printer->run($request->register_form, false, array("submit_register" => "register"));
 		?>
 		<p><a href="{{home_url}}login/"><i class="icon-user"></i> Already have an account?</a></p>
