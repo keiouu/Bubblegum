@@ -88,7 +88,7 @@ class LoginView extends BubblegumView
 			return false;
 		}
 		$setup = parent::setup($request, $args);
-		$request->media->add_file(home_dir . "contrib/admin/media/css/auth.css");
+		$request->media->add_file(home_dir . "apps/core/media/css/auth.css");
 		return $setup;
 	}
 }
