@@ -1,10 +1,6 @@
 <?php
 require_once(home_dir . "apps/core/models.php");
 require_once(home_dir . "apps/core/forms.php");
-$git = $request->project->getRepository();
-if ($git !== null) {
-	$git_data = $git->log();
-}
 ?>
 {% extends "apps/core/templates/base.php" %}
 
@@ -45,11 +41,14 @@ $(function() {
 	
 	<ul class="nav nav-pills">
 		<?php
-			$tabs = array("dashboard", "tasks");
-			if ($git && $git_data) {
-				$tabs[] = "code";
-				$tabs[] = "deployments";
-			}
+			$tabs = array("dashboard", "tasks", "code");
+			//$git = $request->project->getRepository();
+			//if ($git !== null) {
+			//	$git_data = $git->log();
+			//}
+			//if ($git && $git_data) {
+			//	$tabs[] = "deployments";
+			//}
 			foreach ($tabs as $tab) {
 				$class = (!isset($_GET['tab']) && $tab == $tabs[0]) || (isset($_GET['tab']) && $_GET['tab'] == $tab) ? ' class="active"' : '';
 				print '<li'.$class.'><a href="?tab='.$tab.'">'.ucwords($tab).'</a></li>';
@@ -60,7 +59,9 @@ $(function() {
 	<div class="accordion">
 		<?php
 		if (isset($_GET['tab']) && $_GET['tab'] == "code") {
+			$git = $request->project->getRepository();
 			if ($git !== null) {
+				$git_data = $git->log();
 				if ($git_data) {
 		?>
 					<div class="accordion-heading">
@@ -73,18 +74,31 @@ $(function() {
 							<?php include_once(home_dir . "apps/core/templates/includes/git-view.php"); ?>
 						</div>
 					</div>
-		<?php  } ?>
-				<div class="accordion-heading">
-					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#gitcodeCollapse">
-						<h4><i class="icon-hdd"></i> Code Browser</h4>
-					</a>
-				</div>
-				<div id="gitcodeCollapse" class="accordion-body in collapse" style="height: auto;">
-					<div class="accordion-inner">
-						<?php include_once(home_dir . "apps/core/templates/includes/git-file-list.php"); ?>
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#gitcodeCollapse">
+							<h4><i class="icon-hdd"></i> Code Browser</h4>
+						</a>
 					</div>
-				</div>
+					<div id="gitcodeCollapse" class="accordion-body in collapse" style="height: auto;">
+						<div class="accordion-inner">
+							<?php include_once(home_dir . "apps/core/templates/includes/git-file-list.php"); ?>
+						</div>
+					</div>
 		<?php
+				} else {
+					print '
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#gitCollapse">
+							<h4><i class="icon-hdd"></i> Git</h4>
+						</a>
+					</div>
+					<div id="gitCollapse" class="accordion-body in collapse" style="height: auto;">
+						<div class="accordion-inner">
+							You have no commits!
+						</div>
+					</div>
+					';
+				}
 			}
 		}
 		if (!isset($_GET['tab']) || $_GET['tab'] == "dashboard") {
@@ -130,10 +144,11 @@ $(function() {
 			</div>
 			<div id="deploymentsCollapse" class="accordion-body in collapse" style="height: auto;">
 				<div class="accordion-inner">
+					<p>Not yet implemented!</p>
 				</div>
 			</div>
 		<?php 
-			include_once(home_dir . "apps/core/templates/includes/new-deployment.php");
+			//include_once(home_dir . "apps/core/templates/includes/new-deployment.php");
 		}
 		?>
 	</div>
