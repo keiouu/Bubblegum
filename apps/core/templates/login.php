@@ -8,7 +8,7 @@
 		</div>
 		<?php
 		$printer = new BootstrapFormPrinter();
-		$printer->run($request->login_form, false, array("submit_login" => "login"));
+		$printer->run($request->login_form, $request->fullPath . "?auth_login=true", "post", "Login");
 		?>
 		<p><a href="{{home_url}}register/"><i class="icon-user"></i> Dont have an account?</a></p>
 	</div>
